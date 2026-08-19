@@ -24,12 +24,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
+    private val __adapter0: Adapter<TestQuery.Data.A?> = A.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _a: TestQuery.Data.A? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _a = A.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,11 +47,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("a")
-      A.obj().nullable().toJson(writer, customScalarAdapters, value.a)
+      __adapter0.toJson(writer, customScalarAdapters, value.a)
     }
 
     private object A : Adapter<TestQuery.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "node")
+
+      private val __adapter0: Adapter<TestQuery.Data.A.Node?> = Node.obj().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.A {
         var __typename: String? = null
@@ -58,7 +62,7 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -78,7 +82,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("node")
-        Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+        __adapter0.toJson(writer, customScalarAdapters, value.node)
       }
 
       private object Node : Adapter<TestQuery.Data.A.Node> {

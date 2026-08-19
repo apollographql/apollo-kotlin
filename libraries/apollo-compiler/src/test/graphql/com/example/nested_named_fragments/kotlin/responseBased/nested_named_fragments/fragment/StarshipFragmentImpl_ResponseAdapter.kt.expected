@@ -22,6 +22,9 @@ public object StarshipFragmentImpl_ResponseAdapter {
   public object Data : Adapter<StarshipFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
+    private val __adapter0: Adapter<StarshipFragmentImpl.Data.PilotConnection?> =
+        PilotConnection.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): StarshipFragmentImpl.Data {
       var _id: String? = null
       var _name: String? = null
@@ -31,7 +34,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader, customScalarAdapters)
+          2 -> _pilotConnection = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -55,18 +58,21 @@ public object StarshipFragmentImpl_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("pilotConnection")
-      PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
+      __adapter0.toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
     private object PilotConnection : Adapter<StarshipFragmentImpl.Data.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
+
+      private val __adapter0: Adapter<List<StarshipFragmentImpl.Data.PilotConnection.Edge?>?> =
+          Edge.obj().nullable().list().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): StarshipFragmentImpl.Data.PilotConnection {
         var _edges: List<StarshipFragmentImpl.Data.PilotConnection.Edge?>? = null
 
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+            0 -> _edges = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -82,18 +88,21 @@ public object StarshipFragmentImpl_ResponseAdapter {
         `value`: StarshipFragmentImpl.Data.PilotConnection,
       ) {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        __adapter0.toJson(writer, customScalarAdapters, value.edges)
       }
 
       private object Edge : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
+
+        private val __adapter0: Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node?> =
+            Node.obj().nullable()
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): StarshipFragmentImpl.Data.PilotConnection.Edge {
           var _node: StarshipFragmentImpl.Data.PilotConnection.Edge.Node? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -109,11 +118,15 @@ public object StarshipFragmentImpl_ResponseAdapter {
           `value`: StarshipFragmentImpl.Data.PilotConnection.Edge,
         ) {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          __adapter0.toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
+
+          private val __adapter0:
+              Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld?> =
+              Homeworld.obj().nullable()
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): StarshipFragmentImpl.Data.PilotConnection.Edge.Node {
             var __typename: String? = null
@@ -124,7 +137,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                2 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
+                2 -> _homeworld = __adapter0.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -148,7 +161,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
             NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             writer.name("homeworld")
-            Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
+            __adapter0.toJson(writer, customScalarAdapters, value.homeworld)
           }
 
           private object Homeworld : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {

@@ -48,11 +48,16 @@ public class HorseFragmentImpl() : Fragment<HorseFragmentImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = HorseFragmentImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Horse.type
-        )
-        .selections(selections = HorseFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Horse.type
+          )
+          .selections(selections = HorseFragmentSelections.__root)
+          .build()
+    }
   }
 }

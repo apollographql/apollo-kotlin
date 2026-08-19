@@ -87,12 +87,8 @@ public class GetUnionA() : Query<GetUnionA.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetUnionA_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetUnionASelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "ba33b4f46de278a6b35b63f9d681b03ad26ce7db817425d7ed9156e0bf7af54e"
@@ -125,5 +121,14 @@ public class GetUnionA() : Query<GetUnionA.Data> {
       get() = "query GetUnionA { unionA { __typename ... on UnionA { __typename } ... on A { id } ... on B { idB } ... on C { idC } } }"
 
     public const val OPERATION_NAME: String = "GetUnionA"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetUnionASelections.__root)
+          .build()
+    }
   }
 }

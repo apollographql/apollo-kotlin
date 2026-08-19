@@ -12,10 +12,12 @@ import com.apollographql.apollo.api.ObjectType
 public class TypeWithGraphQLKeywords {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __null_fragment: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("fragment").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "TypeWithGraphQLKeywords").build()
   }
 }

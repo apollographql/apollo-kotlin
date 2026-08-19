@@ -27,12 +27,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
+    private val __adapter0: Adapter<List<TestQuery.Data.Search?>?> =
+        Search.obj().nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _search = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,7 +51,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("search")
-      Search.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
+      __adapter0.toJson(writer, customScalarAdapters, value.search)
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
@@ -81,6 +84,9 @@ public object TestQuery_ResponseAdapter {
     public object CharacterSearch {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name", "friends")
 
+      private val __adapter0: Adapter<List<TestQuery.Data.CharacterSearch.Friend?>?> =
+          Friend.obj().nullable().list().nullable()
+
       public fun fromJson(
         reader: JsonReader,
         @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -96,7 +102,7 @@ public object TestQuery_ResponseAdapter {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+            3 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -124,7 +130,7 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friends")
-        Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+        __adapter0.toJson(writer, customScalarAdapters, value.friends)
       }
 
       private object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
@@ -157,6 +163,9 @@ public object TestQuery_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> =
             listOf("__typename", "name", "homePlanet", "friends")
 
+        private val __adapter0: Adapter<List<TestQuery.Data.CharacterSearch.HumanFriend.Friend?>?> =
+            Friend.obj().nullable().list().nullable()
+
         public fun fromJson(
           reader: JsonReader,
           @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -172,7 +181,7 @@ public object TestQuery_ResponseAdapter {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+              3 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -200,7 +209,7 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+          __adapter0.toJson(writer, customScalarAdapters, value.friends)
         }
 
         private object Friend : Adapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
@@ -242,6 +251,9 @@ public object TestQuery_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> =
             listOf("__typename", "name", "primaryFunction", "friends")
 
+        private val __adapter0: Adapter<List<TestQuery.Data.CharacterSearch.DroidFriend.Friend?>?> =
+            Friend.obj().nullable().list().nullable()
+
         public fun fromJson(
           reader: JsonReader,
           @Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters,
@@ -257,7 +269,7 @@ public object TestQuery_ResponseAdapter {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+              3 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -285,7 +297,7 @@ public object TestQuery_ResponseAdapter {
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+          __adapter0.toJson(writer, customScalarAdapters, value.friends)
         }
 
         private object Friend : Adapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {

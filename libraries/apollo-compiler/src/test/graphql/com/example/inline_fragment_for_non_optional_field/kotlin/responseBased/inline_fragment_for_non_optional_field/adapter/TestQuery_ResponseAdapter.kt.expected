@@ -24,12 +24,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
+    private val __adapter0: Adapter<TestQuery.Data.NonOptionalHero> = NonOptionalHero.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nonOptionalHero = NonOptionalHero.obj().fromJson(reader, customScalarAdapters)
+          0 -> _nonOptionalHero = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,7 +47,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("nonOptionalHero")
-      NonOptionalHero.obj().toJson(writer, customScalarAdapters, value.nonOptionalHero)
+      __adapter0.toJson(writer, customScalarAdapters, value.nonOptionalHero)
     }
 
     private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {

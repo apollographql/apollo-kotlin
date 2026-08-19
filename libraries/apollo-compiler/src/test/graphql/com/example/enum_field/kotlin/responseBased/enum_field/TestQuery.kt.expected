@@ -55,12 +55,8 @@ internal class TestQuery() : Query<TestQuery.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = TestQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "d9f4dcc9a9b855455b49cca3f8f542dba43a5324df22e1662f4fe0157d4c73d4"
@@ -80,5 +76,14 @@ internal class TestQuery() : Query<TestQuery.Data> {
       get() = "query TestQuery { gravity gravityAsEnum }"
 
     public const val OPERATION_NAME: String = "TestQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = TestQuerySelections.__root)
+          .build()
+    }
   }
 }

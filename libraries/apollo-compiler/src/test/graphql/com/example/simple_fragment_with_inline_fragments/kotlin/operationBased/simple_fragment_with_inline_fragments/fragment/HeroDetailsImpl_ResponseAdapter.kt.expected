@@ -6,6 +6,8 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableDoubleAdapter
 import com.apollographql.apollo.api.NullableStringAdapter
@@ -26,6 +28,10 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails : Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
+    private val __adapter0:
+        Adapter<List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>?>
+        = Friend.obj(true).nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails {
       var _name: String? = null
       var _friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
@@ -33,7 +39,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _friends = Friend.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -53,11 +59,15 @@ public object HeroDetailsImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("friends")
-      Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      __adapter0.toJson(writer, customScalarAdapters, value.friends)
     }
 
     private object Friend : Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("Droid")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
         var __typename: String? = null
@@ -76,13 +86,13 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
 
         var _onHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.fromJson(reader, customScalarAdapters)
         }
 
         var _onDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.fromJson(reader, customScalarAdapters)
         }

@@ -6,6 +6,8 @@
 package com.example.typepolicy.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -23,12 +25,15 @@ public object GetInterfaceA_ResponseAdapter {
   public object Data : Adapter<GetInterfaceA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("interfaceA")
 
+    private val __adapter0: Adapter<GetInterfaceA.Data.InterfaceA?> =
+        InterfaceA.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetInterfaceA.Data {
       var _interfaceA: GetInterfaceA.Data.InterfaceA? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _interfaceA = InterfaceA.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _interfaceA = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,11 +49,15 @@ public object GetInterfaceA_ResponseAdapter {
       `value`: GetInterfaceA.Data,
     ) {
       writer.name("interfaceA")
-      InterfaceA.obj(true).nullable().toJson(writer, customScalarAdapters, value.interfaceA)
+      __adapter0.toJson(writer, customScalarAdapters, value.interfaceA)
     }
 
     private object InterfaceA : Adapter<GetInterfaceA.Data.InterfaceA> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("B")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("C")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetInterfaceA.Data.InterfaceA {
         var __typename: String? = null
@@ -68,13 +77,13 @@ public object GetInterfaceA_ResponseAdapter {
         val _onInterfaceA = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnInterfaceA.fromJson(reader, customScalarAdapters)
 
         var _onB: GetInterfaceA.Data.InterfaceA.OnB? = null
-        if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onB = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetInterfaceA.Data.InterfaceA.OnC? = null
-        if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onC = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnC.fromJson(reader, customScalarAdapters)
         }

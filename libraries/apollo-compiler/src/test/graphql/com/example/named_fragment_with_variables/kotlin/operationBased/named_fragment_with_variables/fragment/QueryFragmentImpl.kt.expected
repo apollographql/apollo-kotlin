@@ -41,11 +41,16 @@ public data class QueryFragmentImpl(
     override val ADAPTER: Adapter<QueryFragment> =
         QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Query.type
-        )
-        .selections(selections = QueryFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Query.type
+          )
+          .selections(selections = QueryFragmentSelections.__root)
+          .build()
+    }
   }
 }

@@ -54,12 +54,8 @@ public data class LoginBarber(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledMutation.type
-        )
-        .selections(selections = LoginBarberSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "1a8d9f5ee31f38a8c4095cabd35889a9cbb5b44c83c1302286f743fd8d838110"
@@ -80,5 +76,14 @@ public data class LoginBarber(
       get() = "mutation LoginBarber(${'$'}input: Login!) { login(input: ${'$'}input) { response } }"
 
     public const val OPERATION_NAME: String = "LoginBarber"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledMutation.type
+          )
+          .selections(selections = LoginBarberSelections.__root)
+          .build()
+    }
   }
 }

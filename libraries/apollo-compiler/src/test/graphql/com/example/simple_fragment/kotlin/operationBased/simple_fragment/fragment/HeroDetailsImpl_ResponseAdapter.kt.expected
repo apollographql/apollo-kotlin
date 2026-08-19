@@ -6,6 +6,8 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -18,6 +20,8 @@ import kotlin.collections.List
 internal object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
@@ -34,7 +38,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind()
         _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader, customScalarAdapters)
       }

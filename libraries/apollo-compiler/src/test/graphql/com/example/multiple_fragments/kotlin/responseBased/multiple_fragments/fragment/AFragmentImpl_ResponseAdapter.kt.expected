@@ -23,12 +23,14 @@ public object AFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
+    private val __adapter0: Adapter<AFragmentImpl.Data.Node?> = Node.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,7 +46,7 @@ public object AFragmentImpl_ResponseAdapter {
       `value`: AFragmentImpl.Data,
     ) {
       writer.name("node")
-      Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+      __adapter0.toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Node : Adapter<AFragmentImpl.Data.Node> {

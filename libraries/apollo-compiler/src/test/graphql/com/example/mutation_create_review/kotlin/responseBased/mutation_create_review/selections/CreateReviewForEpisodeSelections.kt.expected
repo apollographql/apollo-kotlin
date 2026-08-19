@@ -61,8 +61,8 @@ internal object CreateReviewForEpisodeSelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Mutation.__createReview_episode).value(CompiledVariable("ep")).build(),
-          CompiledArgument.Builder(Mutation.__createReview_review).value(CompiledVariable("review")).build()
+          CompiledArgument.Builder(Mutation.__Arguments.__createReview_episode).value(CompiledVariable("ep")).build(),
+          CompiledArgument.Builder(Mutation.__Arguments.__createReview_review).value(CompiledVariable("review")).build()
         ))
         .selections(__createReview)
         .build()

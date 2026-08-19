@@ -6,6 +6,8 @@
 package com.example.inline_fragment_inside_inline_fragment.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -25,12 +27,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
+    private val __adapter0: Adapter<List<TestQuery.Data.Search?>?> =
+        Search.obj(true).nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _search = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,11 +51,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("search")
-      Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
+      __adapter0.toJson(writer, customScalarAdapters, value.search)
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Droid","Human")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search {
         var __typename: String? = null
@@ -67,7 +74,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader, customScalarAdapters)
         }
@@ -94,6 +101,10 @@ public object TestQuery_ResponseAdapter {
       private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
+        private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
+
+        private val __condition1: BooleanExpression<BTerm> = possibleTypes("Droid")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter {
           var __typename: String? = null
           var _name: String? = null
@@ -111,13 +122,13 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.fromJson(reader, customScalarAdapters)
           }
 
           var _onDroid: TestQuery.Data.Search.OnCharacter.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.fromJson(reader, customScalarAdapters)
           }

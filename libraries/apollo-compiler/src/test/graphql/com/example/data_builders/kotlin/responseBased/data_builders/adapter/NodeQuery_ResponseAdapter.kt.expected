@@ -22,12 +22,14 @@ public object NodeQuery_ResponseAdapter {
   public object Data : Adapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
+    private val __adapter0: Adapter<NodeQuery.Data.Node> = Node.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().fromJson(reader, customScalarAdapters)
+          0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,7 +45,7 @@ public object NodeQuery_ResponseAdapter {
       `value`: NodeQuery.Data,
     ) {
       writer.name("node")
-      Node.obj().toJson(writer, customScalarAdapters, value.node)
+      __adapter0.toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Node : Adapter<NodeQuery.Data.Node> {

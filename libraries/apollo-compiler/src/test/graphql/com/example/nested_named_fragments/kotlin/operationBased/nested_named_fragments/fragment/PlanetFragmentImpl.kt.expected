@@ -39,11 +39,16 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragment> {
     override val ADAPTER: Adapter<PlanetFragment> =
         PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Planet.type
-        )
-        .selections(selections = PlanetFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Planet.type
+          )
+          .selections(selections = PlanetFragmentSelections.__root)
+          .build()
+    }
   }
 }

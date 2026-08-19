@@ -6,6 +6,8 @@
 package com.example.data_builders.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -26,12 +28,14 @@ public object AnimalQuery_ResponseAdapter {
   public object Data : Adapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
+    private val __adapter0: Adapter<AnimalQuery.Data.Animal> = Animal.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _animal = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,11 +51,15 @@ public object AnimalQuery_ResponseAdapter {
       `value`: AnimalQuery.Data,
     ) {
       writer.name("animal")
-      Animal.obj(true).toJson(writer, customScalarAdapters, value.animal)
+      __adapter0.toJson(writer, customScalarAdapters, value.animal)
     }
 
     private object Animal : Adapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Cat")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("Dog")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalQuery.Data.Animal {
         var __typename: String? = null
@@ -68,13 +76,13 @@ public object AnimalQuery_ResponseAdapter {
         }
 
         var _catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _catFragment = com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader, customScalarAdapters)
         }
 
         var _dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _dogFragment = com.example.data_builders.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader, customScalarAdapters)
         }

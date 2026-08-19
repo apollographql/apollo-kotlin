@@ -21,12 +21,14 @@ public object CharacterAppearsInImpl_ResponseAdapter {
   public object CharacterAppearsIn : Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
+    private val __adapter0: Adapter<List<Episode?>> = Episode_ResponseAdapter.nullable().list()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader, customScalarAdapters)
+          0 -> _appearsIn = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,7 +44,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
     ) {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters, value.appearsIn)
+      __adapter0.toJson(writer, customScalarAdapters, value.appearsIn)
     }
   }
 }

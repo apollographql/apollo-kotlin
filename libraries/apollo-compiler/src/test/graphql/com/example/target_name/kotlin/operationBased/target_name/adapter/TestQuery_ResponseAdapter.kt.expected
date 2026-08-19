@@ -6,6 +6,8 @@
 package com.example.target_name.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableAnyAdapter
 import com.apollographql.apollo.api.NullableStringAdapter
@@ -28,6 +30,14 @@ public object TestQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> =
         listOf("object", "interface", "union", "scalar", "enum")
 
+    private val __adapter0: Adapter<TestQuery.Data.Object?> = Object.obj().nullable()
+
+    private val __adapter1: Adapter<TestQuery.Data.Interface?> = Interface.obj().nullable()
+
+    private val __adapter2: Adapter<TestQuery.Data.Union?> = Union.obj(true).nullable()
+
+    private val __adapter3: Adapter<RenamedEnum?> = RenamedEnum_ResponseAdapter.nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
@@ -37,11 +47,11 @@ public object TestQuery_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _object = Object.obj().nullable().fromJson(reader, customScalarAdapters)
-          1 -> _interface = Interface.obj().nullable().fromJson(reader, customScalarAdapters)
-          2 -> _union = Union.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _object = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _interface = __adapter1.fromJson(reader, customScalarAdapters)
+          2 -> _union = __adapter2.fromJson(reader, customScalarAdapters)
           3 -> _scalar = NullableAnyAdapter.fromJson(reader, customScalarAdapters)
-          4 -> _enum = RenamedEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          4 -> _enum = __adapter3.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -61,19 +71,19 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("object")
-      Object.obj().nullable().toJson(writer, customScalarAdapters, value.`object`)
+      __adapter0.toJson(writer, customScalarAdapters, value.`object`)
 
       writer.name("interface")
-      Interface.obj().nullable().toJson(writer, customScalarAdapters, value.`interface`)
+      __adapter1.toJson(writer, customScalarAdapters, value.`interface`)
 
       writer.name("union")
-      Union.obj(true).nullable().toJson(writer, customScalarAdapters, value.union)
+      __adapter2.toJson(writer, customScalarAdapters, value.union)
 
       writer.name("scalar")
       NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar)
 
       writer.name("enum")
-      RenamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
+      __adapter3.toJson(writer, customScalarAdapters, value.`enum`)
     }
 
     private object Object : Adapter<TestQuery.Data.Object> {
@@ -135,6 +145,8 @@ public object TestQuery_ResponseAdapter {
     private object Union : Adapter<TestQuery.Data.Union> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("ReservedObject")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Union {
         var __typename: String? = null
 
@@ -150,7 +162,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onReservedObject: TestQuery.Data.Union.OnReservedObject? = null
-        if (possibleTypes("ReservedObject").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.fromJson(reader, customScalarAdapters)
         }

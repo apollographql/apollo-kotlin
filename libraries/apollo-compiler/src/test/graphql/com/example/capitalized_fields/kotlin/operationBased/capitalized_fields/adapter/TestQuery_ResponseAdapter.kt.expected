@@ -22,12 +22,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
+    private val __adapter0: Adapter<TestQuery.Horse?> = Horse.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Horse = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,7 +45,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("Horse")
-      Horse.obj(true).nullable().toJson(writer, customScalarAdapters, value.Horse)
+      __adapter0.toJson(writer, customScalarAdapters, value.Horse)
     }
   }
 
@@ -90,12 +92,14 @@ public object TestQuery_ResponseAdapter {
   public object OnHorse : Adapter<TestQuery.OnHorse> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
+    private val __adapter0: Adapter<TestQuery.Cow?> = Cow.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.OnHorse {
       var _Cow: TestQuery.Cow? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Cow = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -111,7 +115,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.OnHorse,
     ) {
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.Cow)
+      __adapter0.toJson(writer, customScalarAdapters, value.Cow)
     }
   }
 

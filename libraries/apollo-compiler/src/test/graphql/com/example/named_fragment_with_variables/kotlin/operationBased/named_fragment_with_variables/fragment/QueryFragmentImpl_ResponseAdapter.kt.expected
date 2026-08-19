@@ -21,12 +21,16 @@ public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
+    private val __adapter0:
+        Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization?> =
+        Organization.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.QueryFragment {
       var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _organization = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,11 +46,15 @@ public object QueryFragmentImpl_ResponseAdapter {
       `value`: com.example.named_fragment_with_variables.fragment.QueryFragment,
     ) {
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
+      __adapter0.toJson(writer, customScalarAdapters, value.organization)
     }
 
     private object Organization : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
+
+      private val __adapter0:
+          Adapter<List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>>
+          = User.obj(true).list()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var _id: String? = null
@@ -55,7 +63,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _user = User.obj(true).list().fromJson(reader, customScalarAdapters)
+            1 -> _user = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -75,7 +83,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
         writer.name("user")
-        User.obj(true).list().toJson(writer, customScalarAdapters, value.user)
+        __adapter0.toJson(writer, customScalarAdapters, value.user)
       }
 
       private object User : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User> {

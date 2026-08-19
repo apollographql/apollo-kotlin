@@ -20,12 +20,14 @@ public object LoginBarber_ResponseAdapter {
   public object Data : Adapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
+    private val __adapter0: Adapter<LoginBarber.Data.Login> = Login.obj()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _login = Login.obj().fromJson(reader, customScalarAdapters)
+          0 -> _login = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,7 +43,7 @@ public object LoginBarber_ResponseAdapter {
       `value`: LoginBarber.Data,
     ) {
       writer.name("login")
-      Login.obj().toJson(writer, customScalarAdapters, value.login)
+      __adapter0.toJson(writer, customScalarAdapters, value.login)
     }
 
     private object Login : Adapter<LoginBarber.Data.Login> {

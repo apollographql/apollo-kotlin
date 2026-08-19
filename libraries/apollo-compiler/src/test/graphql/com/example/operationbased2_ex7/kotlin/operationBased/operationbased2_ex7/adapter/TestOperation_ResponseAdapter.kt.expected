@@ -6,6 +6,8 @@
 package com.example.operationbased2_ex7.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.IntAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -25,12 +27,14 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
+    private val __adapter0: Adapter<TestOperation.Data.Animal?> = Animal.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,7 +50,7 @@ public object TestOperation_ResponseAdapter {
       `value`: TestOperation.Data,
     ) {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
+      __adapter0.toJson(writer, customScalarAdapters, value.animal)
     }
 
     private object Animal : Adapter<TestOperation.Data.Animal> {
@@ -85,6 +89,10 @@ public object TestOperation_ResponseAdapter {
       private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
+        private val __condition0: BooleanExpression<BTerm> = possibleTypes("Lion","Cat","Panther")
+
+        private val __condition1: BooleanExpression<BTerm> = possibleTypes("Cat","Turtle")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
@@ -102,13 +110,13 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onWarmBlooded: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded? = null
-          if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader, customScalarAdapters)
           }
 
           var _onPet: TestOperation.Data.Animal.OnAnimal.OnPet? = null
-          if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
             reader.rewind()
             _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader, customScalarAdapters)
           }

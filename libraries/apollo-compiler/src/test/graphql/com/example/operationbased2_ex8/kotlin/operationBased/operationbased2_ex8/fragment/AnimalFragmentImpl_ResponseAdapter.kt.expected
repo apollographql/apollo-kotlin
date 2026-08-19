@@ -6,6 +6,8 @@
 package com.example.operationbased2_ex8.fragment
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.IntAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -23,6 +25,9 @@ public object AnimalFragmentImpl_ResponseAdapter {
   public object AnimalFragment : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
+    private val __adapter0: Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>
+        = Parent.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.operationbased2_ex8.fragment.AnimalFragment {
       var _species: String? = null
       var _parent: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent? = null
@@ -30,7 +35,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _parent = Parent.obj(true).fromJson(reader, customScalarAdapters)
+          1 -> _parent = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -50,11 +55,15 @@ public object AnimalFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
       writer.name("parent")
-      Parent.obj(true).toJson(writer, customScalarAdapters, value.parent)
+      __adapter0.toJson(writer, customScalarAdapters, value.parent)
     }
 
     private object Parent : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Lion")
+
+      private val __condition1: BooleanExpression<BTerm> = possibleTypes("Cat")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.operationbased2_ex8.fragment.AnimalFragment.Parent {
         var __typename: String? = null
@@ -73,13 +82,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
-        if (possibleTypes("Lion").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader, customScalarAdapters)
         }
 
         var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition1.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader, customScalarAdapters)
         }

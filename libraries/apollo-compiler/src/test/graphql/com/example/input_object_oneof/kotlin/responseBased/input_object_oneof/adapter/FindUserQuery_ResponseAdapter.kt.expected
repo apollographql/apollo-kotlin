@@ -21,12 +21,14 @@ public object FindUserQuery_ResponseAdapter {
   public object Data : Adapter<FindUserQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("findUser")
 
+    private val __adapter0: Adapter<FindUserQuery.Data.FindUser?> = FindUser.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FindUserQuery.Data {
       var _findUser: FindUserQuery.Data.FindUser? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _findUser = FindUser.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _findUser = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,7 +44,7 @@ public object FindUserQuery_ResponseAdapter {
       `value`: FindUserQuery.Data,
     ) {
       writer.name("findUser")
-      FindUser.obj().nullable().toJson(writer, customScalarAdapters, value.findUser)
+      __adapter0.toJson(writer, customScalarAdapters, value.findUser)
     }
 
     private object FindUser : Adapter<FindUserQuery.Data.FindUser> {

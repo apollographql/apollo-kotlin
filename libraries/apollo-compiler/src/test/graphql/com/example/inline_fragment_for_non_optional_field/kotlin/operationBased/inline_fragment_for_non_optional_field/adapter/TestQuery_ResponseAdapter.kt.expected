@@ -6,6 +6,8 @@
 package com.example.inline_fragment_for_non_optional_field.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableDoubleAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -24,12 +26,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
+    private val __adapter0: Adapter<TestQuery.Data.NonOptionalHero> = NonOptionalHero.obj(true)
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nonOptionalHero = NonOptionalHero.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _nonOptionalHero = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,11 +49,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("nonOptionalHero")
-      NonOptionalHero.obj(true).toJson(writer, customScalarAdapters, value.nonOptionalHero)
+      __adapter0.toJson(writer, customScalarAdapters, value.nonOptionalHero)
     }
 
     private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Human")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero {
         var __typename: String? = null
@@ -68,7 +74,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader, customScalarAdapters)
         }

@@ -123,12 +123,8 @@ public data class InlineMultipleWithDeferAndInclude(
     override val ADAPTER: Adapter<Data> =
         InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = InlineMultipleWithDeferAndIncludeSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc"
@@ -167,5 +163,14 @@ public data class InlineMultipleWithDeferAndInclude(
       get() = "query InlineMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ... on Droid @include(if: ${'$'}cond1) { name } ... on Droid @skip(if: ${'$'}cond2) { id } ... on Droid @defer(label: \"e_first\") { name } ... on Droid @defer(label: \"e_second\") { id } ... on Droid @defer(label: \"e_third\") @include(if: ${'$'}cond3) { name } ... on Droid @defer(label: \"e_fourth\") @skip(if: ${'$'}cond4) { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferAndInclude"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = InlineMultipleWithDeferAndIncludeSelections.__root)
+          .build()
+    }
   }
 }

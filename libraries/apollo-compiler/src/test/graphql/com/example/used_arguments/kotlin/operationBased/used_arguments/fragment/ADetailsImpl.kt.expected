@@ -38,11 +38,16 @@ public class ADetailsImpl() : Fragment<ADetails> {
   public companion object : ExecutableDefinition<ADetails> {
     override val ADAPTER: Adapter<ADetails> = ADetailsImpl_ResponseAdapter.ADetails.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = A.type
-        )
-        .selections(selections = ADetailsSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = A.type
+          )
+          .selections(selections = ADetailsSelections.__root)
+          .build()
+    }
   }
 }

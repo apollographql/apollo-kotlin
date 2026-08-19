@@ -70,12 +70,8 @@ public data class JavaPrimitiveQuery(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = JavaPrimitiveQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = JavaPrimitiveQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605"
@@ -106,5 +102,14 @@ public data class JavaPrimitiveQuery(
       get() = "query JavaPrimitiveQuery(${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 , ${'$'}nullableInput: MyInput, ${'$'}nonNullableInput: MyInput!, ${'$'}nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nonNullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } }"
 
     public const val OPERATION_NAME: String = "JavaPrimitiveQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = JavaPrimitiveQuerySelections.__root)
+          .build()
+    }
   }
 }

@@ -23,12 +23,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
+    private val __adapter0: Adapter<TestQuery.Data.Horse?> = Horse.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _Horse: TestQuery.Data.Horse? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Horse = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,7 +46,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("Horse")
-      Horse.obj(true).nullable().toJson(writer, customScalarAdapters, value.horse)
+      __adapter0.toJson(writer, customScalarAdapters, value.horse)
     }
 
     private object Horse : Adapter<TestQuery.Data.Horse> {
@@ -95,12 +97,14 @@ public object TestQuery_ResponseAdapter {
       private object OnHorse : Adapter<TestQuery.Data.Horse.OnHorse> {
         public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
+        private val __adapter0: Adapter<TestQuery.Data.Horse.OnHorse.Cow?> = Cow.obj().nullable()
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Horse.OnHorse {
           var _Cow: TestQuery.Data.Horse.OnHorse.Cow? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _Cow = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -116,7 +120,7 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Horse.OnHorse,
         ) {
           writer.name("Cow")
-          Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
+          __adapter0.toJson(writer, customScalarAdapters, value.cow)
         }
 
         private object Cow : Adapter<TestQuery.Data.Horse.OnHorse.Cow> {

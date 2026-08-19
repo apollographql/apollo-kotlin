@@ -6,6 +6,8 @@
 package com.example.union_fragment.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.evaluate
@@ -26,12 +28,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
+    private val __adapter0: Adapter<List<TestQuery.Data.Search?>?> =
+        Search.obj(true).nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _search = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,11 +52,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("search")
-      Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
+      __adapter0.toJson(writer, customScalarAdapters, value.search)
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Starship")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search {
         var __typename: String? = null
@@ -68,13 +75,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader, customScalarAdapters)
         }
 
         var _starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader, customScalarAdapters)
         }

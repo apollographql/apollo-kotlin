@@ -6,6 +6,8 @@
 package com.example.nested_field_with_multiple_fieldsets.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
@@ -23,12 +25,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
+    private val __adapter0: Adapter<TestQuery.Data.Iface1?> = Iface1.obj(true).nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _iface1 = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,11 +48,13 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("iface1")
-      Iface1.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface1)
+      __adapter0.toJson(writer, customScalarAdapters, value.iface1)
     }
 
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+      private val __condition0: BooleanExpression<BTerm> = possibleTypes("Impl1")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1 {
         var __typename: String? = null
@@ -68,7 +74,7 @@ public object TestQuery_ResponseAdapter {
         val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader, customScalarAdapters)
 
         var _onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
-        if (possibleTypes("Impl1").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
           reader.rewind()
           _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader, customScalarAdapters)
         }
@@ -98,12 +104,15 @@ public object TestQuery_ResponseAdapter {
       private object OnIface1 : Adapter<TestQuery.Data.Iface1.OnIface1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
+        private val __adapter0: Adapter<TestQuery.Data.Iface1.OnIface1.Iface2?> =
+            Iface2.obj(true).nullable()
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1 {
           var _iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
+              0 -> _iface2 = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -119,11 +128,13 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Iface1.OnIface1,
         ) {
           writer.name("iface2")
-          Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
+          __adapter0.toJson(writer, customScalarAdapters, value.iface2)
         }
 
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+          private val __condition0: BooleanExpression<BTerm> = possibleTypes("Impl2")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
@@ -143,7 +154,7 @@ public object TestQuery_ResponseAdapter {
             val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
               _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }
@@ -231,12 +242,15 @@ public object TestQuery_ResponseAdapter {
       private object OnImpl1 : Adapter<TestQuery.Data.Iface1.OnImpl1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
+        private val __adapter0: Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2?> =
+            Iface2.obj(true).nullable()
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1 {
           var _iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
 
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
+              0 -> _iface2 = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -252,11 +266,13 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Iface1.OnImpl1,
         ) {
           writer.name("iface2")
-          Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
+          __adapter0.toJson(writer, customScalarAdapters, value.iface2)
         }
 
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+          private val __condition0: BooleanExpression<BTerm> = possibleTypes("Impl2")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
@@ -276,7 +292,7 @@ public object TestQuery_ResponseAdapter {
             val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
               reader.rewind()
               _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }

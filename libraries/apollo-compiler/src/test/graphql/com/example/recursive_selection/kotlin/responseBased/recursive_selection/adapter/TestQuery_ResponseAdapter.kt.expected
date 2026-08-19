@@ -22,12 +22,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("tree")
 
+    private val __adapter0: Adapter<TestQuery.Data.Tree?> = Tree.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _tree: TestQuery.Data.Tree? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _tree = Tree.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _tree = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,11 +45,15 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("tree")
-      Tree.obj().nullable().toJson(writer, customScalarAdapters, value.tree)
+      __adapter0.toJson(writer, customScalarAdapters, value.tree)
     }
 
     private object Tree : Adapter<TestQuery.Data.Tree> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
+
+      private val __adapter0: Adapter<List<TestQuery.Data.Tree.Child>> = Child.obj().list()
+
+      private val __adapter1: Adapter<TestQuery.Data.Tree.Parent?> = Parent.obj().nullable()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree {
         var _name: String? = null
@@ -57,8 +63,8 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _children = Child.obj().list().fromJson(reader, customScalarAdapters)
-            2 -> _parent = Parent.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _children = __adapter0.fromJson(reader, customScalarAdapters)
+            2 -> _parent = __adapter1.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -79,10 +85,10 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("children")
-        Child.obj().list().toJson(writer, customScalarAdapters, value.children)
+        __adapter0.toJson(writer, customScalarAdapters, value.children)
 
         writer.name("parent")
-        Parent.obj().nullable().toJson(writer, customScalarAdapters, value.parent)
+        __adapter1.toJson(writer, customScalarAdapters, value.parent)
       }
 
       private object Child : Adapter<TestQuery.Data.Tree.Child> {

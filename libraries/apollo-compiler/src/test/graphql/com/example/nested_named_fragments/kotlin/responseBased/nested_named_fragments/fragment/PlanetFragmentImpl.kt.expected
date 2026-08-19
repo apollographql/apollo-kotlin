@@ -47,11 +47,16 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragmentImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = PlanetFragmentImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Planet.type
-        )
-        .selections(selections = PlanetFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Planet.type
+          )
+          .selections(selections = PlanetFragmentSelections.__root)
+          .build()
+    }
   }
 }

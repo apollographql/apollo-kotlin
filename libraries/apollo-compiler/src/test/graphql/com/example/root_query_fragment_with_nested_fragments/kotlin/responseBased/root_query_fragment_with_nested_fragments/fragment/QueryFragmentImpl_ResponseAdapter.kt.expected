@@ -21,6 +21,12 @@ public object QueryFragmentImpl_ResponseAdapter {
   public object Data : Adapter<QueryFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
+    private val __adapter0: Adapter<QueryFragmentImpl.Data.Hero?> = Hero.obj().nullable()
+
+    private val __adapter1: Adapter<QueryFragmentImpl.Data.Droid?> = Droid.obj().nullable()
+
+    private val __adapter2: Adapter<QueryFragmentImpl.Data.Human?> = Human.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data {
       var __typename: String? = null
       var _hero: QueryFragmentImpl.Data.Hero? = null
@@ -30,9 +36,9 @@ public object QueryFragmentImpl_ResponseAdapter {
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
-          2 -> _droid = Droid.obj().nullable().fromJson(reader, customScalarAdapters)
-          3 -> _human = Human.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
+          2 -> _droid = __adapter1.fromJson(reader, customScalarAdapters)
+          3 -> _human = __adapter2.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -54,13 +60,13 @@ public object QueryFragmentImpl_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("droid")
-      Droid.obj().nullable().toJson(writer, customScalarAdapters, value.droid)
+      __adapter1.toJson(writer, customScalarAdapters, value.droid)
 
       writer.name("human")
-      Human.obj().nullable().toJson(writer, customScalarAdapters, value.human)
+      __adapter2.toJson(writer, customScalarAdapters, value.human)
     }
 
     private object Hero : Adapter<QueryFragmentImpl.Data.Hero> {

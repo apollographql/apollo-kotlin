@@ -24,12 +24,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("starship")
 
+    private val __adapter0: Adapter<TestQuery.Data.Starship?> = Starship.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _starship: TestQuery.Data.Starship? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _starship = Starship.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _starship = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,7 +47,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("starship")
-      Starship.obj().nullable().toJson(writer, customScalarAdapters, value.starship)
+      __adapter0.toJson(writer, customScalarAdapters, value.starship)
     }
 
     private object Starship : Adapter<TestQuery.Data.Starship> {

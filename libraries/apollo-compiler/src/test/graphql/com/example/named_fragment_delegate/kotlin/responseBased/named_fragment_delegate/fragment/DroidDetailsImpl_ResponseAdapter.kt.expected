@@ -22,6 +22,9 @@ public object DroidDetailsImpl_ResponseAdapter {
   public object Data : Adapter<DroidDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
+    private val __adapter0: Adapter<List<DroidDetailsImpl.Data.Friend?>?> =
+        Friend.obj().nullable().list().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): DroidDetailsImpl.Data {
       var _name: String? = null
       var _primaryFunction: String? = null
@@ -31,7 +34,7 @@ public object DroidDetailsImpl_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+          2 -> _friends = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -55,7 +58,7 @@ public object DroidDetailsImpl_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      __adapter0.toJson(writer, customScalarAdapters, value.friends)
     }
 
     private object Friend : Adapter<DroidDetailsImpl.Data.Friend> {

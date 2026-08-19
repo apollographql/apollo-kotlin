@@ -22,12 +22,14 @@ public object GetA_ResponseAdapter {
   public object Data : Adapter<GetA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("a")
 
+    private val __adapter0: Adapter<GetA.Data.A?> = A.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data {
       var _a: GetA.Data.A? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _a = A.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,7 +45,7 @@ public object GetA_ResponseAdapter {
       `value`: GetA.Data,
     ) {
       writer.name("a")
-      A.obj().nullable().toJson(writer, customScalarAdapters, value.a)
+      __adapter0.toJson(writer, customScalarAdapters, value.a)
     }
 
     private object A : Adapter<GetA.Data.A> {

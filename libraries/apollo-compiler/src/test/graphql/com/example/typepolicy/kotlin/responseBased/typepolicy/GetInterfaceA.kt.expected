@@ -84,12 +84,8 @@ public class GetInterfaceA() : Query<GetInterfaceA.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = GetInterfaceA_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = GetInterfaceASelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "fafa4b6a2fbfaebad5eb0b8643b861c74584addeaf7150298edecec92db79969"
@@ -119,5 +115,14 @@ public class GetInterfaceA() : Query<GetInterfaceA.Data> {
       get() = "query GetInterfaceA { interfaceA { __typename ... on InterfaceA { interfaceAField } ... on B { idB } ... on C { idC } } }"
 
     public const val OPERATION_NAME: String = "GetInterfaceA"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = GetInterfaceASelections.__root)
+          .build()
+    }
   }
 }

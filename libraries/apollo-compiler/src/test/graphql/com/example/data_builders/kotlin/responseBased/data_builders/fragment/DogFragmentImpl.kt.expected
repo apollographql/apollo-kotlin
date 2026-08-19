@@ -44,11 +44,16 @@ public class DogFragmentImpl() : Fragment<DogFragmentImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = DogFragmentImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = Dog.type
-        )
-        .selections(selections = DogFragmentSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = Dog.type
+          )
+          .selections(selections = DogFragmentSelections.__root)
+          .build()
+    }
   }
 }

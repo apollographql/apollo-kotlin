@@ -22,12 +22,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("companion")
 
+    private val __adapter0: Adapter<TestQuery.Companion_?> = Companion.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _companion: TestQuery.Companion_? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _companion = Companion.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _companion = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -43,7 +45,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("companion")
-      Companion.obj().nullable().toJson(writer, customScalarAdapters, value.`companion`)
+      __adapter0.toJson(writer, customScalarAdapters, value.`companion`)
     }
   }
 

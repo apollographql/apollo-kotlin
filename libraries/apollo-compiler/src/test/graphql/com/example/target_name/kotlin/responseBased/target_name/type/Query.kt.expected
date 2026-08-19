@@ -12,7 +12,7 @@ import com.apollographql.apollo.api.ObjectType
 public class Query {
   public interface Data : Fragment.Data
 
-  public companion object {
+  public object __Arguments {
     public val __object_input: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("input").build()
 
@@ -21,7 +21,9 @@ public class Query {
 
     public val __enum_enum: CompiledArgumentDefinition =
         CompiledArgumentDefinition.Builder("enum").build()
+  }
 
+  public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }

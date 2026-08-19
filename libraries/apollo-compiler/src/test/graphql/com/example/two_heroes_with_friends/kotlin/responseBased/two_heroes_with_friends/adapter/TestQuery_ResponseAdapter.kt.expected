@@ -24,14 +24,18 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
+    private val __adapter0: Adapter<TestQuery.Data.R2?> = R2.obj().nullable()
+
+    private val __adapter1: Adapter<TestQuery.Data.Luke?> = Luke.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _r2: TestQuery.Data.R2? = null
       var _luke: TestQuery.Data.Luke? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _r2 = R2.obj().nullable().fromJson(reader, customScalarAdapters)
-          1 -> _luke = Luke.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _r2 = __adapter0.fromJson(reader, customScalarAdapters)
+          1 -> _luke = __adapter1.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -48,14 +52,16 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("r2")
-      R2.obj().nullable().toJson(writer, customScalarAdapters, value.r2)
+      __adapter0.toJson(writer, customScalarAdapters, value.r2)
 
       writer.name("luke")
-      Luke.obj().nullable().toJson(writer, customScalarAdapters, value.luke)
+      __adapter1.toJson(writer, customScalarAdapters, value.luke)
     }
 
     private object R2 : Adapter<TestQuery.Data.R2> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
+
+      private val __adapter0: Adapter<TestQuery.Data.R2.FriendsConnection> = FriendsConnection.obj()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.R2 {
         var _name: String? = null
@@ -64,7 +70,7 @@ public object TestQuery_ResponseAdapter {
         while (true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+            1 -> _friendsConnection = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -84,11 +90,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+        __adapter0.toJson(writer, customScalarAdapters, value.friendsConnection)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.R2.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
+
+        private val __adapter0: Adapter<List<TestQuery.Data.R2.FriendsConnection.Edge?>?> =
+            Edge.obj().nullable().list().nullable()
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.R2.FriendsConnection {
           var _totalCount: Int? = null
@@ -97,7 +106,7 @@ public object TestQuery_ResponseAdapter {
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+              1 -> _edges = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -117,18 +126,21 @@ public object TestQuery_ResponseAdapter {
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
 
           writer.name("edges")
-          Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+          __adapter0.toJson(writer, customScalarAdapters, value.edges)
         }
 
         private object Edge : Adapter<TestQuery.Data.R2.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
+
+          private val __adapter0: Adapter<TestQuery.Data.R2.FriendsConnection.Edge.Node?> =
+              Node.obj().nullable()
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.R2.FriendsConnection.Edge {
             var _node: TestQuery.Data.R2.FriendsConnection.Edge.Node? = null
 
             while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+                0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -144,7 +156,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.R2.FriendsConnection.Edge,
           ) {
             writer.name("node")
-            Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+            __adapter0.toJson(writer, customScalarAdapters, value.node)
           }
 
           private object Node : Adapter<TestQuery.Data.R2.FriendsConnection.Edge.Node> {
@@ -181,6 +193,9 @@ public object TestQuery_ResponseAdapter {
     private object Luke : Adapter<TestQuery.Data.Luke> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "friendsConnection")
 
+      private val __adapter0: Adapter<TestQuery.Data.Luke.FriendsConnection> =
+          FriendsConnection.obj()
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Luke {
         var _id: String? = null
         var _name: String? = null
@@ -190,7 +205,7 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+            2 -> _friendsConnection = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -214,11 +229,14 @@ public object TestQuery_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+        __adapter0.toJson(writer, customScalarAdapters, value.friendsConnection)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.Luke.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
+
+        private val __adapter0: Adapter<List<TestQuery.Data.Luke.FriendsConnection.Edge?>?> =
+            Edge.obj().nullable().list().nullable()
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Luke.FriendsConnection {
           var _totalCount: Int? = null
@@ -227,7 +245,7 @@ public object TestQuery_ResponseAdapter {
           while (true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-              1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, customScalarAdapters)
+              1 -> _edges = __adapter0.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -247,18 +265,21 @@ public object TestQuery_ResponseAdapter {
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
 
           writer.name("edges")
-          Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+          __adapter0.toJson(writer, customScalarAdapters, value.edges)
         }
 
         private object Edge : Adapter<TestQuery.Data.Luke.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
+
+          private val __adapter0: Adapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node?> =
+              Node.obj().nullable()
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Luke.FriendsConnection.Edge {
             var _node: TestQuery.Data.Luke.FriendsConnection.Edge.Node? = null
 
             while (true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+                0 -> _node = __adapter0.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -274,7 +295,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.Luke.FriendsConnection.Edge,
           ) {
             writer.name("node")
-            Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+            __adapter0.toJson(writer, customScalarAdapters, value.node)
           }
 
           private object Node : Adapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node> {

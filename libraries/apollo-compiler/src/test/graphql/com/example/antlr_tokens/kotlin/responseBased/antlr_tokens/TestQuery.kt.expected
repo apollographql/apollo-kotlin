@@ -64,12 +64,8 @@ public data class TestQuery(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = TestQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "197e186cfb461d1c38c0be4da7b182eff42e304043973b994c8c2de3535daea6"
@@ -92,5 +88,14 @@ public data class TestQuery(
       get() = "query TestQuery(${'$'}operation: String) { typeWithGraphQLKeywords { on null(fragment: ${'$'}operation) alias: null(fragment: \"A string\\nwith a new line\") } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = TestQuerySelections.__root)
+          .build()
+    }
   }
 }

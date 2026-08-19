@@ -25,12 +25,14 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
+    private val __adapter0: Adapter<TestOperation.Data.Animal?> = Animal.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,11 +48,13 @@ public object TestOperation_ResponseAdapter {
       `value`: TestOperation.Data,
     ) {
       writer.name("animal")
-      Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
+      __adapter0.toJson(writer, customScalarAdapters, value.animal)
     }
 
     private object Animal : Adapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "parent")
+
+      private val __adapter0: Adapter<TestOperation.Data.Animal.Parent> = Parent.obj()
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal {
         var __typename: String? = null
@@ -61,7 +65,7 @@ public object TestOperation_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _parent = Parent.obj().fromJson(reader, customScalarAdapters)
+            2 -> _parent = __adapter0.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -85,7 +89,7 @@ public object TestOperation_ResponseAdapter {
         StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("parent")
-        Parent.obj().toJson(writer, customScalarAdapters, value.parent)
+        __adapter0.toJson(writer, customScalarAdapters, value.parent)
       }
 
       private object Parent : Adapter<TestOperation.Data.Animal.Parent> {

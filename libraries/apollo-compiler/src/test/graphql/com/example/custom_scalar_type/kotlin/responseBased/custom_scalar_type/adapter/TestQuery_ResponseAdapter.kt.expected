@@ -32,6 +32,8 @@ public object TestQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> =
         listOf("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp", "nullableLong")
 
+    private val __adapter0: Adapter<TestQuery.Data.Hero?> = Hero.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
       var _nonNullTimestamp: Timestamp? = null
@@ -44,7 +46,7 @@ public object TestQuery_ResponseAdapter {
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = __adapter0.fromJson(reader, customScalarAdapters)
           1 -> _nonNullTimestamp = Timestamp(LongAdapter.fromJson(reader, customScalarAdapters))
           2 -> _nullableTimestamp = NullableLongAdapter.fromJson(reader, customScalarAdapters)?.let { Timestamp(it) }
           3 -> _nonNullListOfNonNullTimestamp = LongAdapter.list().fromJson(reader, customScalarAdapters).map { Timestamp(it) }
@@ -74,7 +76,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ) {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      __adapter0.toJson(writer, customScalarAdapters, value.hero)
 
       writer.name("nonNullTimestamp")
       LongAdapter.toJson(writer, customScalarAdapters, value.nonNullTimestamp.ts)

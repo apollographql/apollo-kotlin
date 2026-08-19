@@ -23,12 +23,14 @@ public object CatQuery_ResponseAdapter {
   public object Data : Adapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
+    private val __adapter0: Adapter<CatQuery.Data.Cat?> = Cat.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _cat = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,7 +46,7 @@ public object CatQuery_ResponseAdapter {
       `value`: CatQuery.Data,
     ) {
       writer.name("cat")
-      Cat.obj().nullable().toJson(writer, customScalarAdapters, value.cat)
+      __adapter0.toJson(writer, customScalarAdapters, value.cat)
     }
 
     private object Cat : Adapter<CatQuery.Data.Cat> {

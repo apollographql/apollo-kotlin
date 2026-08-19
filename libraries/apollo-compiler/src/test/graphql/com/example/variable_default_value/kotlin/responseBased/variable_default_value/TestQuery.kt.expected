@@ -59,12 +59,8 @@ public data class TestQuery @JvmOverloads constructor(
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = CompiledQuery.type
-        )
-        .selections(selections = TestQuerySelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
 
     public const val OPERATION_ID: String =
         "7bba59b12a0090dd1fbc4c409ea7e72bd6885a6b31d442bfeb86f4a67e5b62d9"
@@ -85,5 +81,14 @@ public data class TestQuery @JvmOverloads constructor(
       get() = "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = CompiledQuery.type
+          )
+          .selections(selections = TestQuerySelections.__root)
+          .build()
+    }
   }
 }

@@ -25,12 +25,14 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
+    private val __adapter0: Adapter<TestOperation.Data.Animal?> = Animal.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -46,7 +48,7 @@ public object TestOperation_ResponseAdapter {
       `value`: TestOperation.Data,
     ) {
       writer.name("animal")
-      Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
+      __adapter0.toJson(writer, customScalarAdapters, value.animal)
     }
 
     private object Animal : Adapter<TestOperation.Data.Animal> {

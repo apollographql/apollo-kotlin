@@ -23,12 +23,15 @@ public object TestSubscription_ResponseAdapter {
   public object Data : Adapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
+    private val __adapter0: Adapter<TestSubscription.Data.CommentAdded?> =
+        CommentAdded.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _commentAdded = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -44,7 +47,7 @@ public object TestSubscription_ResponseAdapter {
       `value`: TestSubscription.Data,
     ) {
       writer.name("commentAdded")
-      CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
+      __adapter0.toJson(writer, customScalarAdapters, value.commentAdded)
     }
 
     private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {

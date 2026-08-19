@@ -24,12 +24,14 @@ public object GetInterfaceA_ResponseAdapter {
   public object Data : Adapter<GetInterfaceA.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("interfaceA")
 
+    private val __adapter0: Adapter<GetInterfaceA.Data.InterfaceA?> = InterfaceA.obj().nullable()
+
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetInterfaceA.Data {
       var _interfaceA: GetInterfaceA.Data.InterfaceA? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _interfaceA = InterfaceA.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _interfaceA = __adapter0.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,7 +47,7 @@ public object GetInterfaceA_ResponseAdapter {
       `value`: GetInterfaceA.Data,
     ) {
       writer.name("interfaceA")
-      InterfaceA.obj().nullable().toJson(writer, customScalarAdapters, value.interfaceA)
+      __adapter0.toJson(writer, customScalarAdapters, value.interfaceA)
     }
 
     private object InterfaceA : Adapter<GetInterfaceA.Data.InterfaceA> {

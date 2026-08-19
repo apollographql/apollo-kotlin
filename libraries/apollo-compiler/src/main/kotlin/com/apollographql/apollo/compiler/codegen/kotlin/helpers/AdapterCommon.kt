@@ -16,6 +16,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo.compiler.codegen.variableName
 import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.BLabel
+import com.apollographql.apollo.compiler.ir.BTerm
 import com.apollographql.apollo.compiler.ir.BooleanExpression
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrModel
@@ -25,9 +26,73 @@ import com.apollographql.apollo.compiler.ir.IrType
 import com.apollographql.apollo.compiler.ir.firstElementOfType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.joinToCode
 
+
+/**
+ * Interns the adapter chains and condition expressions of one generated adapter object, so each distinct one is
+ * built once in the object's initializer instead of being rebuilt on every `fromJson`/`toJson` call - which, for a
+ * list of objects, means once per element.
+ *
+ * The same chain usually appears twice, once in `fromJson` and once in `toJson`, so both passes share a collector
+ * and end up pointing at the same property.
+ */
+internal class HoistedExpressions {
+  private val names = mutableMapOf<String, String>()
+  private val propertySpecs = mutableListOf<PropertySpec>()
+
+  fun hoist(initializer: CodeBlock, type: TypeName, prefix: String): CodeBlock {
+    val name = names.getOrPut("$type $initializer") {
+      "__$prefix${propertySpecs.size}".also {
+        propertySpecs.add(
+            PropertySpec.builder(it, type, KModifier.PRIVATE)
+                .initializer(initializer)
+                .build()
+        )
+      }
+    }
+    return CodeBlock.of("%N", name)
+  }
+
+  fun propertySpecs(): List<PropertySpec> = propertySpecs
+}
+
+/**
+ * The chain to read or write [this] with, hoisted into [hoisted] when it is safe to build it only once.
+ */
+private fun IrProperty.adapterInitializer(context: KotlinContext, hoisted: HoistedExpressions?): CodeBlock {
+  val initializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
+  if (hoisted == null || !context.resolver.isAdapterHoistable(info.type, context.jsExport)) {
+    return initializer
+  }
+  return hoisted.hoist(
+      initializer = initializer,
+      type = KotlinSymbols.Adapter.parameterizedBy(context.resolver.resolveIrType(info.type, context.jsExport)),
+      prefix = "adapter",
+  )
+}
+
+/**
+ * `possibleTypes()` and friends allocate - a vararg array, a set, and the expression nodes themselves - so the
+ * condition is worth hoisting for the same reason the adapter chains are. `True` and `False` are objects and are
+ * left where they are.
+ */
+private fun BooleanExpression<BTerm>.conditionCodeBlock(hoisted: HoistedExpressions?): CodeBlock {
+  val codeBlock = codeBlock()
+  if (hoisted == null || this is BooleanExpression.True || this is BooleanExpression.False) {
+    return codeBlock
+  }
+  return hoisted.hoist(
+      initializer = codeBlock,
+      type = KotlinSymbols.BooleanExpression.parameterizedBy(KotlinSymbols.BTerm),
+      prefix = "condition",
+  )
+}
 
 /**
  * @param useTypenameFromArgument
@@ -38,6 +103,7 @@ internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: KotlinContext,
     useTypenameFromArgument: Boolean,
+    hoisted: HoistedExpressions? = null,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
@@ -71,7 +137,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               val variableName = property.info.responseName.variableName()
-              val adapterInitializer = context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
+              val adapterInitializer = property.adapterInitializer(context, hoisted)
               CodeBlock.of(
                   "%L -> %N = %L",
                   index,
@@ -137,7 +203,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if (%L.%M($customScalarAdapters.falseVariables, $typenameLiteral, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if (%L.%M($customScalarAdapters.falseVariables, $typenameLiteral, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))", property.condition.conditionCodeBlock(hoisted), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
@@ -210,16 +276,16 @@ private fun IrType.modelPath(): String {
   }
 }
 
-internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinContext): CodeBlock {
-  return model.properties.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
+internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinContext, hoisted: HoistedExpressions? = null): CodeBlock {
+  return model.properties.map { it.writeToResponseCodeBlock(context, hoisted) }.joinToCode("\n")
 }
 
-private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext, hoisted: HoistedExpressions?): CodeBlock {
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(info.responseName)
 
   if (!isSynthetic) {
-    val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
+    val adapterInitializer = adapterInitializer(context, hoisted)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addSerializeStatement(
         adapterInitializer,

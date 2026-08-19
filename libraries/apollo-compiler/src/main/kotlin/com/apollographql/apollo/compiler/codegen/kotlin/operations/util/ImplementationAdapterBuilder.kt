@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin.operations.util
 import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.HoistedExpressions
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.from
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.readFromResponseCodeBlock
@@ -70,6 +71,14 @@ internal class ImplementationAdapterBuilder(
   }
 
   override fun build(): List<TypeSpec> {
+    /**
+     * `fromJson` and `toJson` share one collector so that a chain used by both is built once. The functions have to
+     * be built before the hoisted properties can be read back.
+     */
+    val hoisted = HoistedExpressions()
+    val fromJson = readFromResponseFunSpec(hoisted)
+    val toJson = writeToResponseFunSpec(hoisted)
+
     return TypeSpec.objectBuilder(adapterName)
         .apply {
           val responseNames = responseNamesPropertySpec(model)
@@ -77,8 +86,9 @@ internal class ImplementationAdapterBuilder(
             addProperty(responseNames)
           }
         }
-        .addFunction(readFromResponseFunSpec())
-        .addFunction(writeToResponseFunSpec())
+        .addProperties(hoisted.propertySpecs())
+        .addFunction(fromJson)
+        .addFunction(toJson)
         .addTypes(nestedAdapterBuilders.flatMap { it.build() })
         .apply {
           if (!addTypenameArgument) {
@@ -97,7 +107,7 @@ internal class ImplementationAdapterBuilder(
 
   }
 
-  private fun readFromResponseFunSpec(): FunSpec {
+  private fun readFromResponseFunSpec(hoisted: HoistedExpressions): FunSpec {
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
@@ -120,11 +130,11 @@ internal class ImplementationAdapterBuilder(
             addModifiers(KModifier.OVERRIDE)
           }
         }
-        .addCode(readFromResponseCodeBlock(model, context, addTypenameArgument))
+        .addCode(readFromResponseCodeBlock(model, context, addTypenameArgument, hoisted))
         .build()
   }
 
-  private fun writeToResponseFunSpec(): FunSpec {
+  private fun writeToResponseFunSpec(hoisted: HoistedExpressions): FunSpec {
     return FunSpec.builder(Identifier.toJson)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
         .addParameter(
@@ -135,7 +145,7 @@ internal class ImplementationAdapterBuilder(
                 .build()
         )
         .addParameter(Identifier.value, adaptedClassName)
-        .addCode(writeToResponseCodeBlock(model, context))
+        .addCode(writeToResponseCodeBlock(model, context, hoisted))
         .apply {
           addSuppressions(
               deprecation = model.properties.any { it.info.deprecationReason != null },

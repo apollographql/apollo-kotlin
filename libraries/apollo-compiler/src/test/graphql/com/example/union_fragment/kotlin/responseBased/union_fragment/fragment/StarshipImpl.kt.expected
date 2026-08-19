@@ -46,11 +46,16 @@ public class StarshipImpl() : Fragment<StarshipImpl.Data> {
   public companion object : ExecutableDefinition<Data> {
     override val ADAPTER: Adapter<Data> = StarshipImpl_ResponseAdapter.Data.obj()
 
-    override val ROOT_FIELD: CompiledField = CompiledField.Builder(
-          name = "data",
-          type = com.example.union_fragment.type.Starship.type
-        )
-        .selections(selections = StarshipSelections.__root)
-        .build()
+    override val ROOT_FIELD: CompiledField
+      get() = __RootField.instance
+
+    private object __RootField {
+      public val instance: CompiledField = CompiledField.Builder(
+            name = "data",
+            type = com.example.union_fragment.type.Starship.type
+          )
+          .selections(selections = StarshipSelections.__root)
+          .build()
+    }
   }
 }

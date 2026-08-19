@@ -23,7 +23,7 @@ public object GetASelections {
           name = "field",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder(B.__field_arg).value(42).build()
+          CompiledArgument.Builder(B.__Arguments.__field_arg).value(42).build()
         ))
         .build()
       )
@@ -33,7 +33,7 @@ public object GetASelections {
           name = "field",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder(C.__field_arg).value(42).build()
+          CompiledArgument.Builder(C.__Arguments.__field_arg).value(42).build()
         ))
         .build()
       )

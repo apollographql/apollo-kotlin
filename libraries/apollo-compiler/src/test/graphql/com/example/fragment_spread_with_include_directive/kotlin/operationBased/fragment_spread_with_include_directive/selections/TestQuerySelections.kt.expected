@@ -69,7 +69,7 @@ public object TestQuerySelections {
           name = "getBoolean",
           type = GraphQLBoolean.type
         ).arguments(listOf(
-          CompiledArgument.Builder(Query.__getBoolean_booleanArg).value(CompiledVariable("optionalWithNoDefault")).build()
+          CompiledArgument.Builder(Query.__Arguments.__getBoolean_booleanArg).value(CompiledVariable("optionalWithNoDefault")).build()
         ))
         .build()
       )
