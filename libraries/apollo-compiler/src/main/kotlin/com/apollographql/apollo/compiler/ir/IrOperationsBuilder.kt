@@ -68,6 +68,12 @@ internal class IrOperationsBuilder(
     private val fragmentVariableUsages: Map<String, List<VariableUsage>>,
 ) : FieldMerger {
   private val usedCoordinates = UsedCoordinates()
+
+  /**
+   * Shared by all the operations: the fragments used by a fragment do not depend on the operation spreading it.
+   */
+  private val usedFragmentsCache = mutableMapOf<String, Set<String>>()
+
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
       schema,
       allFragmentDefinitions,
@@ -238,6 +244,7 @@ internal class IrOperationsBuilder(
         allFragmentDefinitions = allFragmentDefinitions,
         selections = selections,
         rawTypename = typeDefinition.name,
+        cache = usedFragmentsCache,
     )
 
     val sourceWithFragments = (formatToString() + "\n" + usedFragments.joinToString(

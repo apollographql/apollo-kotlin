@@ -20,6 +20,33 @@ import com.apollographql.apollo.ast.definitionFromScope
 import com.apollographql.apollo.ast.rawType
 import com.apollographql.apollo.ast.responseName
 
+/**
+ * The label is used in the name of a synthetic field, so it must be a valid Kotlin/Java identifier.
+ *
+ * Top-level: compiling a [Regex] is expensive and this one is a constant.
+ */
+private val labelRegex = Regex("[a-zA-Z0-9_]+")
+
+private fun List<GQLDirective>.hasDefer(): Boolean = any { it.name == Schema.DEFER }
+
+/**
+ * Returns true if a `@defer` directive occurs anywhere in [selections].
+ *
+ * Fragment spreads are not expanded: callers are expected to scan the fragment definitions of the document too. This
+ * makes the scan linear in the size of the document as written, and lets [validateDeferLabels] be skipped altogether
+ * for the documents that do not use `@defer` at all (by far the most common case). [validateDeferLabels] expands every
+ * fragment spread inline, so it is orders of magnitude more expensive on fragment-heavy documents.
+ */
+internal fun hasDeferDirective(selections: List<GQLSelection>): Boolean {
+  return selections.any {
+    when (it) {
+      is GQLField -> it.directives.hasDefer() || hasDeferDirective(it.selections)
+      is GQLInlineFragment -> it.directives.hasDefer() || hasDeferDirective(it.selections)
+      is GQLFragmentSpread -> it.directives.hasDefer()
+    }
+  }
+}
+
 private class Scope(
     val schema: Schema,
     val fragments: Map<String, GQLFragmentDefinition>,
@@ -141,7 +168,7 @@ private class Scope(
       labelStringValue = label.value
 
       // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
-      if (!labelStringValue.matches(Regex("[a-zA-Z0-9_]+"))) {
+      if (!labelStringValue.matches(labelRegex)) {
         issues.add(
             InvalidDeferLabel(
                 message = "@defer label '$labelStringValue' must only contain letters, numbers, or underscores",
