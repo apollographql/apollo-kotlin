@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.ApolloCompilerPlugin
 import com.apollographql.apollo.compiler.ApolloCompilerPluginEnvironment
 import com.apollographql.apollo.compiler.ApolloCompilerRegistry
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -31,16 +32,15 @@ class TestPlugin : ApolloCompilerPlugin {
                             typeSpecs.replaceAll { typeSpec ->
                               typeSpec.toBuilder()
                                   .apply {
-                                    propertySpecs.replaceAll { propertySpec ->
-                                      if (propertySpec.name == "knownEntries") {
-                                        propertySpec.toBuilder()
-                                            .getter(FunSpec.getterBuilder()
-                                                .addStatement("return listOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
-                                                .build()
-                                            )
+                                    funSpecs.replaceAll { funSpec ->
+                                      if (funSpec.name == "safeValueOf") {
+                                        funSpec.toBuilder()
+                                            .clearBody()
+                                            // We can't access the rawValues anymore so we fall back to iterating everything
+                                            .addCode(CodeBlock.of("return values().find { it.rawValue == rawValue } ?: UNKNOWN__"))
                                             .build()
                                       } else {
-                                        propertySpec
+                                        funSpec
                                       }
                                     }
                                   }
