@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOperationsContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.toSetInitializerCodeblock
 import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.BVariable
 import com.apollographql.apollo.compiler.ir.BooleanExpression
@@ -78,7 +79,7 @@ internal class CompiledSelectionsBuilder(
     builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
     builder.add("typeCondition = %S,\n", typeCondition)
-    builder.add("possibleTypes = %L\n", possibleTypes.map { CodeBlock.of("%S", it) }.toListInitializerCodeblock(false))
+    builder.add("possibleTypesSet = %L\n", possibleTypes.map { CodeBlock.of("%S", it) }.toSetInitializerCodeblock(false))
     builder.unindent()
     builder.add(")")
 

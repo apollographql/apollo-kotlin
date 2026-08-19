@@ -37,7 +37,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).selections(__onDroid)
         .build()
       )

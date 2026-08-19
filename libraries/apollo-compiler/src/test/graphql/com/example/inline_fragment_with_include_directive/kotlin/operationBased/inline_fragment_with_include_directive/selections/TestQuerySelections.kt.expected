@@ -56,19 +56,19 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).condition(listOf(CompiledCondition("withDetails", false), CompiledCondition("skipHumanDetails", true)))
         .selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).condition(listOf(CompiledCondition("withDetails", false)))
         .selections(__onDroid)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).condition(listOf(CompiledCondition("withDetails", false)))
         .selections(__onCharacter)
         .build()

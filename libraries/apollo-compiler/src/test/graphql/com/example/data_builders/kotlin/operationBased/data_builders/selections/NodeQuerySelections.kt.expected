@@ -28,12 +28,12 @@ public object NodeQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(HumanFragmentSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = listOf("Droid")
+          possibleTypesSet = setOf("Droid")
         ).selections(DroidFragmentSelections.__root)
         .build()
       )

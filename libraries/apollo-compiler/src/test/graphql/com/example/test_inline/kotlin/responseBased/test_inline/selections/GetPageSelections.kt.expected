@@ -37,7 +37,7 @@ public object GetPageSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "ParticularItem",
-          possibleTypes = listOf("ParticularItem")
+          possibleTypesSet = setOf("ParticularItem")
         ).selections(__onParticularItem)
         .build()
       )
@@ -62,7 +62,7 @@ public object GetPageSelections {
         .build(),
         CompiledFragment.Builder(
           typeCondition = "ParticularCollection",
-          possibleTypes = listOf("ParticularCollection")
+          possibleTypesSet = setOf("ParticularCollection")
         ).selections(__onParticularCollection)
         .build()
       )

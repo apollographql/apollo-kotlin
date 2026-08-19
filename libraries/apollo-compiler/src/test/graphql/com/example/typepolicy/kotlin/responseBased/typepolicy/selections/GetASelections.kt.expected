@@ -23,7 +23,7 @@ public object GetASelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",
-          possibleTypes = listOf("A")
+          possibleTypesSet = setOf("A")
         ).selections(AFragment1Selections.__root)
         .build(),
         CompiledField.Builder(

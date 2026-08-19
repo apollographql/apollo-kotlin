@@ -904,6 +904,8 @@ final class com.apollographql.apollo.api/CompiledFragment : com.apollographql.ap
         final fun <get-condition>(): kotlin.collections/List<com.apollographql.apollo.api/CompiledCondition> // com.apollographql.apollo.api/CompiledFragment.condition.<get-condition>|<get-condition>(){}[0]
     final val possibleTypes // com.apollographql.apollo.api/CompiledFragment.possibleTypes|{}possibleTypes[0]
         final fun <get-possibleTypes>(): kotlin.collections/List<kotlin/String> // com.apollographql.apollo.api/CompiledFragment.possibleTypes.<get-possibleTypes>|<get-possibleTypes>(){}[0]
+    final val possibleTypesSet // com.apollographql.apollo.api/CompiledFragment.possibleTypesSet|{}possibleTypesSet[0]
+        final fun <get-possibleTypesSet>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.api/CompiledFragment.possibleTypesSet.<get-possibleTypesSet>|<get-possibleTypesSet>(){}[0]
     final val selections // com.apollographql.apollo.api/CompiledFragment.selections|{}selections[0]
         final fun <get-selections>(): kotlin.collections/List<com.apollographql.apollo.api/CompiledSelection> // com.apollographql.apollo.api/CompiledFragment.selections.<get-selections>|<get-selections>(){}[0]
     final val typeCondition // com.apollographql.apollo.api/CompiledFragment.typeCondition|{}typeCondition[0]
@@ -911,9 +913,12 @@ final class com.apollographql.apollo.api/CompiledFragment : com.apollographql.ap
 
     final class Builder { // com.apollographql.apollo.api/CompiledFragment.Builder|null[0]
         constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>) // com.apollographql.apollo.api/CompiledFragment.Builder.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+        constructor <init>(kotlin/String, kotlin.collections/Set<kotlin/String>) // com.apollographql.apollo.api/CompiledFragment.Builder.<init>|<init>(kotlin.String;kotlin.collections.Set<kotlin.String>){}[0]
 
         final val possibleTypes // com.apollographql.apollo.api/CompiledFragment.Builder.possibleTypes|{}possibleTypes[0]
             final fun <get-possibleTypes>(): kotlin.collections/List<kotlin/String> // com.apollographql.apollo.api/CompiledFragment.Builder.possibleTypes.<get-possibleTypes>|<get-possibleTypes>(){}[0]
+        final val possibleTypesSet // com.apollographql.apollo.api/CompiledFragment.Builder.possibleTypesSet|{}possibleTypesSet[0]
+            final fun <get-possibleTypesSet>(): kotlin.collections/Set<kotlin/String> // com.apollographql.apollo.api/CompiledFragment.Builder.possibleTypesSet.<get-possibleTypesSet>|<get-possibleTypesSet>(){}[0]
         final val typeCondition // com.apollographql.apollo.api/CompiledFragment.Builder.typeCondition|{}typeCondition[0]
             final fun <get-typeCondition>(): kotlin/String // com.apollographql.apollo.api/CompiledFragment.Builder.typeCondition.<get-typeCondition>|<get-typeCondition>(){}[0]
 

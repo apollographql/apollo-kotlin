@@ -36,12 +36,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface2",
-          possibleTypes = listOf("Impl2")
+          possibleTypesSet = setOf("Impl2")
         ).selections(__onIface2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
-          possibleTypes = listOf("Impl2")
+          possibleTypesSet = setOf("Impl2")
         ).selections(__onImpl2)
         .build()
       )
@@ -75,12 +75,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface2",
-          possibleTypes = listOf("Impl2")
+          possibleTypesSet = setOf("Impl2")
         ).selections(__onIface21)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
-          possibleTypes = listOf("Impl2")
+          possibleTypesSet = setOf("Impl2")
         ).selections(__onImpl21)
         .build()
       )
@@ -100,12 +100,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface1",
-          possibleTypes = listOf("Impl1")
+          possibleTypesSet = setOf("Impl1")
         ).selections(__onIface1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl1",
-          possibleTypes = listOf("Impl1")
+          possibleTypesSet = setOf("Impl1")
         ).selections(__onImpl1)
         .build()
       )

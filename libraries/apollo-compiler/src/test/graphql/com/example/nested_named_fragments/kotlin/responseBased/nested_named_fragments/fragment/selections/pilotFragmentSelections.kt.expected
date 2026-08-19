@@ -21,7 +21,7 @@ public object PilotFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Planet",
-          possibleTypes = listOf("Planet")
+          possibleTypesSet = setOf("Planet")
         ).selections(PlanetFragmentSelections.__root)
         .build()
       )

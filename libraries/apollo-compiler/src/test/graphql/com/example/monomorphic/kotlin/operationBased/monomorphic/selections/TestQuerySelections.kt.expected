@@ -28,7 +28,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Animal",
-          possibleTypes = listOf("Cat", "Dog")
+          possibleTypesSet = setOf("Cat", "Dog")
         ).selections(__onAnimal)
         .build()
       )
@@ -40,7 +40,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Node",
-          possibleTypes = listOf("Cat", "Dog")
+          possibleTypesSet = setOf("Cat", "Dog")
         ).selections(__onNode)
         .build()
       )

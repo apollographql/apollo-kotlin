@@ -32,7 +32,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Bar",
-          possibleTypes = listOf("BarObject", "FooBar")
+          possibleTypesSet = setOf("BarObject", "FooBar")
         ).selections(__onBar)
         .build()
       )

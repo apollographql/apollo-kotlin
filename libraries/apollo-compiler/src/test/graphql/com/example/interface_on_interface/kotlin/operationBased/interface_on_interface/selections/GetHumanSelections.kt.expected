@@ -46,7 +46,7 @@ public object GetHumanSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(__onHuman)
         .build()
       )

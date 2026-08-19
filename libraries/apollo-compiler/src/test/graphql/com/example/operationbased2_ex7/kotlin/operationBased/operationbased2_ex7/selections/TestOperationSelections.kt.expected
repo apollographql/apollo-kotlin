@@ -40,12 +40,12 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "WarmBlooded",
-          possibleTypes = listOf("Lion", "Cat", "Panther")
+          possibleTypesSet = setOf("Lion", "Cat", "Panther")
         ).selections(__onWarmBlooded)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Pet",
-          possibleTypes = listOf("Cat", "Turtle")
+          possibleTypesSet = setOf("Cat", "Turtle")
         ).selections(__onPet)
         .build()
       )
@@ -57,7 +57,7 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Animal",
-          possibleTypes = listOf("Lion", "Cat", "Turtle", "Panther")
+          possibleTypesSet = setOf("Lion", "Cat", "Turtle", "Panther")
         ).selections(__onAnimal)
         .build()
       )

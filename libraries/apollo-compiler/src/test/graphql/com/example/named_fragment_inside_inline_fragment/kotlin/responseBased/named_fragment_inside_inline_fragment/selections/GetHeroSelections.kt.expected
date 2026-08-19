@@ -23,12 +23,12 @@ public object GetHeroSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).selections(CharacterNameSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).selections(CharacterAppearsInSelections.__root)
         .build()
       )
@@ -40,7 +40,7 @@ public object GetHeroSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).selections(__onCharacter)
         .build()
       )

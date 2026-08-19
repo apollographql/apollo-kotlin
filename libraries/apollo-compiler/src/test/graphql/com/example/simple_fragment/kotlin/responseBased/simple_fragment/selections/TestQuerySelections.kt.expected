@@ -23,12 +23,12 @@ internal object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = listOf("Droid", "Human")
+          possibleTypesSet = setOf("Droid", "Human")
         ).selections(HeroDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(HumanDetailsSelections.__root)
         .build()
       )

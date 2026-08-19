@@ -103,6 +103,7 @@ internal object JavaClassNames {
   val SuppressWarnings: ClassName = ClassName.get("java.lang", "SuppressWarnings")
 
   val List: ClassName = ClassName.get("java.util", "List")
+  val Set: ClassName = ClassName.get("java.util", "Set")
   val ArrayList: ClassName = ClassName.get("java.util", "ArrayList")
   val Arrays = ClassName.get("java.util", "Arrays")
   val Collections = ClassName.get("java.util", "Collections")

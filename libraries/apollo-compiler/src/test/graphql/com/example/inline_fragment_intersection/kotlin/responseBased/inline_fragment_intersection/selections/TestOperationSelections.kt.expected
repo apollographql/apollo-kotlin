@@ -37,7 +37,7 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
-          possibleTypes = listOf("Wookie")
+          possibleTypesSet = setOf("Wookie")
         ).selections(__onWookie)
         .build()
       )
@@ -60,7 +60,7 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
-          possibleTypes = listOf("Wookie")
+          possibleTypesSet = setOf("Wookie")
         ).selections(__onWookie1)
         .build()
       )
@@ -93,7 +93,7 @@ public object TestOperationSelections {
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = listOf("Human")
+          possibleTypesSet = setOf("Human")
         ).selections(__onHuman)
         .build()
       )
@@ -131,7 +131,7 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
-          possibleTypes = listOf("Wookie")
+          possibleTypesSet = setOf("Wookie")
         ).selections(__onWookie3)
         .build()
       )
@@ -151,17 +151,17 @@ public object TestOperationSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Being",
-          possibleTypes = listOf("Human", "Wookie")
+          possibleTypesSet = setOf("Human", "Wookie")
         ).selections(__onBeing)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
-          possibleTypes = listOf("Wookie")
+          possibleTypesSet = setOf("Wookie")
         ).selections(__onWookie2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Being",
-          possibleTypes = listOf("Human", "Wookie")
+          possibleTypesSet = setOf("Human", "Wookie")
         ).selections(__onBeing1)
         .build()
       )

@@ -42,17 +42,17 @@ public object GetInterfaceASelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "InterfaceA",
-          possibleTypes = listOf("B", "C")
+          possibleTypesSet = setOf("B", "C")
         ).selections(__onInterfaceA)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "B",
-          possibleTypes = listOf("B")
+          possibleTypesSet = setOf("B")
         ).selections(__onB)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "C",
-          possibleTypes = listOf("C")
+          possibleTypesSet = setOf("C")
         ).selections(__onC)
         .build()
       )

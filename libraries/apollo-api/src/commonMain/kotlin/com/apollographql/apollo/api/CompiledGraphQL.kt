@@ -86,7 +86,10 @@ class CompiledField internal constructor(
    */
   @ApolloExperimental
   fun argumentValues(variables: Executable.Variables, filter: (CompiledArgument) -> Boolean = { true }): Map<String, ApolloJsonElement> {
-    val arguments = arguments.filter(filter).filter { it.value is Optional.Present<*> }
+    if (this.arguments.isEmpty()) {
+      return emptyMap()
+    }
+    val arguments = arguments.filter { filter(it) && it.value is Optional.Present<*> }
     if (arguments.isEmpty()) {
       return emptyMap()
     }
@@ -147,6 +150,11 @@ class CompiledField internal constructor(
    * CacheKey1: `users({"ids": 42})`
    */
   fun nameWithArguments(variables: Executable.Variables): String {
+    if (this.arguments.isEmpty()) {
+      // A field that takes no arguments is its own key, whatever the variables are. Checked here as
+      // well as in `argumentValues` so that the common case does not reach a call at all.
+      return name
+    }
     val arguments = argumentValues(variables)
     if (arguments.isEmpty()) {
       return name
@@ -210,12 +218,26 @@ class CompiledField internal constructor(
  */
 class CompiledFragment internal constructor(
     val typeCondition: String,
-    val possibleTypes: List<String>,
+    val possibleTypesSet: Set<String>,
     val condition: List<CompiledCondition>,
     val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
+  @Deprecated("Use possibleTypesSet instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
+  val possibleTypes: List<String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    possibleTypesSet.toList()
+  }
 
-  class Builder(val typeCondition: String, val possibleTypes: List<String>) {
+  class Builder(val typeCondition: String, val possibleTypesSet: Set<String>) {
+
+    @Deprecated("Use the primary constructor instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
+    constructor(typeCondition: String, possibleTypes: List<String>) : this(typeCondition, possibleTypes.toSet())
+
+    @Deprecated("Use possibleTypesSet instead")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
+    val possibleTypes: List<String> get() = possibleTypesSet.toList()
+
     var condition: List<CompiledCondition> = emptyList()
     var selections: List<CompiledSelection> = emptyList()
 
@@ -227,7 +249,7 @@ class CompiledFragment internal constructor(
       this.selections = selections
     }
 
-    fun build() = CompiledFragment(typeCondition, possibleTypes, condition, selections)
+    fun build() = CompiledFragment(typeCondition, possibleTypesSet, condition, selections)
   }
 }
 
