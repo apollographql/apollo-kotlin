@@ -232,10 +232,10 @@ class WebSocketNetworkTransportTest {
           )
           .build()
           .use { apolloClient ->
+            val webSocketBody = mockServer.enqueueWebSocket()
             apolloClient.subscription(FooSubscription())
                 .toFlow()
                 .test {
-                  val webSocketBody = mockServer.enqueueWebSocket()
                   val webSocketMockRequest = mockServer.awaitWebSocketRequest()
                   webSocketMockRequest.awaitMessage() // connection_init
 
