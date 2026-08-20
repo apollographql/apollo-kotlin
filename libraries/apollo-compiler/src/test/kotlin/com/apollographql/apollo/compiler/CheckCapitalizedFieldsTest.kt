@@ -16,7 +16,9 @@ class CheckCapitalizedFieldsTest(name: String, private val graphQLFile: File) {
 
   @Test
   fun testValidation() = checkExpected(graphQLFile) { _ ->
-    val checkFragmentsOnly = graphQLFile.name != "capitalized_fields_disallowed.graphql"
+    // The "disallowed" fixtures are checked with checkFragmentsOnly = false so that operations
+    // are checked too, which is what happens when flattenModels is off.
+    val checkFragmentsOnly = !graphQLFile.name.startsWith("capitalized_fields_disallowed")
 
     checkCapitalizedFields(graphQLFile.toGQLDocument().definitions, checkFragmentsOnly = checkFragmentsOnly).serialize()
   }
