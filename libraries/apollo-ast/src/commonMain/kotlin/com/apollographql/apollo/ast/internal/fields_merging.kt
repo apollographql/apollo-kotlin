@@ -233,7 +233,13 @@ private fun groupByCommonParents(fields: Set<FieldAndType>): List<Set<FieldAndTy
     return listOf(abstractTypes)
   }
 
-  val groupsByConcreteParent = concreteTypes.groupBy { it.parentType }
+  /**
+   * Group by name and not by the definition itself: type definitions are name-unique within a
+   * schema, so this yields the same grouping, but hashing a `GQLObjectTypeDefinition` means
+   * recursively hashing all of its field definitions, their input values and their types. Only
+   * the groups are used below — the keys are discarded.
+   */
+  val groupsByConcreteParent = concreteTypes.groupBy { it.parentType.name }
   return groupsByConcreteParent.values.map { concreteGroup ->
     concreteGroup.toSet() + abstractTypes
   }
@@ -383,10 +389,18 @@ private data class FieldAndType(
     return field == other.field
   }
 
-  override fun hashCode(): Int {
-    return field.hashCode()
-  }
+  /**
+   * `GQLField` is a `@Poko` class, so its hash covers `selections` and therefore the whole
+   * subtree below the field. Instances of this class are put in sets, grouped, and — via
+   * [ValidationContext.visitedShapeSets] / [ValidationContext.visitedParentSets], which hold
+   * sets *of* sets — re-hashed as members of every group they belong to. The AST is immutable,
+   * so compute that hash once per instance instead of once per lookup.
+   */
+  private val fieldHashCode: Int = field.hashCode()
 
+  override fun hashCode(): Int {
+    return fieldHashCode
+  }
 
   override fun toString(): String {
     return "${field.sourceLocation.pretty()}: ${field.toUtf8()} (${parentType.name})"
