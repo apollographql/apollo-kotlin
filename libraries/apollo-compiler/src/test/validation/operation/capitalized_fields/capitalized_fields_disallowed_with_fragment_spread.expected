@@ -1,0 +1,5 @@
+UpperCaseField (2:3)
+Capitalized field 'Horse' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
+------------
+UpperCaseField (9:3)
+Capitalized field 'Cow' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.

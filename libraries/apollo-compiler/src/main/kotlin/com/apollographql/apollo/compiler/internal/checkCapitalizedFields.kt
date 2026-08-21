@@ -15,13 +15,17 @@ import com.apollographql.apollo.ast.UpperCaseField
 internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
   val scope = object : ValidationScope {
     override val issues = mutableListOf<Issue>()
-    override val fragmentsByName = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
   }
 
+  /**
+   * Every fragment definition is checked here, on its own. Fragment spreads are therefore not
+   * followed: the spread target is either one of these definitions, and already checked, or it
+   * belongs to an upstream module and was checked when that module was compiled.
+   */
   definitions.forEach { definition ->
     when {
-      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selections, emptyList())
-      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selections, emptyList())
+      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selections)
+      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selections)
     }
   }
 
@@ -31,7 +35,7 @@ internal fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragm
 /**
  * Fields named with a capital first letter clash with the corresponding model name, unless flatten.
  */
-private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection>, checkedFragments: List<String>) {
+private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection>) {
   selections.forEach {
     when (it) {
       is GQLField -> {
@@ -61,22 +65,19 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
               )
           )
         }
-        checkCapitalizedFields(it.selections, checkedFragments)
+        checkCapitalizedFields(it.selections)
       }
 
-      is GQLInlineFragment -> checkCapitalizedFields(it.selections, checkedFragments)
-      // it might be that the fragment is defined in an upstream module. In that case, it is validated
-      // already, no need to check it again
-      is GQLFragmentSpread -> if (!checkedFragments.contains(it.name)) {
-        fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selections, checkedFragments + it.name) }
-      }
+      is GQLInlineFragment -> checkCapitalizedFields(it.selections)
+      // The spread target is checked on its own: either it is one of the definitions checked
+      // above, or it is defined in an upstream module and was validated there.
+      is GQLFragmentSpread -> Unit
     }
   }
 }
 
 private interface ValidationScope {
   val issues: MutableList<Issue>
-  val fragmentsByName: Map<String, GQLFragmentDefinition>
 }
 
 private fun isFirstLetterUpperCase(name: String): Boolean {

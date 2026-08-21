@@ -1,0 +1,12 @@
+query TestQuery {
+  Horse {
+    Donkey
+    ...HorseFragment
+  }
+}
+
+fragment HorseFragment on Horse {
+  Cow {
+    Moo
+  }
+}
