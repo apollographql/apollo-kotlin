@@ -1,0 +1,15 @@
+
+query GetUser {
+  user {
+  }
+  node {
+    ... on User {
+    }
+  }
+}
+
+fragment EmptyFragment on User {
+}
+
+query {
+}

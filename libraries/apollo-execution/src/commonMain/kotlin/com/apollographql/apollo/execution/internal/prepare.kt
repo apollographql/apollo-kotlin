@@ -35,7 +35,9 @@ internal fun validateDocument(schema: Schema, document: String, parserOptions: P
   }
 
   val gqlDocument = parseResult.getOrThrow()
-  val validationResult = gqlDocument.validateAsExecutable(schema)
+  val validationResult = gqlDocument.validateAsExecutable(
+      schema,
+  )
   issues = validationResult.issues.filterIsInstance<GraphQLIssue>()
   if (issues.isNotEmpty()) {
     return issues.left()

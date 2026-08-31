@@ -28,6 +28,7 @@ listOf(
     "data-builders-kotlin-consumer",
     "defer",
     "deprecated-requires-opt-in",
+    "empty-selection-sets",
     "enums",
     "escaping",
     "filesystem-sensitivity",

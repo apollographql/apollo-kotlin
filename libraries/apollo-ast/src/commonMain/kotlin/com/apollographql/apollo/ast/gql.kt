@@ -197,10 +197,8 @@ class GQLOperationDefinition(
         write(" ")
         directives.join(writer)
       }
-      if (selections.isNotEmpty()) {
-        write(" ")
-        selections.writeSelections(writer)
-      }
+      write(" ")
+      selections.writeSelections(writer)
     }
   }
 
@@ -286,10 +284,8 @@ class GQLFragmentDefinition @ApolloExperimental constructor(
         write(" ")
         directives.join(writer)
       }
-      if (selections.isNotEmpty()) {
-        write(" ")
-        selections.writeSelections(writer)
-      }
+      write(" ")
+      selections.writeSelections(writer)
     }
   }
 
@@ -1876,9 +1872,6 @@ class GQLArguments(
 }
 
 private fun List<GQLSelection>.writeSelections(writer: SDLWriter) {
-  if (isEmpty()) {
-    return
-  }
   with(writer) {
     write("{\n")
     indent()
@@ -1903,7 +1896,25 @@ class GQLField(
     val arguments: List<GQLArgument>,
     override val directives: List<GQLDirective>,
     val selections: List<GQLSelection>,
+    @ApolloExperimental
+    val selectionSetPresent: Boolean,
 ) : GQLSelection(), GQLNamed, GQLHasDirectives {
+
+  init {
+    require(selections.isEmpty() || selectionSetPresent) {
+      "selectionSetPresent must be true if selections is not empty"
+    }
+  }
+
+  constructor(
+      sourceLocation: SourceLocation? = null,
+      alias: String?,
+      name: String,
+      arguments: List<GQLArgument>,
+      directives: List<GQLDirective>,
+      selections: List<GQLSelection>,
+  ) : this(sourceLocation, alias, name, arguments, directives, selections, selections.isNotEmpty())
+
   @Suppress("DEPRECATION_ERROR")
   @Deprecated("Use selections directly", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
@@ -1930,7 +1941,7 @@ class GQLField(
         write(" ")
         directives.join(writer)
       }
-      if (selections.isNotEmpty()) {
+      if (selectionSetPresent) {
         write(" ")
         selections.writeSelections(writer)
       } else {
@@ -1939,6 +1950,7 @@ class GQLField(
     }
   }
 
+  @ApolloExperimental
   fun copy(
       sourceLocation: SourceLocation? = this.sourceLocation,
       alias: String? = this.alias,
@@ -1946,6 +1958,7 @@ class GQLField(
       arguments: List<GQLArgument> = this.arguments,
       directives: List<GQLDirective> = this.directives,
       selections: List<GQLSelection> = this.selections,
+      selectionSetPresent: Boolean = this.selectionSetPresent,
   ) = GQLField(
       sourceLocation = sourceLocation,
       alias = alias,
@@ -1953,6 +1966,26 @@ class GQLField(
       arguments = arguments,
       directives = directives,
       selections = selections,
+      selectionSetPresent = selectionSetPresent,
+  )
+
+  fun copy(
+      sourceLocation: SourceLocation? = this.sourceLocation,
+      alias: String? = this.alias,
+      name: String = this.name,
+      arguments: List<GQLArgument> = this.arguments,
+      directives: List<GQLDirective> = this.directives,
+      selections: List<GQLSelection> = this.selections,
+  ) = copy(
+      sourceLocation = sourceLocation,
+      alias = alias,
+      name = name,
+      arguments = arguments,
+      directives = directives,
+      selections = selections,
+      // This overload predates empty selection sets and derives the selection set from [selections], as it always did.
+      // Use the overload taking [selectionSetPresent] to keep an empty selection set.
+      selectionSetPresent = selections.isNotEmpty(),
   )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
@@ -1960,6 +1993,7 @@ class GQLField(
         selections = container.take(),
         arguments = container.take(),
         directives = container.take(),
+        selectionSetPresent = selectionSetPresent,
     )
   }
 }
@@ -1994,10 +2028,8 @@ class GQLInlineFragment(
         write(" ")
         directives.join(writer)
       }
-      if (selections.isNotEmpty()) {
-        write(" ")
-        selections.writeSelections(writer)
-      }
+      write(" ")
+      selections.writeSelections(writer)
     }
   }
 

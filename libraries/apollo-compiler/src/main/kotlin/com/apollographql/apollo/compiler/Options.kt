@@ -216,6 +216,13 @@ class IrOptions(
 
     val allowFragmentArguments: Boolean?,
 
+    /**
+     * Whether to allow empty selection sets, as in `{ hero { } }`.
+     *
+     * Default: false
+     */
+    val allowEmptySelectionSets: Boolean?,
+
     @Deprecated("Unused, directives on directives are always allowed")
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_1)
     val allowDirectivesOnDirectives: Boolean?,
@@ -231,6 +238,7 @@ fun buildIrOptions(
     codegenModels: String? = null,
     issueSeverity: Map<String, IssueSeverity>? = null,
     allowFragmentArguments: Boolean? = null,
+    allowEmptySelectionSets: Boolean? = null,
     @Suppress("UNUSED_PARAMETER") allowDirectivesOnDirectives: Boolean? = null,
 ): IrOptions = IrOptions(
     decapitalizeFields = decapitalizeFields,
@@ -242,6 +250,7 @@ fun buildIrOptions(
     codegenModels = codegenModels,
     issueSeverities = issueSeverity,
     allowFragmentArguments = allowFragmentArguments,
+    allowEmptySelectionSets = allowEmptySelectionSets,
     allowDirectivesOnDirectives = true
 )
 

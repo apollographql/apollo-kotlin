@@ -697,6 +697,16 @@ interface Service {
   val allowFragmentArguments: Property<Boolean>
 
   /**
+   * Whether to allow empty selection sets, as in `{ hero { } }`.
+   *
+   * See https://github.com/graphql/graphql-spec/pull/1227
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val allowEmptySelectionSets: Property<Boolean>
+
+  /**
    * Unused, directives on directives are always allowed.
    */
   @Deprecated("Unused, directives on directives are always allowed")

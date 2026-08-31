@@ -39,7 +39,7 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
   selections.forEach {
     when (it) {
       is GQLField -> {
-        if (it.selections.isEmpty()) {
+        if (!it.selectionSetPresent) {
           // A clash can only occur if a model is generated
           return@forEach
         }

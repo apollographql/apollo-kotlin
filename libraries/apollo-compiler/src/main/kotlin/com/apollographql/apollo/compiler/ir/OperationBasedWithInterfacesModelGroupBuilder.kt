@@ -126,10 +126,10 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
       path: String,
       parentTypes: List<String>,
       info: IrFieldInfo,
-      selections: List<GQLSelection>,
+      selections: List<GQLSelection>?,
       condition: BooleanExpression<BTerm>,
   ): OperationField2 {
-    if (selections.isEmpty()) {
+    if (selections == null) {
       return OperationField2(
           info = info,
           condition = condition,
@@ -237,7 +237,7 @@ internal class OperationBasedWithInterfacesModelGroupBuilder(
           buildNode(
               path = selfPath,
               info = childInfo,
-              selections = emptyList(), // Don't create a model for fragments spreads
+              selections = null, // Don't create a model for fragments spreads
               condition = childCondition,
               parentTypes = parentTypes + typeCondition
           )

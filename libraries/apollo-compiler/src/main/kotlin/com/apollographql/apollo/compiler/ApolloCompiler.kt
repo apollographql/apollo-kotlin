@@ -271,6 +271,8 @@ object ApolloCompiler {
      * Step 1: parse the documents
      */
     val userDefinitions = mutableListOf<GQLDefinition>()
+    val allowEmptySelectionSets = options.allowEmptySelectionSets ?: false
+
     /**
      * Sort the input files.
      * The generated Kotlin code does not depend on the order of the inputs, but in case we're serializing the
@@ -279,10 +281,11 @@ object ApolloCompiler {
      * See https://github.com/gradle/gradle/issues/29321
      * See https://github.com/apollographql/apollo-kotlin/pull/5916
      */
+    val parserOptions = ParserOptions.Builder()
+        .allowFragmentArguments(options.allowFragmentArguments ?: false)
+        .allowEmptySelectionSets(allowEmptySelectionSets)
+        .build()
     executableFiles.sortedBy { it.normalizedPath }.forEach { normalizedFile ->
-      val parserOptions = ParserOptions.Builder()
-          .allowFragmentArguments(options.allowFragmentArguments ?: false)
-          .build()
       val fileDefinitions = normalizedFile.file.definitions(parserOptions)
 
       userDefinitions.addAll(fileDefinitions)
@@ -322,7 +325,9 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = document.definitions + upstreamFragmentDefinitions,
         sourceLocation = null
-    ).validateAsExecutable(schema)
+    ).validateAsExecutable(
+        schema = schema,
+    )
 
     val allIssues = mutableListOf<Issue>()
     allIssues.addAll(validationResult.issues)

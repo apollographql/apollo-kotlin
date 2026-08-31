@@ -253,6 +253,8 @@ internal class ApolloExecutableDocumentTransform(private val addTypename: String
 
     return copy(
         selections = newSelectionSet,
+        // An empty selection set stays an empty selection set, it doesn't become a leaf field
+        selectionSetPresent = selectionSetPresent,
     )
   }
 

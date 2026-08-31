@@ -116,7 +116,7 @@ internal class OperationBasedModelGroupBuilder(
   /**
    * @param path the path up to but not including this field
    * @param info information about this field.
-   * @param selections the sub-selections of this field.
+   * @param selections the sub-selections of this field, or null if this field is a leaf field.
    * @param parentType the parent type for [selections].
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
    * @param parentTypeConditions the list of the different typeCondition going through all inline fragments
@@ -124,13 +124,13 @@ internal class OperationBasedModelGroupBuilder(
   private fun buildField(
       path: String,
       info: IrFieldInfo,
-      selections: List<GQLSelection>,
+      selections: List<GQLSelection>?,
       parentType: String,
       condition: BooleanExpression<BTerm>,
       parentTypeConditions: List<String>,
       defaultCatchTo: CatchTo?,
   ): OperationField {
-    if (selections.isEmpty()) {
+    if (selections == null) {
       return OperationField(
           info = info,
           condition = condition,
@@ -303,7 +303,7 @@ internal class OperationBasedModelGroupBuilder(
           buildField(
               path = selfPath,
               info = childInfo,
-              selections = emptyList(), // Don't create a model for fragments spreads
+              selections = null, // Don't create a model for fragments spreads
               parentType = typeCondition, // unused
               condition = childCondition,
               parentTypeConditions = emptyList(),
