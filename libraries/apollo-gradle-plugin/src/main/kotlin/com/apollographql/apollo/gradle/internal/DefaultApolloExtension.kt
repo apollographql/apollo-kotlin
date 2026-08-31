@@ -468,6 +468,7 @@ abstract class DefaultApolloExtension(
         generateOptionalOperationVariables = service.generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = service.alwaysGenerateTypesMatching,
         allowFragmentArguments = service.allowFragmentArguments,
+        allowEmptySelectionSets = service.allowEmptySelectionSets,
         allowDirectivesOnDirectives = project.provider { true },
 
         /**

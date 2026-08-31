@@ -15,6 +15,7 @@ internal class Parser(
   private val allowEmptyDocuments = options.allowEmptyDocuments
   private val allowServiceCapabilities = options.allowServiceCapabilities
   private val allowFragmentArguments = options.allowFragmentArguments
+  private val allowEmptySelectionSets = options.allowEmptySelectionSets
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -131,11 +132,11 @@ internal class Parser(
   }
 
   private fun parseSelectionSet(): List<GQLSelection> {
-    return parseNonEmptyList<Token.LeftBrace, Token.RightBrace, GQLSelection>(::parseSelection)
-  }
-
-  private fun parseOptionalSelectionSet(): List<GQLSelection> {
-    return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLSelection>(::parseSelection).orEmpty()
+    return if (allowEmptySelectionSets) {
+      parseList<Token.LeftBrace, Token.RightBrace, GQLSelection>(::parseSelection)
+    } else {
+      parseNonEmptyList<Token.LeftBrace, Token.RightBrace, GQLSelection>(::parseSelection)
+    }
   }
 
   private fun parseSelection(): GQLSelection {
@@ -241,7 +242,8 @@ internal class Parser(
     val arguments = parseArguments(const = false)
     val directives = parseDirectives(const = false)
 
-    val selections = parseOptionalSelectionSet()
+    val selectionSetPresent = peek<Token.LeftBrace>()
+    val selections = if (selectionSetPresent) parseSelectionSet() else emptyList()
     return GQLField(
         sourceLocation = sourceLocation(start),
         alias = alias,
@@ -249,6 +251,7 @@ internal class Parser(
         arguments = arguments,
         directives = directives,
         selections = selections,
+        selectionSetPresent = selectionSetPresent,
     )
   }
 

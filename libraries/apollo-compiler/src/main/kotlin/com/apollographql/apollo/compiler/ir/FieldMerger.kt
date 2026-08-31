@@ -17,7 +17,7 @@ internal data class FieldWithParent(val gqlField: GQLField, val parentType: Stri
 internal data class MergedField(
     val info: IrFieldInfo,
     val condition: BooleanExpression<BVariable>,
-    val selections: List<GQLSelection>,
+    val selections: List<GQLSelection>?,
     /**
      * The name of the rawType, without the NotNull/List decorations
      * When selections are not empty, this is the type condition for these selections

@@ -1,0 +1,8 @@
+# PRAGMA allowEmptySelectionSets
+
+query GetUser {
+    user {
+        # `id` is a leaf field: a selection set is not allowed, not even an empty one
+        id { }
+    }
+}

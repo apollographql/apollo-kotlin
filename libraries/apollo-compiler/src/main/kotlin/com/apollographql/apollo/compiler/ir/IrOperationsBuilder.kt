@@ -456,7 +456,7 @@ internal class IrOperationsBuilder(
        * Merged field will merge their conditions and selectionSets
        */
       val condition: BooleanExpression<BVariable>,
-      val selections: List<GQLSelection>,
+      val selections: List<GQLSelection>?,
       val parentType: String,
       val usedArguments: List<String>,
   ) {
@@ -493,7 +493,7 @@ internal class IrOperationsBuilder(
           name = gqlField.name,
           alias = gqlField.alias,
           condition = gqlField.directives.toIncludeBooleanExpression(),
-          selections = gqlField.selections,
+          selections = if (gqlField.selectionSetPresent) gqlField.selections else null,
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
@@ -523,7 +523,15 @@ internal class IrOperationsBuilder(
           "Merged field '${first.responseName} has different `@catch` directives"
         }
       }
-      val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
+      var childSelections: MutableList<GQLSelection>? = null
+      for (field in fieldsWithSameResponseName) {
+        if (field.selections != null) {
+          if (childSelections == null) {
+            childSelections = mutableListOf()
+          }
+          childSelections.addAll(field.selections)
+        }
+      }
 
       val forceOptional = fieldsWithSameResponseName.any {
         it.forceOptional

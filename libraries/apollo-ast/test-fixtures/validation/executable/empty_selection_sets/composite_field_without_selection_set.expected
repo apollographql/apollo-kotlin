@@ -1,0 +1,2 @@
+OtherValidationIssue (5:5)
+Field `user` of type `User` must have a selection of sub-fields

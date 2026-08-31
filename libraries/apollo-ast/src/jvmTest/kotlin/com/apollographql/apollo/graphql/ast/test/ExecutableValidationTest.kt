@@ -21,12 +21,14 @@ class ExecutableValidationTest {
   @Test
   fun testValidation(@TestParameter(valuesProvider = ParametersProvider::class) graphQLFile: File) {
     findSchemaAndCheck(graphQLFile) { schema ->
-      val parserOptions = graphQLFile.pragmas().toParserOptions()
-      val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(graphQLFile.name, parserOptions)
+      val pragmas = graphQLFile.pragmas()
+      val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(graphQLFile.name, pragmas.toParserOptions())
       val issues = if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        parseResult.getOrThrow().validateAsExecutable(schema = schema).issues
+        parseResult.getOrThrow()
+            .validateAsExecutable(schema = schema)
+            .issues
       }
 
       issues.serialize()

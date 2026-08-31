@@ -1,0 +1,6 @@
+# PRAGMA allowEmptySelectionSets
+
+query GetUser {
+    # `user` is of a composite type: it must still have a selection set, even when empty ones are allowed
+    user
+}

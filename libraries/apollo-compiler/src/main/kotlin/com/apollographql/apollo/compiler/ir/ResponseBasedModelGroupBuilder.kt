@@ -244,13 +244,13 @@ private class FieldNodeBuilder(
       modelPath: String,
       info: IrFieldInfo,
       condition: BooleanExpression<BVariable>,
-      selections: List<GQLSelection>,
+      selections: List<GQLSelection>?,
       rawTypename: String,
       superResponseFields: List<ResponseField>,
       withImplementations: Boolean,
       defaultCatchTo: CatchTo?,
   ): ResponseField {
-    if (selections.isEmpty()) {
+    if (selections == null) {
       // fast path for non-compound types
       return ResponseField(
           info = info,

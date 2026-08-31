@@ -1,0 +1,16 @@
+# PRAGMA allowEmptySelectionSets
+
+query GetUser {
+    user { }
+}
+
+query GetNode {
+    node {
+        ... on User { }
+        ...EmptyFragment
+    }
+}
+
+query Empty { }
+
+fragment EmptyFragment on User { }

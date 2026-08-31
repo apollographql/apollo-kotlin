@@ -1,0 +1,9 @@
+query GetUser {
+  user { }
+}
+
+query GetNode {
+  node {
+    ... on User { }
+  }
+}

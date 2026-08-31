@@ -59,6 +59,7 @@ import com.apollographql.apollo.ast.sharesPossibleTypesWith
 internal class ExecutableValidationScope(
     private val schema: Schema,
 ) : ValidationScope {
+
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
 
@@ -227,16 +228,18 @@ internal class ExecutableValidationScope(
     if (typeDefinition !is GQLScalarTypeDefinition
         && typeDefinition !is GQLEnumTypeDefinition
     ) {
-      if (selections.isEmpty()) {
+      // composite type
+      if (!selectionSetPresent) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must have a selection of sub-fields",
             sourceLocation = sourceLocation
         )
+        // For the legacy mode (allowEmptySelectionSet = false), we rely on the parser to output an error if the selection set is empty
         return
       }
       selections.validate(typeDefinition)
     } else {
-      if (selections.isNotEmpty()) {
+      if (selectionSetPresent) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must not have a selection of sub-fields",
             sourceLocation = sourceLocation
@@ -564,15 +567,6 @@ internal class ExecutableValidationScope(
   }
 
   private fun List<GQLSelection>.validate(parentTypeDefinition: GQLTypeDefinition) {
-    if (isEmpty()) {
-      // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
-      registerIssue(
-          message = "Selection of type `${parentTypeDefinition.name}` must have a selection of sub-fields",
-          sourceLocation = null
-      )
-      return
-    }
-
     forEach {
       when (it) {
         is GQLField -> it.validate(parentTypeDefinition)

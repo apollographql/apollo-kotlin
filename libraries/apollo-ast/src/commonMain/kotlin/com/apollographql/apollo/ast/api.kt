@@ -82,7 +82,9 @@ class ParserOptions private constructor(
     val allowDirectivesOnDirectives: Boolean,
     val allowServiceCapabilities: Boolean,
     @ApolloExperimental
-    val allowFragmentArguments: Boolean
+    val allowFragmentArguments: Boolean,
+    @ApolloExperimental
+    val allowEmptySelectionSets: Boolean,
 ) {
   class Builder {
     var allowEmptyDocuments = true
@@ -97,6 +99,9 @@ class ParserOptions private constructor(
 
     @ApolloExperimental
     var allowFragmentArguments = false
+
+    @ApolloExperimental
+    var allowEmptySelectionSets = false
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -120,13 +125,28 @@ class ParserOptions private constructor(
       this.allowFragmentArguments = allowFragmentArguments
     }
 
+    /**
+     * Whether to allow empty selection sets, as in `{ hero { } }`.
+     *
+     * See https://github.com/graphql/graphql-spec/pull/1227
+     *
+     * Empty selection sets are told apart from absent ones by [GQLField.selectionSetPresent].
+     *
+     * Default: false
+     */
+    @ApolloExperimental
+    fun allowEmptySelectionSets(allowEmptySelectionSets: Boolean) = apply {
+      this.allowEmptySelectionSets = allowEmptySelectionSets
+    }
+
     fun build(): ParserOptions {
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
           withSourceLocation = withSourceLocation,
           allowDirectivesOnDirectives = true,
           allowServiceCapabilities = allowServiceCapabilities,
-          allowFragmentArguments = allowFragmentArguments
+          allowFragmentArguments = allowFragmentArguments,
+          allowEmptySelectionSets = allowEmptySelectionSets,
       )
     }
   }
