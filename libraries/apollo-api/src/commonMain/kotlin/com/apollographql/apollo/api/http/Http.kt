@@ -11,7 +11,7 @@ import okio.ByteString
 import kotlin.jvm.JvmOverloads
 
 enum class HttpMethod {
-  Get, Post
+  Get, Post, Query
 }
 
 interface HttpBody {

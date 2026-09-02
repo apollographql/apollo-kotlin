@@ -84,10 +84,12 @@ private class AppleHttpEngine(
         setValue(it.value, forHTTPHeaderField = it.name)
       }
 
-      if (request.method == HttpMethod.Get) {
-        setHTTPMethod("GET")
-      } else {
-        setHTTPMethod("POST")
+      when (request.method) {
+        HttpMethod.Get -> setHTTPMethod("GET")
+        HttpMethod.Post -> setHTTPMethod("POST")
+        HttpMethod.Query -> setHTTPMethod("QUERY")
+      }
+      if (request.method == HttpMethod.Post || request.method == HttpMethod.Query) {
         val requestBody = request.body
         if (requestBody != null) {
           setValue(requestBody.contentType, forHTTPHeaderField = "Content-Type")

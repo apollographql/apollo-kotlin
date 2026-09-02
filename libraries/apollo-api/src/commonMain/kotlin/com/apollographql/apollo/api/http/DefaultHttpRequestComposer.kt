@@ -41,9 +41,11 @@ import okio.buffer
 class DefaultHttpRequestComposer(
     private val serverUrl: String?,
     private val enablePostCaching: Boolean,
+    private val useQuery: Boolean
 ) : HttpRequestComposer {
 
-  constructor(serverUrl: String?) : this(serverUrl, false)
+  constructor(serverUrl: String?, enablePostCaching: Boolean) : this(serverUrl, enablePostCaching, false)
+  constructor(serverUrl: String?) : this(serverUrl, false, false)
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val requestHeaders = mutableListOf<HttpHeader>().apply {
@@ -70,7 +72,15 @@ class DefaultHttpRequestComposer(
     val requestParameters = apolloRequest.toRequestParameters()
 
     val url = apolloRequest.url ?: serverUrl ?: error("ApolloRequest.url is missing for request '${apolloRequest.operation.name()}', did you call ApolloClient.Builder.serverUrl(url)?")
-    val httpRequestBuilder = when (apolloRequest.httpMethod ?: HttpMethod.Post) {
+    var method = apolloRequest.httpMethod
+    if (method == null) {
+      method = if (useQuery && apolloRequest.operation is Query<*>) {
+        HttpMethod.Query
+      } else {
+        HttpMethod.Post
+      }
+    }
+    val httpRequestBuilder = when (method) {
       HttpMethod.Get -> {
 
         @Suppress("DEPRECATION")
@@ -79,11 +89,11 @@ class DefaultHttpRequestComposer(
             url = url.appendQueryParameters(requestParameters.toMap().asGetParameters()),
         ).addHeader(HEADER_APOLLO_REQUIRE_PREFLIGHT, "true")
       }
-
+      HttpMethod.Query,
       HttpMethod.Post -> {
         val body = requestParameters.toHttpBody()
         HttpRequest.Builder(
-            method = HttpMethod.Post,
+            method = method,
             url = url,
         ).apply {
           body(body)

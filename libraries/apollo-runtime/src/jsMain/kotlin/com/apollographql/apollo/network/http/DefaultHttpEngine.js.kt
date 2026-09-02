@@ -77,6 +77,7 @@ private fun HttpRequest.toFetchOptions(abortSignal: dynamic): dynamic {
   val method = when (method) {
     HttpMethod.Get -> "GET"
     HttpMethod.Post -> "POST"
+    HttpMethod.Query -> "QUERY"
   }
   val headers = js("({})")
   for (header in this.headers) {
