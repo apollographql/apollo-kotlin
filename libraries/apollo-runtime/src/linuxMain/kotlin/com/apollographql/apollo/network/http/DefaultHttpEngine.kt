@@ -51,6 +51,7 @@ private class LinuxHttpEngine(
         method = when (request.method) {
           HttpMethod.Get -> io.ktor.http.HttpMethod.Get
           HttpMethod.Post -> io.ktor.http.HttpMethod.Post
+          HttpMethod.Query -> io.ktor.http.HttpMethod.Query
         }
         request.headers.forEach {
           header(it.name, it.value)

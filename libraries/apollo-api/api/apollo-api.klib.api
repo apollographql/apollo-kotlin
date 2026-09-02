@@ -15,6 +15,7 @@ open annotation class com.apollographql.apollo.api/DataBuilderDsl : kotlin/Annot
 final enum class com.apollographql.apollo.api.http/HttpMethod : kotlin/Enum<com.apollographql.apollo.api.http/HttpMethod> { // com.apollographql.apollo.api.http/HttpMethod|null[0]
     enum entry Get // com.apollographql.apollo.api.http/HttpMethod.Get|null[0]
     enum entry Post // com.apollographql.apollo.api.http/HttpMethod.Post|null[0]
+    enum entry Query // com.apollographql.apollo.api.http/HttpMethod.Query|null[0]
 
     final val entries // com.apollographql.apollo.api.http/HttpMethod.entries|#static{}entries[0]
         final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.api.http/HttpMethod> // com.apollographql.apollo.api.http/HttpMethod.entries.<get-entries>|<get-entries>#static(){}[0]
@@ -535,6 +536,7 @@ final class com.apollographql.apollo.api.http/CacheUrlOverride : com.apollograph
 final class com.apollographql.apollo.api.http/DefaultHttpRequestComposer : com.apollographql.apollo.api.http/HttpRequestComposer { // com.apollographql.apollo.api.http/DefaultHttpRequestComposer|null[0]
     constructor <init>(kotlin/String?) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String?){}[0]
     constructor <init>(kotlin/String?, kotlin/Boolean) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String?;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/String?, kotlin/Boolean, kotlin/Boolean) // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.<init>|<init>(kotlin.String?;kotlin.Boolean;kotlin.Boolean){}[0]
 
     final fun <#A1: com.apollographql.apollo.api/Operation.Data> compose(com.apollographql.apollo.api/ApolloRequest<#A1>): com.apollographql.apollo.api.http/HttpRequest // com.apollographql.apollo.api.http/DefaultHttpRequestComposer.compose|compose(com.apollographql.apollo.api.ApolloRequest<0:0>){0§<com.apollographql.apollo.api.Operation.Data>}[0]
 

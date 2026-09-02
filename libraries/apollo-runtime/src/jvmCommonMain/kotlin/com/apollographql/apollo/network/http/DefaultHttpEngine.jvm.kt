@@ -76,7 +76,7 @@ private class OkHttpEngineImpl(
             } else {
               val body = body
               check(body != null) {
-                "HTTP POST requires a request body"
+                "HTTP QUERY or POST requires a request body"
               }
               val okHttpBody = object : RequestBody() {
                 override fun contentType() = body.contentType.toMediaType()
@@ -91,7 +91,11 @@ private class OkHttpEngineImpl(
                   body.writeTo(sink)
                 }
               }
-              post(okHttpBody)
+              if (method == HttpMethod.Post) {
+                post(okHttpBody)
+              } else {
+                query(okHttpBody)
+              }
               val cacheUrlOverride = this@toOkHttpRequest.executionContext[CacheUrlOverride]?.url
               if (cacheUrlOverride != null) {
                 cacheUrlOverride(cacheUrlOverride.toHttpUrl())

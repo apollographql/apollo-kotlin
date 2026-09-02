@@ -181,6 +181,12 @@ class CachingHttpInterceptor internal constructor(
           httpRequest.body!!.writeTo(buffer)
           buffer.md5().hex()
         }
+        HttpMethod.Query -> {
+          val buffer = Buffer()
+          buffer.writeUtf8("Query")
+          httpRequest.body!!.writeTo(buffer)
+          buffer.md5().hex()
+        }
       }
     }
 
