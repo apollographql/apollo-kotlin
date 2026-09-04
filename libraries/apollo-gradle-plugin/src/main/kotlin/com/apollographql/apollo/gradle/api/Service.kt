@@ -442,14 +442,16 @@ interface Service {
    * If a field is monomorphic, no '__typename' will be added.
    * This adds the bare minimum amount of __typename but the logic is substantially more complex than `ifAbstract`.
    *
-   * - "ifFragments" (deprecated): Add '__typename' for every selection set that contains fragments (inline or named)
-   * This causes cache misses when introducing fragments where no fragment was present before. This is deprecated and
-   * will be removed in a future version.
+   * - "ifFragments" (default): Add '__typename' for every selection set that directly contains an inline or named fragment.
    *
-   * Apollo Kotlin requires __typename to handle polymorphism and parsing fragments. By default, __typename is added on
-   * every composite field selection set. When using the cache, this also ensures that cache keys can read __typename.
-   * If you're not using the cache or do not use __typename in your cache keys, you can use "ifAbstract" or "ifPolymorphic"
-   * to reduce the number of __typename and the size of the network response.
+   * The default, "ifFragments", is kept for backwards compatibility. It automatically adds
+   * __typename to selection sets that directly contain an inline or named fragment, rather than to
+   * every composite field. This can cause cache misses when a cache entry written without
+   * __typename is later read by a query that requires it (see #3965).
+   *
+   * If you use the normalized cache, set "always" so that __typename is added on every composite
+   * field selection set and cache keys can always read it. If you do not use the cache,
+   * "ifAbstract" or "ifPolymorphic" reduce the number of __typename and the response size.
    *
    * Default value: "ifFragments"
    */
