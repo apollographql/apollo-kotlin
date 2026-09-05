@@ -338,76 +338,46 @@ internal class Lexer(val src: String) {
   }
 
   private fun readBlockString(): Token {
-    val start = pos - 3 // because of """
+    val start = pos - 3
     val startLine = line
     val startColumn = column(start)
-    val blockLines = mutableListOf<String>()
-    val currentLine = StringBuilder()
-
-    while (true) {
-      if (pos == len) {
-        throw LexerException("Unterminated block string", pos, line, column(pos), null)
-      }
-      val c = src[pos++]
-
-      when (c) {
-        '\n' -> {
-          line++
-          lineStart = pos
-          blockLines.add(currentLine.toString())
-          currentLine.clear()
-        }
-
-        '\r' -> {
-          if (pos + 1 < len && src[pos] == '\n') {
-            pos++
-          }
-          line++
-          lineStart = pos
-          blockLines.add(currentLine.toString())
-          currentLine.clear()
-        }
-
-        '\\' -> {
-          if (pos + 2 < len &&
-              src[pos] == '\"' &&
-              src[pos + 1] == '\"' &&
-              src[pos + 2] == '\"'
-          ) {
-            pos += 3
-            currentLine.append("\"\"\"")
-          } else {
-            currentLine.append(c)
-          }
-        }
-
-        '\"' -> {
-          if (pos + 1 < len &&
-              src[pos] == '\"' &&
-              src[pos + 1] == '\"'
-          ) {
-            pos += 2
-
-            blockLines.add(currentLine.toString())
-
-            return Token.String(
-                start = start,
-                end = pos,
-                line = startLine,
-                column = startColumn,
-                value = blockLines.dedentBlockStringLines().joinToString("\n")
-            )
-          } else {
-            currentLine.append(c)
-          }
-        }
-
-        else -> {
-          // TODO: we are lenient here and allow potentially invalid chars like invalid surrogate pairs
-          currentLine.append(c)
-        }
-      }
+    var end = src.indexOf("\"\"\"", pos)
+    while (end > pos && src[end - 1] == '\\') {
+      end = src.indexOf("\"\"\"", end + 3)
     }
+
+    if (end == -1) {
+      while (pos < len) {
+        when (src[pos++]) {
+          '\n' -> {
+            line++
+            lineStart = pos
+          }
+          '\r' -> {
+            if (pos + 1 < len && src[pos] == '\n') pos++
+            line++
+            lineStart = pos
+          }
+        }
+      }
+      throw LexerException("Unterminated block string", pos, line, column(pos), null)
+    }
+
+    // TODO: we are lenient here and allow potentially invalid chars like invalid surrogate pairs
+    val lines = src.substring(pos, end).replace("\r\n", "\n").replace('\r', '\n').split('\n')
+    if (lines.size > 1) {
+      line += lines.size - 1
+      lineStart = end - lines.last().length
+    }
+    pos = end + 3
+
+    return Token.String(
+        start = start,
+        end = pos,
+        line = startLine,
+        column = startColumn,
+        value = lines.dedentBlockString().replace("\\\"\"\"", "\"\"\"")
+    )
   }
 
   private fun Char.isDigit(): Boolean {
@@ -630,7 +600,22 @@ internal class Lexer(val src: String) {
   }
 }
 
-internal fun List<String>.dedentBlockStringLines(): List<String> {
+internal fun List<String>.dedentBlockStringLines(): List<String> = buildList {
+  this@dedentBlockStringLines.forEachDedentedBlockStringLine { line, start ->
+    add(line.substring(start))
+  }
+}
+
+private fun List<String>.dedentBlockString(): String = buildString {
+  var first = true
+  this@dedentBlockString.forEachDedentedBlockStringLine { line, start ->
+    if (!first) append('\n')
+    first = false
+    append(line, start, line.length)
+  }
+}
+
+private inline fun List<String>.forEachDedentedBlockStringLine(action: (String, Int) -> Unit) {
   var commonIndent = Int.MAX_VALUE
   var firstNonEmptyLine: Int? = null
   var lastNonEmptyLine = -1
@@ -653,13 +638,10 @@ internal fun List<String>.dedentBlockStringLines(): List<String> {
     }
   }
 
-  return mapIndexed { index, line ->
-    if (index == 0) {
-      line
-    } else {
-      line.substring(commonIndent.coerceAtMost(line.length))
-    }
-  }.subList(firstNonEmptyLine ?: 0, lastNonEmptyLine + 1)
+  for (index in (firstNonEmptyLine ?: 0)..lastNonEmptyLine) {
+    val line = get(index)
+    action(line, if (index == 0) 0 else commonIndent.coerceAtMost(line.length))
+  }
 }
 
 internal fun String.leadingWhitespace(): Int {

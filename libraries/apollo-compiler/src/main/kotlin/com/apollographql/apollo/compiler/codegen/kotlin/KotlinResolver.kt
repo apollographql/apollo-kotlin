@@ -56,6 +56,8 @@ internal class KotlinResolver(
   private val classNames = mutableMapOf<ResolverKey, ClassName>()
   private val scalarAdapters = mutableMapOf<String, String>()
   private val scalarTargets = mutableMapOf<String, String>()
+  private val parsedScalarTargets = mutableMapOf<String, TypeName>()
+  private val scalarAdapterInitializers = mutableMapOf<String, CodeBlock>()
   private val inlineProperties = mutableMapOf<String, String>()
   private val scalarIsUserDefined = mutableMapOf<String, Boolean>()
   private val mapTypes = mutableMapOf<String, ClassName>()
@@ -211,7 +213,16 @@ internal class KotlinResolver(
       type.nullable -> {
         val initializer = adapterInitializer(type.nullable(false), false, requiresBuffering, jsExport)
 
-        val nonNullableBuiltin = when (initializer.toString()) {
+        val adapterExpression = when (type) {
+          is IrScalarType -> scalarAdapters[type.name] ?: upstreamScalarAdapters[type.name]
+          is IrEnumType -> if (jsExport) {
+            scalarAdapters["String"] ?: upstreamScalarAdapters["String"]
+          } else {
+            initializer.toString()
+          }
+          else -> null
+        }
+        val nonNullableBuiltin = when (adapterExpression) {
           KotlinSymbols.StringAdapter.canonicalName -> KotlinSymbols.NullableStringAdapter
           KotlinSymbols.BooleanAdapter.canonicalName -> KotlinSymbols.NullableBooleanAdapter
           KotlinSymbols.IntAdapter.canonicalName -> KotlinSymbols.NullableIntAdapter
@@ -423,7 +434,7 @@ internal class KotlinResolver(
       "Cannot resolve scalar target for '$name'"
     }
 
-    return parseType(custom)
+    return parsedScalarTargets.getOrPut(custom) { parseType(custom) }
   }
 
   fun registerScalarTarget(name: String, target: String) {
@@ -437,11 +448,14 @@ internal class KotlinResolver(
   internal fun resolveScalarAdapterInitializer(name: String): CodeBlock? {
     val customAdapter = scalarAdapters[name] ?: upstreamScalarAdapters[name]
     if (customAdapter != null) {
-      if (customAdapter.matches(Regex("com\\.apollographql\\.apollo\\.api\\.[a-zA-Z]*Adapter"))) {
-        // Make the generated code look a bit nicer in case this is one of the built-in adapters
-        return CodeBlock.of("%T", ClassName.bestGuess(customAdapter))
+      return scalarAdapterInitializers.getOrPut(customAdapter) {
+        if (customAdapter.matches(builtinAdapterPattern)) {
+          // Make the generated code look a bit nicer in case this is one of the built-in adapters
+          CodeBlock.of("%T", ClassName.bestGuess(customAdapter))
+        } else {
+          CodeBlock.of("%L", customAdapter)
+        }
       }
-      return CodeBlock.of("%L", customAdapter)
     }
 
     return null
@@ -463,3 +477,5 @@ internal class KotlinResolver(
     return scalarIsUserDefined[id] ?: upstreamScalarIsUserDefined.get(id) ?: false
   }
 }
+
+private val builtinAdapterPattern = Regex("com\\.apollographql\\.apollo\\.api\\.[a-zA-Z]*Adapter")
