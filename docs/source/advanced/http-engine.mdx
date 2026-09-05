@@ -77,6 +77,22 @@ val client = ApolloClient.Builder()
 
 With this configuration, Apollo Kotlin sends all of its GraphQL operation requests with `MyHttpEngine`.
 
+### Excluding OkHttp on JVM
+
+If you provide a custom `HttpEngine` and only use HTTP operations, you can exclude OkHttp from the runtime dependency:
+
+```kotlin
+dependencies {
+  implementation("com.apollographql.apollo:apollo-runtime:$apolloVersion") {
+    exclude(group = "com.squareup.okhttp3")
+  }
+}
+```
+
+The default WebSocket engine is initialized only when a WebSocket connection is opened. If you use WebSocket subscriptions, you must also provide a custom `WebSocketEngine` through `WebSocketNetworkTransport` before excluding OkHttp.
+
+This exclusion only applies to Apollo's dependency on OkHttp; other dependencies may still require it. Apollo still requires Okio for its HTTP bodies and JSON readers.
+
 
 ## Ktor engine
 

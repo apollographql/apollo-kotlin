@@ -97,3 +97,16 @@ kotlin {
     }
   }
 }
+
+val jvmTest = tasks.named<Test>("jvmTest")
+val jvmTestWithoutOkHttp = tasks.register<Test>("jvmTestWithoutOkHttp") {
+  testClassesDirs = jvmTest.get().testClassesDirs
+  classpath = jvmTest.get().classpath.filter { !it.name.startsWith("okhttp") }
+  filter.includeTestsMatching("NoOkHttpTest")
+}
+jvmTest.configure {
+  filter.excludeTestsMatching("NoOkHttpTest")
+}
+tasks.named("check") {
+  dependsOn(jvmTestWithoutOkHttp)
+}

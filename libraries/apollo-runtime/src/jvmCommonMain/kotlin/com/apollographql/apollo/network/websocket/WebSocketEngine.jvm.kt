@@ -113,7 +113,32 @@ internal class JvmWebSocket(
 }
 
 
-actual fun WebSocketEngine(): WebSocketEngine = JvmWebSocketEngine { defaultOkHttpClientBuilder.build() }
+actual fun WebSocketEngine(): WebSocketEngine = LazyWebSocketEngine {
+  // Loading JvmWebSocketEngine links OkHttp classes, even though its client is lazy.
+  JvmWebSocketEngine { defaultOkHttpClientBuilder.build() }
+}
+
+internal class LazyWebSocketEngine(private val factory: () -> WebSocketEngine) : WebSocketEngine {
+  private var delegate: WebSocketEngine? = null
+  private var closed = false
+
+  override fun newWebSocket(url: String, headers: List<HttpHeader>, listener: WebSocketListener): WebSocket = synchronized(this) {
+    require(!closed) {
+      "JvmWebSocketEngine is closed"
+    }
+    val engine = delegate ?: factory().also { delegate = it }
+    engine.newWebSocket(url, headers, listener)
+  }
+
+  override fun close() {
+    synchronized(this) {
+      if (!closed) {
+        closed = true
+        delegate?.close()
+      }
+    }
+  }
+}
 
 /**
  * Creates a new [WebSocketEngine] from [webSocketFactory]
