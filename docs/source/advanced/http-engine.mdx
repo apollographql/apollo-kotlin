@@ -79,7 +79,7 @@ With this configuration, Apollo Kotlin sends all of its GraphQL operation reques
 
 ### Excluding OkHttp on JVM
 
-If you provide a custom `HttpEngine` and only use HTTP operations, you can exclude OkHttp from the runtime dependency:
+OkHttp is a ~800kB dependency. If you don't need it otherwise in your app classpath, you can save the dependency by excluding it in your Gradle configuration:
 
 ```kotlin
 dependencies {
@@ -89,7 +89,26 @@ dependencies {
 }
 ```
 
-The default WebSocket engine is initialized only when a WebSocket connection is opened. If you use WebSocket subscriptions, you must also provide a custom `WebSocketEngine` through `WebSocketNetworkTransport` before excluding OkHttp.
+And customizing the `HttpEngine`. For an example, you can use the builtin JVM client:
+
+```kotlin
+val httpEngine = object : HttpEngine {
+  override suspend fun execute(request: HttpRequest): HttpResponse {
+    requests.add(Buffer().apply { request.body!!.writeTo(this) }.readUtf8())
+    return HttpResponse.Builder(200)
+        .body(Buffer().writeUtf8(FooQuery.successResponse))
+        .build()
+  }
+
+  override fun close() {}
+}
+
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .httpEngine(httpEngine)
+    // If you use WebSocket subscriptions, you must also provide a custom `WebSocketEngine`. 
+    .build()
+```
 
 This exclusion only applies to Apollo's dependency on OkHttp; other dependencies may still require it. Apollo still requires Okio for its HTTP bodies and JSON readers.
 
