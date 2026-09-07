@@ -14,7 +14,11 @@ import java.util.concurrent.atomic.AtomicReference
 import okhttp3.WebSocket as PlatformWebSocket
 import okhttp3.WebSocketListener as PlatformWebSocketListener
 
-internal class JvmWebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Factory) : WebSocketEngine {
+/**
+ * Use `Any` in the constructor signature to avoid linking OkHttp classes.
+ * See https://github.com/apollographql/apollo-kotlin/pull/7018
+ */
+internal class JvmWebSocketEngine(webSocketFactory: () -> Any) : WebSocketEngine {
   private val webSocketFactory by lazy { webSocketFactory() }
 
   constructor(webSocketFactory: PlatformWebSocket.Factory) : this({ webSocketFactory })
@@ -24,7 +28,7 @@ internal class JvmWebSocketEngine(webSocketFactory: () -> PlatformWebSocket.Fact
     require(!closed) {
       "JvmWebSocketEngine is closed"
     }
-    return JvmWebSocket(webSocketFactory, url, headers, listener)
+    return JvmWebSocket(webSocketFactory as PlatformWebSocket.Factory, url, headers, listener)
   }
 
   override fun close() {
