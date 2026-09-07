@@ -7,17 +7,7 @@ package com.apollographql.apollo.compiler
  * that uses a different 'I'
  */
 fun String.capitalizeFirstLetter(): String {
-  val builder = StringBuilder(length)
-  var isCapitalized = false
-  forEach {
-    builder.append(if (!isCapitalized && it.isLetter()) {
-      isCapitalized = true
-      it.toString().uppercase()
-    } else {
-      it.toString()
-    })
-  }
-  return builder.toString()
+  return replaceFirstLetter { it.toString().uppercase() }
 }
 
 /**
@@ -27,17 +17,19 @@ fun String.capitalizeFirstLetter(): String {
  * that uses a different 'I'
  */
 fun String.decapitalizeFirstLetter(): String {
-  val builder = StringBuilder(length)
-  var isDecapitalized = false
-  forEach {
-    builder.append(if (!isDecapitalized && it.isLetter()) {
-      isDecapitalized = true
-      it.toString().lowercase()
-    } else {
-      it.toString()
-    })
+  return replaceFirstLetter { it.toString().lowercase() }
+}
+
+private inline fun String.replaceFirstLetter(transform: (Char) -> String): String {
+  val index = indexOfFirst { it.isLetter() }
+  if (index == -1) return this
+  val replacement = transform(this[index])
+  if (replacement.length == 1 && replacement[0] == this[index]) return this
+  return buildString(length) {
+    append(this@replaceFirstLetter, 0, index)
+    append(replacement)
+    append(this@replaceFirstLetter, index + 1, this@replaceFirstLetter.length)
   }
-  return builder.toString()
 }
 
 internal fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
@@ -93,4 +85,3 @@ internal fun String.toPackageName(): String {
       .dropLast(1)
       .joinToString(".")
 }
-

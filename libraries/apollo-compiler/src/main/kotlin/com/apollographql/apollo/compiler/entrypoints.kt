@@ -171,7 +171,13 @@ object EntryPoints {
       ).writeTo(dataBuildersOutputDirectory, true, null)
     }
 
-    sourceOutput.writeTo(outputDirectory, true, null)
+    // Plugin-provided CodeBlock arguments can have stateful toString() implementations.
+    val parallelism = if (plugins.isEmpty() && sourceOutput.codegenMetadata.targetLanguage != TargetLanguage.JAVA) {
+      minOf(4, Runtime.getRuntime().availableProcessors())
+    } else {
+      1
+    }
+    sourceOutput.writeTo(outputDirectory, true, null, parallelism)
 
     registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDirectory)
   }

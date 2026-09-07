@@ -20,8 +20,7 @@ import com.apollographql.apollo.compiler.codegen.java.JavaOutput
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinOutput
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.operationoutput.OperationId
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
+import okio.ByteString.Companion.encodeUtf8
 
 internal class Registration<T>(val id: String, val transform: T, val orders: Array<out Order>)
 
@@ -227,10 +226,7 @@ internal class DefaultApolloCompilerRegistry : ApolloCompilerRegistry {
 }
 
 internal fun String.sha256(): String {
-  val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-  val md = MessageDigest.getInstance("SHA-256")
-  val digest = md.digest(bytes)
-  return digest.fold("") { str, it -> str + "%02x".format(it) }
+  return encodeUtf8().sha256().hex()
 }
 
 private fun <T> Collection<Node<T>>.sort(): List<Node<T>> {
@@ -256,4 +252,3 @@ private fun <T> Collection<Node<T>>.sort(): List<Node<T>> {
   }
   return result
 }
-
