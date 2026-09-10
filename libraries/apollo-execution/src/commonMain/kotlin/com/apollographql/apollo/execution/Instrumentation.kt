@@ -2,7 +2,7 @@ package com.apollographql.apollo.execution
 
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.ast.GQLFragmentDefinition
-import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLSelection
 import com.apollographql.apollo.ast.Schema
 
 
@@ -34,7 +34,8 @@ abstract class Instrumentation {
 }
 
 class OperationInfo(
-  val operation: GQLOperationDefinition,
+  val rootSelections: List<GQLSelection>,
+  val typename: String,
   val fragments: Map<String, GQLFragmentDefinition>,
   val schema: Schema,
   val executionContext: ExecutionContext

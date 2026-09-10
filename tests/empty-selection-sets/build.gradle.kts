@@ -1,5 +1,3 @@
-@file:OptIn(ApolloExperimental::class)
-
 import com.apollographql.apollo.annotations.ApolloExperimental
 
 plugins {

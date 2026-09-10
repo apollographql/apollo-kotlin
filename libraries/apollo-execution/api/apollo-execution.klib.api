@@ -6,6 +6,19 @@
 // - Show declarations: true
 
 // Library unique name: <com.apollographql.apollo:apollo-execution>
+final enum class com.apollographql.apollo.execution/RequestType : kotlin/Enum<com.apollographql.apollo.execution/RequestType> { // com.apollographql.apollo.execution/RequestType|null[0]
+    enum entry Fragment // com.apollographql.apollo.execution/RequestType.Fragment|null[0]
+    enum entry Mutation // com.apollographql.apollo.execution/RequestType.Mutation|null[0]
+    enum entry Query // com.apollographql.apollo.execution/RequestType.Query|null[0]
+    enum entry Subscription // com.apollographql.apollo.execution/RequestType.Subscription|null[0]
+
+    final val entries // com.apollographql.apollo.execution/RequestType.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.apollographql.apollo.execution/RequestType> // com.apollographql.apollo.execution/RequestType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.apollographql.apollo.execution/RequestType // com.apollographql.apollo.execution/RequestType.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.apollographql.apollo.execution/RequestType> // com.apollographql.apollo.execution/RequestType.values|values#static(){}[0]
+}
+
 abstract fun interface com.apollographql.apollo.execution/FieldCallback { // com.apollographql.apollo.execution/FieldCallback|null[0]
     abstract fun onFieldCompleted(kotlin/Any?) // com.apollographql.apollo.execution/FieldCallback.onFieldCompleted|onFieldCompleted(kotlin.Any?){}[0]
 }
@@ -57,7 +70,9 @@ final class com.apollographql.apollo.execution/ErrorPersistedDocument : com.apol
 
 final class com.apollographql.apollo.execution/ExecutableSchema { // com.apollographql.apollo.execution/ExecutableSchema|null[0]
     final fun subscribe(com.apollographql.apollo.execution/GraphQLRequest, com.apollographql.apollo.api/ExecutionContext = ...): kotlinx.coroutines.flow/Flow<com.apollographql.apollo.execution/SubscriptionEvent> // com.apollographql.apollo.execution/ExecutableSchema.subscribe|subscribe(com.apollographql.apollo.execution.GraphQLRequest;com.apollographql.apollo.api.ExecutionContext){}[0]
+    final fun subscribe(com.apollographql.apollo.execution/PreparedRequest, com.apollographql.apollo.api/ExecutionContext = ...): kotlinx.coroutines.flow/Flow<com.apollographql.apollo.execution/SubscriptionEvent> // com.apollographql.apollo.execution/ExecutableSchema.subscribe|subscribe(com.apollographql.apollo.execution.PreparedRequest;com.apollographql.apollo.api.ExecutionContext){}[0]
     final suspend fun execute(com.apollographql.apollo.execution/GraphQLRequest, com.apollographql.apollo.api/ExecutionContext = ...): com.apollographql.apollo.execution/GraphQLResponse // com.apollographql.apollo.execution/ExecutableSchema.execute|execute(com.apollographql.apollo.execution.GraphQLRequest;com.apollographql.apollo.api.ExecutionContext){}[0]
+    final suspend fun execute(com.apollographql.apollo.execution/PreparedRequest, com.apollographql.apollo.api/ExecutionContext = ...): com.apollographql.apollo.execution/GraphQLResponse // com.apollographql.apollo.execution/ExecutableSchema.execute|execute(com.apollographql.apollo.execution.PreparedRequest;com.apollographql.apollo.api.ExecutionContext){}[0]
 
     final class Builder { // com.apollographql.apollo.execution/ExecutableSchema.Builder|null[0]
         constructor <init>() // com.apollographql.apollo.execution/ExecutableSchema.Builder.<init>|<init>(){}[0]
@@ -158,16 +173,51 @@ final class com.apollographql.apollo.execution/InMemoryPersistedDocumentCache : 
 }
 
 final class com.apollographql.apollo.execution/OperationInfo { // com.apollographql.apollo.execution/OperationInfo|null[0]
-    constructor <init>(com.apollographql.apollo.ast/GQLOperationDefinition, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition>, com.apollographql.apollo.ast/Schema, com.apollographql.apollo.api/ExecutionContext) // com.apollographql.apollo.execution/OperationInfo.<init>|<init>(com.apollographql.apollo.ast.GQLOperationDefinition;kotlin.collections.Map<kotlin.String,com.apollographql.apollo.ast.GQLFragmentDefinition>;com.apollographql.apollo.ast.Schema;com.apollographql.apollo.api.ExecutionContext){}[0]
+    constructor <init>(kotlin.collections/List<com.apollographql.apollo.ast/GQLSelection>, kotlin/String, kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition>, com.apollographql.apollo.ast/Schema, com.apollographql.apollo.api/ExecutionContext) // com.apollographql.apollo.execution/OperationInfo.<init>|<init>(kotlin.collections.List<com.apollographql.apollo.ast.GQLSelection>;kotlin.String;kotlin.collections.Map<kotlin.String,com.apollographql.apollo.ast.GQLFragmentDefinition>;com.apollographql.apollo.ast.Schema;com.apollographql.apollo.api.ExecutionContext){}[0]
 
     final val executionContext // com.apollographql.apollo.execution/OperationInfo.executionContext|{}executionContext[0]
         final fun <get-executionContext>(): com.apollographql.apollo.api/ExecutionContext // com.apollographql.apollo.execution/OperationInfo.executionContext.<get-executionContext>|<get-executionContext>(){}[0]
     final val fragments // com.apollographql.apollo.execution/OperationInfo.fragments|{}fragments[0]
         final fun <get-fragments>(): kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition> // com.apollographql.apollo.execution/OperationInfo.fragments.<get-fragments>|<get-fragments>(){}[0]
-    final val operation // com.apollographql.apollo.execution/OperationInfo.operation|{}operation[0]
-        final fun <get-operation>(): com.apollographql.apollo.ast/GQLOperationDefinition // com.apollographql.apollo.execution/OperationInfo.operation.<get-operation>|<get-operation>(){}[0]
+    final val rootSelections // com.apollographql.apollo.execution/OperationInfo.rootSelections|{}rootSelections[0]
+        final fun <get-rootSelections>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLSelection> // com.apollographql.apollo.execution/OperationInfo.rootSelections.<get-rootSelections>|<get-rootSelections>(){}[0]
     final val schema // com.apollographql.apollo.execution/OperationInfo.schema|{}schema[0]
         final fun <get-schema>(): com.apollographql.apollo.ast/Schema // com.apollographql.apollo.execution/OperationInfo.schema.<get-schema>|<get-schema>(){}[0]
+    final val typename // com.apollographql.apollo.execution/OperationInfo.typename|{}typename[0]
+        final fun <get-typename>(): kotlin/String // com.apollographql.apollo.execution/OperationInfo.typename.<get-typename>|<get-typename>(){}[0]
+}
+
+final class com.apollographql.apollo.execution/PreparedRequest { // com.apollographql.apollo.execution/PreparedRequest|null[0]
+    final val fragments // com.apollographql.apollo.execution/PreparedRequest.fragments|{}fragments[0]
+        final fun <get-fragments>(): kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition> // com.apollographql.apollo.execution/PreparedRequest.fragments.<get-fragments>|<get-fragments>(){}[0]
+    final val id // com.apollographql.apollo.execution/PreparedRequest.id|{}id[0]
+        final fun <get-id>(): kotlin/String? // com.apollographql.apollo.execution/PreparedRequest.id.<get-id>|<get-id>(){}[0]
+    final val name // com.apollographql.apollo.execution/PreparedRequest.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // com.apollographql.apollo.execution/PreparedRequest.name.<get-name>|<get-name>(){}[0]
+    final val onError // com.apollographql.apollo.execution/PreparedRequest.onError|{}onError[0]
+        final fun <get-onError>(): com.apollographql.apollo.api/OnError? // com.apollographql.apollo.execution/PreparedRequest.onError.<get-onError>|<get-onError>(){}[0]
+    final val rootSelections // com.apollographql.apollo.execution/PreparedRequest.rootSelections|{}rootSelections[0]
+        final fun <get-rootSelections>(): kotlin.collections/List<com.apollographql.apollo.ast/GQLSelection> // com.apollographql.apollo.execution/PreparedRequest.rootSelections.<get-rootSelections>|<get-rootSelections>(){}[0]
+    final val type // com.apollographql.apollo.execution/PreparedRequest.type|{}type[0]
+        final fun <get-type>(): com.apollographql.apollo.execution/RequestType // com.apollographql.apollo.execution/PreparedRequest.type.<get-type>|<get-type>(){}[0]
+    final val typename // com.apollographql.apollo.execution/PreparedRequest.typename|{}typename[0]
+        final fun <get-typename>(): kotlin/String // com.apollographql.apollo.execution/PreparedRequest.typename.<get-typename>|<get-typename>(){}[0]
+    final val variables // com.apollographql.apollo.execution/PreparedRequest.variables|{}variables[0]
+        final fun <get-variables>(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // com.apollographql.apollo.execution/PreparedRequest.variables.<get-variables>|<get-variables>(){}[0]
+
+    final class Builder { // com.apollographql.apollo.execution/PreparedRequest.Builder|null[0]
+        constructor <init>() // com.apollographql.apollo.execution/PreparedRequest.Builder.<init>|<init>(){}[0]
+
+        final fun build(): com.apollographql.apollo.execution/PreparedRequest // com.apollographql.apollo.execution/PreparedRequest.Builder.build|build(){}[0]
+        final fun fragments(kotlin.collections/Map<kotlin/String, com.apollographql.apollo.ast/GQLFragmentDefinition>): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.fragments|fragments(kotlin.collections.Map<kotlin.String,com.apollographql.apollo.ast.GQLFragmentDefinition>){}[0]
+        final fun id(kotlin/String?): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.id|id(kotlin.String?){}[0]
+        final fun name(kotlin/String?): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.name|name(kotlin.String?){}[0]
+        final fun onError(com.apollographql.apollo.api/OnError?): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.onError|onError(com.apollographql.apollo.api.OnError?){}[0]
+        final fun rootSelections(kotlin.collections/List<com.apollographql.apollo.ast/GQLSelection>): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.rootSelections|rootSelections(kotlin.collections.List<com.apollographql.apollo.ast.GQLSelection>){}[0]
+        final fun type(com.apollographql.apollo.execution/RequestType): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.type|type(com.apollographql.apollo.execution.RequestType){}[0]
+        final fun typename(kotlin/String): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.typename|typename(kotlin.String){}[0]
+        final fun variables(kotlin.collections/Map<kotlin/String, kotlin/Any?>): com.apollographql.apollo.execution/PreparedRequest.Builder // com.apollographql.apollo.execution/PreparedRequest.Builder.variables|variables(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
+    }
 }
 
 final class com.apollographql.apollo.execution/ResolveInfo { // com.apollographql.apollo.execution/ResolveInfo|null[0]
