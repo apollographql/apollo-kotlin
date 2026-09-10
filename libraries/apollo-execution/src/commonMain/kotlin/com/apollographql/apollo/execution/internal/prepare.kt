@@ -11,17 +11,12 @@ import com.apollographql.apollo.execution.Coercing
 import com.apollographql.apollo.execution.ErrorPersistedDocument
 import com.apollographql.apollo.execution.ExternalValue
 import com.apollographql.apollo.execution.GraphQLRequest
-import com.apollographql.apollo.execution.InternalValue
 import com.apollographql.apollo.execution.PersistedDocument
 import com.apollographql.apollo.execution.PersistedDocumentCache
+import com.apollographql.apollo.execution.PreparedRequest
+import com.apollographql.apollo.execution.RequestType
+import com.apollographql.apollo.execution.RootResolver
 import com.apollographql.apollo.execution.ValidPersistedDocument
-
-internal class PreparedRequest(
-    val operation: GQLOperationDefinition,
-    val fragments: Map<String, GQLFragmentDefinition>,
-    val variables: Map<String, InternalValue>,
-    val onError: OnError?,
-)
 
 /**
  * Parses and validates a document. When using persisted documents, the result of this function may be
@@ -61,7 +56,7 @@ internal fun Raise<String>.prepareRequest(
     document: GQLDocument,
     operationName: String?,
     variables: Map<String, ExternalValue>,
-    onError: OnError?
+    onError: OnError?,
 ): PreparedRequest {
   val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
   val operation = when {
@@ -79,7 +74,7 @@ internal fun Raise<String>.prepareRequest(
       }
       val ret = operations.firstOrNull { it.name == operationName }
       if (ret == null) {
-        raise("No operation named '${operationName}' found. Double check operationName.")
+        raise("No operation named '${operationName}' found. Double check 'operationName'.")
       }
       ret
     }
@@ -91,7 +86,28 @@ internal fun Raise<String>.prepareRequest(
   } catch (e: Exception) {
     raise("Cannot coerce variable values: '${e.message}'")
   }
-  return PreparedRequest(operation, fragments, variableValues, onError)
+
+  val typename = schema.rootTypeNameOrNullFor(operation.operationType)
+  if (typename == null) {
+    raise("'${operation.operationType}' is not supported")
+  }
+
+  val type = when (operation.operationType) {
+    "query" -> RequestType.Query
+    "mutation" -> RequestType.Mutation
+    "subscription" -> RequestType.Subscription
+    else -> raise("Unknown operation type '${operation.operationType}'.")
+  }
+
+  return PreparedRequest.Builder()
+      .rootSelections(operation.selections)
+      .typename(typename)
+      .fragments(fragments)
+      .variables(variableValues)
+      .onError(onError)
+      .type(type)
+      .name(operation.name)
+      .build()
 }
 
 /**
@@ -177,7 +193,14 @@ internal fun Raise<List<Error>>.prepareRequest(
   return withError({
     singleGraphQLError(it)
   }) {
-    prepareRequest(schema, coercings, persistedDocument.document, request.operationName, request.variables, request.onError)
+    prepareRequest(
+        schema,
+        coercings,
+        persistedDocument.document,
+        request.operationName,
+        request.variables,
+        request.onError,
+    )
   }
 }
 
@@ -188,5 +211,5 @@ internal fun prepareRequest(
     parserOptions: ParserOptions,
     request: GraphQLRequest,
 ): Either<List<Error>, PreparedRequest> = either {
-  prepareRequest(schema, coercings, persistedDocumentCache, parserOptions, request)
+  prepareRequest(schema, coercings, persistedDocumentCache, parserOptions, request, )
 }

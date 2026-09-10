@@ -127,11 +127,11 @@ class ParallelExecutionTest {
         {
             field1 {
                 subField1
-                subField2            
+                subField2
             }
             field2 {
                 subField1
-                subField2            
+                subField2
             }
         }
       """.trimIndent().toGraphQLRequest()
@@ -163,7 +163,7 @@ class ParallelExecutionTest {
       }
     """.trimIndent()
 
-        val executableSchema = ExecutableSchema.Builder()
+    val executableSchema = ExecutableSchema.Builder()
       .schema(schema.toGQLDocument())
       .resolver {
         return@resolver when (it.fieldName) {

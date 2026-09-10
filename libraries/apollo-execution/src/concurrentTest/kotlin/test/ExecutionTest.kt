@@ -191,7 +191,7 @@ class ExecutionTest {
     val schema = """
             type Query {
                 foo: String!
-            } 
+            }
         """.trimIndent()
 
     val document = """
@@ -232,7 +232,7 @@ class ExecutionTest {
             {
                 ...queryDetails(first: 42)
             }
-            
+
             fragment queryDetails(${'$'}first: Int) on Query {
                 foo(first: ${'$'}first)
             }
@@ -263,7 +263,7 @@ class ExecutionTest {
             query GetFoo(${'$'}first: Int!) {
                 ...queryDetails(first: ${'$'}first)
             }
-            
+
             fragment queryDetails(${'$'}first: Int) on Query {
                 foo(first: ${'$'}first)
             }
@@ -295,7 +295,7 @@ class ExecutionTest {
                 a: foo(first: ${'$'}first)
                 ...queryDetails(first: 42)
             }
-            
+
             fragment queryDetails(${'$'}first: Int) on Query {
                 foo(first: ${'$'}first)
             }
@@ -326,7 +326,7 @@ class ExecutionTest {
             query GetFoo(${'$'}first: Int!) {
                 ...queryDetails
             }
-            
+
             fragment queryDetails on Query {
                 foo(first: ${'$'}first)
             }

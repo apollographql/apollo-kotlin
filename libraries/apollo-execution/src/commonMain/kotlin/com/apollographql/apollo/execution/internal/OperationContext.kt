@@ -16,7 +16,6 @@ import com.apollographql.apollo.ast.GQLListType
 import com.apollographql.apollo.ast.GQLNamedType
 import com.apollographql.apollo.ast.GQLNonNullType
 import com.apollographql.apollo.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo.ast.GQLOperationDefinition
 import com.apollographql.apollo.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo.ast.GQLSelection
 import com.apollographql.apollo.ast.GQLType
@@ -39,7 +38,6 @@ import com.apollographql.apollo.execution.ResolveTypeInfo
 import com.apollographql.apollo.execution.Resolver
 import com.apollographql.apollo.execution.ResolverValue
 import com.apollographql.apollo.execution.ResolverValueOrError
-import com.apollographql.apollo.execution.RootResolver
 import com.apollographql.apollo.execution.SubscriptionError
 import com.apollographql.apollo.execution.SubscriptionEvent
 import com.apollographql.apollo.execution.SubscriptionResponse
@@ -76,17 +74,18 @@ internal class OperationContext(
     private val schema: Schema,
     private val coercings: Map<String, Coercing<*>>,
     private val introspectionResolver: Resolver,
-    private val queryRoot: RootResolver?,
-    private val mutationRoot: RootResolver?,
-    private val subscriptionRoot: RootResolver?,
     private val resolver: Resolver,
     private val typeResolver: TypeResolver,
     private val instrumentations: List<Instrumentation>,
-    private val operation: GQLOperationDefinition,
+    private val rootSelections: List<GQLSelection>,
+    private val typename: String,
+    private val rootObject: ResolverValue,
     private val fragments: Map<String, GQLFragmentDefinition>,
     private val variableValues: Map<String, InternalValue>,
     private val executionContext: ExecutionContext,
     private val onError: OnError,
+    private val serial: Boolean,
+    private val debugName: String?,
 ) {
   /**
    * Executes the given operation and awaits its result.
@@ -98,7 +97,8 @@ internal class OperationContext(
     var instrumentationException: Exception? = null
     val operationCallbacks = mutableListOf<OperationCallback>()
     val operationInfo = OperationInfo(
-        operation,
+        rootSelections,
+        typename,
         fragments,
         schema,
         executionContext
@@ -123,26 +123,11 @@ internal class OperationContext(
       }
     }
     if (instrumentationException != null) {
-      return graphqlErrorResponse("An error happened while instrumenting '${operation.name}': ${instrumentationException.message}")
+      return graphqlErrorResponse("An error happened while instrumenting '${debugName}': ${instrumentationException.message}")
     }
-    val rootTypename = schema.rootTypeNameOrNullFor(operation.operationType)
-    if (rootTypename == null) {
-      return graphqlErrorResponse("'${operation.operationType}' is not supported")
-    }
-    val rootObject = when (operation.operationType) {
-      "query" -> queryRoot?.resolveRoot()
-      "mutation" -> mutationRoot?.resolveRoot()
-      "subscription" -> {
-        return graphqlErrorResponse("Use subscribe() to execute subscriptions")
-      }
+    val typeDefinition = schema.typeDefinition(typename)
 
-      else -> {
-        return graphqlErrorResponse("Unknown operation type '${operation.operationType}")
-      }
-    }
-    val typeDefinition = schema.typeDefinition(rootTypename)
-
-    val groupedFieldSet = collectFields(typeDefinition.name, operation.selections, variableValues)
+    val groupedFieldSet = collectFields(typeDefinition.name, rootSelections, variableValues)
 
     return coroutineScope {
       async(start = CoroutineStart.UNDISPATCHED) {
@@ -153,20 +138,15 @@ internal class OperationContext(
             rootObject,
             variableValues,
             emptyList(),
-            operation.operationType == "mutation"
+            serial
         )
       }.toGraphQLResponse(callbacks = operationCallbacks)
     }
   }
 
   fun subscribe(): Flow<SubscriptionEvent> {
-    val rootObject = when (operation.operationType) {
-      "subscription" -> subscriptionRoot?.resolveRoot()
-      else -> return subscriptionError("Unknown operation type '${operation.operationType}.")
-    }
-
     val eventStream = try {
-      createSourceEventStream(operation, rootObject)
+      createSourceEventStream(rootObject)
     } catch (e: Exception) {
       return subscriptionError("Cannot create source event stream: ${e.message}")
     }
@@ -250,20 +230,13 @@ internal class OperationContext(
   ) : FieldEvent
 
   private fun createSourceEventStream(
-      subscription: GQLOperationDefinition,
       rootValue: ResolverValue,
   ): Flow<FieldEvent> {
-    val rootTypename = schema.rootTypeNameOrNullFor(subscription.operationType)
-    if (rootTypename == null) {
-      return flowOf(FieldEventError("'${subscription.operationType}' is not supported"))
-    }
-
-    val typeDefinition = schema.typeDefinition(rootTypename)
+    val typeDefinition = schema.typeDefinition(typename)
     check(typeDefinition is GQLObjectTypeDefinition) {
       "Root typename '${typeDefinition.name} must be of object type"
     }
-    val selections = subscription.selections
-    val groupedFieldsSet = collectFields(typeDefinition.name, selections, variableValues)
+    val groupedFieldsSet = collectFields(typeDefinition.name, rootSelections, variableValues)
     check(groupedFieldsSet.size == 1) {
       return flowOf(FieldEventError("Subscriptions must have a single root field"))
     }

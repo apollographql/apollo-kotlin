@@ -21,9 +21,13 @@ public final class com/apollographql/apollo/execution/ErrorPersistedDocument : c
 
 public final class com/apollographql/apollo/execution/ExecutableSchema {
 	public final fun execute (Lcom/apollographql/apollo/execution/GraphQLRequest;Lcom/apollographql/apollo/api/ExecutionContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun execute (Lcom/apollographql/apollo/execution/PreparedRequest;Lcom/apollographql/apollo/api/ExecutionContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun execute$default (Lcom/apollographql/apollo/execution/ExecutableSchema;Lcom/apollographql/apollo/execution/GraphQLRequest;Lcom/apollographql/apollo/api/ExecutionContext;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun execute$default (Lcom/apollographql/apollo/execution/ExecutableSchema;Lcom/apollographql/apollo/execution/PreparedRequest;Lcom/apollographql/apollo/api/ExecutionContext;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun subscribe (Lcom/apollographql/apollo/execution/GraphQLRequest;Lcom/apollographql/apollo/api/ExecutionContext;)Lkotlinx/coroutines/flow/Flow;
+	public final fun subscribe (Lcom/apollographql/apollo/execution/PreparedRequest;Lcom/apollographql/apollo/api/ExecutionContext;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun subscribe$default (Lcom/apollographql/apollo/execution/ExecutableSchema;Lcom/apollographql/apollo/execution/GraphQLRequest;Lcom/apollographql/apollo/api/ExecutionContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun subscribe$default (Lcom/apollographql/apollo/execution/ExecutableSchema;Lcom/apollographql/apollo/execution/PreparedRequest;Lcom/apollographql/apollo/api/ExecutionContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo/execution/ExecutableSchema$Builder {
@@ -149,11 +153,12 @@ public abstract interface class com/apollographql/apollo/execution/OperationCall
 }
 
 public final class com/apollographql/apollo/execution/OperationInfo {
-	public fun <init> (Lcom/apollographql/apollo/ast/GQLOperationDefinition;Ljava/util/Map;Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/api/ExecutionContext;)V
+	public fun <init> (Ljava/util/List;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo/ast/Schema;Lcom/apollographql/apollo/api/ExecutionContext;)V
 	public final fun getExecutionContext ()Lcom/apollographql/apollo/api/ExecutionContext;
 	public final fun getFragments ()Ljava/util/Map;
-	public final fun getOperation ()Lcom/apollographql/apollo/ast/GQLOperationDefinition;
+	public final fun getRootSelections ()Ljava/util/List;
 	public final fun getSchema ()Lcom/apollographql/apollo/ast/Schema;
+	public final fun getTypename ()Ljava/lang/String;
 }
 
 public abstract interface class com/apollographql/apollo/execution/PersistedDocument {
@@ -162,6 +167,40 @@ public abstract interface class com/apollographql/apollo/execution/PersistedDocu
 public abstract interface class com/apollographql/apollo/execution/PersistedDocumentCache {
 	public abstract fun get (Ljava/lang/String;)Lcom/apollographql/apollo/execution/PersistedDocument;
 	public abstract fun put (Ljava/lang/String;Lcom/apollographql/apollo/execution/PersistedDocument;)V
+}
+
+public final class com/apollographql/apollo/execution/PreparedRequest {
+	public final fun getFragments ()Ljava/util/Map;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOnError ()Lcom/apollographql/apollo/api/OnError;
+	public final fun getRootSelections ()Ljava/util/List;
+	public final fun getType ()Lcom/apollographql/apollo/execution/RequestType;
+	public final fun getTypename ()Ljava/lang/String;
+	public final fun getVariables ()Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo/execution/PreparedRequest$Builder {
+	public fun <init> ()V
+	public final fun build ()Lcom/apollographql/apollo/execution/PreparedRequest;
+	public final fun fragments (Ljava/util/Map;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun id (Ljava/lang/String;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun name (Ljava/lang/String;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun rootSelections (Ljava/util/List;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun type (Lcom/apollographql/apollo/execution/RequestType;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun typename (Ljava/lang/String;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+	public final fun variables (Ljava/util/Map;)Lcom/apollographql/apollo/execution/PreparedRequest$Builder;
+}
+
+public final class com/apollographql/apollo/execution/RequestType : java/lang/Enum {
+	public static final field Fragment Lcom/apollographql/apollo/execution/RequestType;
+	public static final field Mutation Lcom/apollographql/apollo/execution/RequestType;
+	public static final field Query Lcom/apollographql/apollo/execution/RequestType;
+	public static final field Subscription Lcom/apollographql/apollo/execution/RequestType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo/execution/RequestType;
+	public static fun values ()[Lcom/apollographql/apollo/execution/RequestType;
 }
 
 public final class com/apollographql/apollo/execution/ResolveInfo {
