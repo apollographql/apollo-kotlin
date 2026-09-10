@@ -137,7 +137,10 @@ class ExecutableSchema internal constructor(
         raise("Cannot resolve the fragment root: ${e.message}")
       }
     } else {
-      resolveRootNoFragment(preparedRequest)
+      resolveRootNoFragment(preparedRequest).fold(
+          ifLeft = { raise(it) },
+          ifRight = { it }
+      )
     }
   }
 
