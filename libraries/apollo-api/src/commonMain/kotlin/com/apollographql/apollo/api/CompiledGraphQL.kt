@@ -228,10 +228,15 @@ class CompiledFragment internal constructor(
     possibleTypesSet.toList()
   }
 
+  /**
+   * @param possibleTypesSet the possible types. The set must be robust to calling `set.contains(null)`
+   */
   class Builder(val typeCondition: String, val possibleTypesSet: Set<String>) {
 
-    @Deprecated("Use the primary constructor instead")
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_2)
+    /**
+     * If you have a [Set] around, use the primary constructor instead.
+     * This constructor is not deprecated because it's convenient to call from Java codegen.
+     */
     constructor(typeCondition: String, possibleTypes: List<String>) : this(typeCondition, possibleTypes.toSet())
 
     @Deprecated("Use possibleTypesSet instead")
