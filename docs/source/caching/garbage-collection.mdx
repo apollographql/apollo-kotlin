@@ -9,7 +9,7 @@ The garbage collection feature allows to remove unused data from the normalized 
 A field is considered stale if its **received date** is older than its (client controlled) max age, or if its (server controlled)
 **expiration date** has passed.
 
-See [](./expiration/) for more information about staleness.
+See [expiration](./expiration/) for more information about staleness.
 
 Stale fields can be removed from the cache by calling the [`ApolloStore.removeStaleFields()`](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/remove-stale-fields.html) function.
 
@@ -48,3 +48,10 @@ Unreachable records can be removed from the cache by calling the [`ApolloStore.r
 ## `ApolloStore.garbageCollect()`
 
 The [`ApolloStore.garbageCollect()`](https://apollographql.github.io/apollo-kotlin-normalized-cache/kdoc/normalized-cache/com.apollographql.cache.normalized/garbage-collect.html) function is a convenience to remove all stale fields, dangling references, and unreachable records from the cache.
+
+# Guidance
+
+We recommend calling `ApolloStore.garbageCollect()` periodically to keep the cache size under control. The frequency depends on your application's needs and the amount of data being cached.
+
+Since the garbage collection process can be potentially be resource-intensive and time-consuming, we recommend running it in a background task during periods of low activity in your application,
+for instance by using [WorkManager](https://developer.android.com/develop/background-work/background-tasks/persistent) on Android.
