@@ -6,26 +6,28 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 internal val allAppleTargets = setOf(
-    "macosX64",
     "macosArm64",
     "iosArm64",
     "iosX64",
     "iosSimulatorArm64",
-    "watchosArm32",
     "watchosArm64",
     "watchosDeviceArm64",
     "watchosSimulatorArm64",
     "tvosArm64",
-    "tvosX64",
     "tvosSimulatorArm64",
 )
 
 // Try to guess the dev machine to make sure the tests are running smoothly
 internal val hostTarget: String
-  get() = if (System.getProperty("os.arch") == "aarch64") {
-    "macosArm64"
-  } else {
-    "macosX64"
+  get() {
+    return when (val osArch = System.getProperty("os.arch")) {
+      "aarch64" -> {
+        "macosArm64"
+      }
+      else -> {
+        error("Unsupported host target: $osArch")
+      }
+    }
   }
 
 private val enableLinux = System.getenv("APOLLO_JVM_ONLY")?.toBoolean()?.not() ?: true
@@ -79,18 +81,15 @@ fun defaultTargets(
     if (enableApple) {
       appleTargets.toSet().intersect(allAppleTargets).forEach { presetName ->
         when (presetName) {
-          "macosX64" -> @Suppress("DEPRECATION") macosX64()
           "macosArm64" -> macosArm64()
           "iosArm64" -> iosArm64()
           "iosX64" -> @Suppress("DEPRECATION") iosX64()
           "iosSimulatorArm64" -> iosSimulatorArm64()
-          "watchosArm32" -> watchosArm32()
           "watchosArm64" -> watchosArm64()
           "watchosDeviceArm64" -> watchosDeviceArm64()
           "watchosSimulatorArm64" -> watchosSimulatorArm64()
           "tvosArm64" -> tvosArm64()
-          "tvosX64" -> @Suppress("DEPRECATION") tvosX64()
-          "tvosSimulatorArm64" -> tvosSimulatorArm64()
+          "tvosSimulatorArm64" -> @Suppress("DEPRECATION") tvosSimulatorArm64()
         }
       }
     }
@@ -113,17 +112,14 @@ fun defaultTargets(
  * jvmCommon --> android
  * native --> linux
  * native --> apple
- * apple --> macosX64
  * apple --> macosArm64
  * apple --> iosArm64
  * apple --> iosX64
  * apple --> iosSimulatorArm64
- * apple --> watchosArm32
  * apple --> watchosArm64
  * apple --> watchosDeviceArm64
  * apple --> watchosSimulatorArm64
  * apple --> tvosArm64
- * apple --> tvosX64
  * apple --> tvosSimulatorArm64
  * ```
  */
