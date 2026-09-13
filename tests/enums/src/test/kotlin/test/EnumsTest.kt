@@ -1,10 +1,10 @@
 package test
 
-import enums.kotlin15.type.Direction
-import enums.kotlin15.type.Foo
-import enums.kotlin15.type.FooEnum
-import enums.kotlin15.type.FooSealed
-import enums.kotlin15.type.Gravity
+import enums.kotlin.type.Direction
+import enums.kotlin.type.Foo
+import enums.kotlin.type.FooEnum
+import enums.kotlin.type.FooSealed
+import enums.kotlin.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -22,11 +22,6 @@ class EnumsTest {
     assertEquals(Direction.ordinal_, Direction.safeValueOf("ordinal"))
     assertEquals(Direction.type__, Direction.safeValueOf("type"))
     assertEquals(Direction.Companion_, Direction.safeValueOf("Companion"))
-  }
-
-  @Test
-  fun kotlin19Enums() {
-    assertEquals(enums.kotlin19.type.Direction.safeValueOf("NORTH"), enums.kotlin19.type.Direction.NORTH)
   }
 
   @Test
