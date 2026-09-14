@@ -53,5 +53,5 @@ The [`ApolloStore.garbageCollect()`](https://apollographql.github.io/apollo-kotl
 
 We recommend calling `ApolloStore.garbageCollect()` periodically to keep the cache size under control. The frequency depends on your application's needs and the amount of data being cached.
 
-Since the garbage collection process can be potentially be resource-intensive and time-consuming, we recommend running it in a background task during periods of low activity in your application,
+Since the garbage collection process can potentially be resource-intensive and time-consuming, run it in a background task during periods of low activity in your application,
 for instance by using [WorkManager](https://developer.android.com/develop/background-work/background-tasks/persistent) on Android.
