@@ -197,6 +197,7 @@ class ExecutableSchema internal constructor(
     private var persistedDocumentCache: PersistedDocumentCache? = null
     private var onError: OnError = OnError.PROPAGATE
     private var parserOptions: ParserOptions = ParserOptions.Default
+    private var exposeServiceCapabilities: Boolean = true
 
     fun schema(schema: GQLDocument): Builder = apply {
       this.schema = schema
@@ -252,13 +253,26 @@ class ExecutableSchema internal constructor(
       this.parserOptions = parserOptions
     }
 
+    /**
+     * Whether to expose the `__service` field as well as the `__Service` and `__Capability` introspection types.
+     *
+     * Some clients choke on introspection type/field names starting with `__` other than the well-known
+     * ones defined by the GraphQL spec. Set this to `false` to omit service capabilities from introspection
+     * entirely.
+     *
+     * Default: true
+     */
+    fun exposeServiceCapabilities(exposeServiceCapabilities: Boolean): Builder = apply {
+      this.exposeServiceCapabilities = exposeServiceCapabilities
+    }
+
     fun build(): ExecutableSchema {
       check(schema != null) {
         "A schema is required to build an ExecutableSchema"
       }
 
       return ExecutableSchema(
-          buildSchema(schema!!, onError),
+          buildSchema(schema!!, exposeServiceCapabilities, onError),
           coercings,
           resolver ?: ThrowingResolver,
           typeResolver ?: ThrowingTypeResolver,
@@ -278,8 +292,12 @@ class ExecutableSchema internal constructor(
  * Merges [document] with the definitions required to serve introspection and the `service` capabilities query,
  * and turns the result into a [Schema].
  */
-internal fun buildSchema(document: GQLDocument, onError: OnError): Schema {
-  val ourDefinitions = builtinDefinitions() + serviceCapabilitiesDefinitions() + serviceDefinition(onError)
+internal fun buildSchema(document: GQLDocument, exposeServiceCapabilities: Boolean, onError: OnError): Schema {
+  val ourDefinitions = builtinDefinitions() + if (exposeServiceCapabilities) {
+    serviceCapabilitiesDefinitions() + serviceDefinition(onError)
+  } else {
+    emptyList()
+  }
   val reservedNames = ourDefinitions.mapNotNull { it.definitionName() }.toSet()
   val sourceDefinitions = document.definitions
   sourceDefinitions.forEach {
