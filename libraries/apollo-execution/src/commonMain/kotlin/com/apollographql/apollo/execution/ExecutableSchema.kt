@@ -272,7 +272,7 @@ class ExecutableSchema internal constructor(
       }
 
       return ExecutableSchema(
-          buildSchema(schema!!, onError),
+          buildSchema(schema!!, exposeServiceCapabilities, onError),
           coercings,
           resolver ?: ThrowingResolver,
           typeResolver ?: ThrowingTypeResolver,
