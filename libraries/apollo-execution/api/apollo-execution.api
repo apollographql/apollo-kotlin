@@ -35,6 +35,7 @@ public final class com/apollographql/apollo/execution/ExecutableSchema$Builder {
 	public final fun addCoercing (Ljava/lang/String;Lcom/apollographql/apollo/execution/Coercing;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun addInstrumentation (Lcom/apollographql/apollo/execution/Instrumentation;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun build ()Lcom/apollographql/apollo/execution/ExecutableSchema;
+	public final fun exposeServiceCapabilities (Z)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun mutationRoot (Lcom/apollographql/apollo/execution/RootResolver;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun onError (Lcom/apollographql/apollo/api/OnError;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;
 	public final fun parserOptions (Lcom/apollographql/apollo/ast/ParserOptions;)Lcom/apollographql/apollo/execution/ExecutableSchema$Builder;

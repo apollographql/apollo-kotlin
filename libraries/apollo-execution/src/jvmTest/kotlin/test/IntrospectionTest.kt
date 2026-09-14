@@ -43,6 +43,42 @@ class IntrospectionTest {
       }
     })
   }
+
+  @Test
+  fun serviceCapabilitiesCanBeDisabled() = runBlocking {
+    val schema = """
+            type Query {
+                foo: String!
+            }
+        """.trimIndent()
+
+    val executableSchema = ExecutableSchema.Builder()
+        .schema(schema)
+        .exposeServiceCapabilities(false)
+        .build()
+
+    val typeNamesResponse = executableSchema.execute(
+        "{ __schema { types { name } } }".toGraphQLRequest(),
+        ExecutionContext.Empty
+    )
+    @Suppress("UNCHECKED_CAST")
+    val data = typeNamesResponse.data as Map<String, Any?>
+    @Suppress("UNCHECKED_CAST")
+    val schemaData = data["__schema"] as Map<String, Any?>
+    @Suppress("UNCHECKED_CAST")
+    val typeNames = (schemaData["types"] as List<Map<String, Any?>>).map { it["name"] }
+    assertEquals(false, typeNames.contains("__Service"))
+    assertEquals(false, typeNames.contains("__Capability"))
+
+    val serviceResponse = executableSchema.execute(
+        "{ __service { description } }".toGraphQLRequest(),
+        ExecutionContext.Empty
+    )
+    assertNull(serviceResponse.data)
+    assert(serviceResponse.errors?.isNotEmpty() == true) {
+      "Expected an error when querying `__service` with exposeServiceCapabilities(false)"
+    }
+  }
 }
 
 internal fun checkExpected(expectedFile: File, actual: String) {
