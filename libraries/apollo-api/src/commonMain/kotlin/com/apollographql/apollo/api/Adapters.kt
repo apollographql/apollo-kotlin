@@ -430,7 +430,7 @@ private class CatchToResultAdapter<T>(private val wrappedAdapter: Adapter<T>) : 
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): FieldResult<T> {
     return try {
       FieldResult.Success(wrappedAdapter.fromJson(reader, customScalarAdapters))
-    } catch (e: ApolloException) {
+    } catch (e: ApolloGraphQLException) {
       FieldResult.Failure(e)
     }
   }
@@ -451,7 +451,7 @@ private class CatchToNullAdapter<T>(private val wrappedAdapter: Adapter<T>) : Ad
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
     return try {
       wrappedAdapter.fromJson(reader, customScalarAdapters)
-    } catch (e: ApolloException) {
+    } catch (e: ApolloGraphQLException) {
       null
     }
   }

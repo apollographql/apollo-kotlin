@@ -9,3 +9,13 @@ query GetF {
     f @catch(to: THROW)
   }
 }
+
+fragment FooFragment on Foo {
+  f @catch(to: THROW)
+}
+
+query GetFFragmented {
+  foo {
+    ...FooFragment
+  }
+}
