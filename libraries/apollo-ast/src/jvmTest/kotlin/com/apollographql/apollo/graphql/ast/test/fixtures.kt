@@ -80,12 +80,13 @@ enum class Pragma {
   noAddBuiltinDefinitions,
   // Parser and validation
   allowFragmentArguments,
-  allowEmptySelectionSets,
+  noAllowEmptySelectionSets,
 }
 
 fun File.pragmas(): List<Pragma> =
   readText().lines().filter { it.startsWith("# PRAGMA ") }.map { it.removePrefix("# PRAGMA ").trim() }.map { Pragma.valueOf(it) }
 
+@Suppress("DEPRECATION")
 fun List<Pragma>.toParserOptions(): ParserOptions {
   return ParserOptions.Builder()
       .apply {
@@ -95,8 +96,8 @@ fun List<Pragma>.toParserOptions(): ParserOptions {
         if (Pragma.allowFragmentArguments in this@toParserOptions) {
           allowFragmentArguments(true)
         }
-        if (Pragma.allowEmptySelectionSets in this@toParserOptions) {
-          allowEmptySelectionSets(true)
+        if (Pragma.noAllowEmptySelectionSets in this@toParserOptions) {
+          allowEmptySelectionSets(false)
         }
       }
       .build()

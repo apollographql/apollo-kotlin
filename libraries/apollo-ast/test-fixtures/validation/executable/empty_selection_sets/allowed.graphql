@@ -1,5 +1,3 @@
-# PRAGMA allowEmptySelectionSets
-
 query GetUser {
     user { }
 }

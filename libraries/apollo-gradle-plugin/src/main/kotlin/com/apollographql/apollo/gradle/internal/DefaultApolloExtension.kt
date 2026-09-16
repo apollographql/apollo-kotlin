@@ -403,6 +403,7 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  @Suppress("DEPRECATION")
   private fun registerService(service: DefaultService) {
     check(services.find { it.name == service.name } == null) {
       "There is already a service named ${service.name}, please use another name"

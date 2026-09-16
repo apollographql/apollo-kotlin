@@ -1,2 +1,2 @@
-OtherValidationIssue (6:9)
+OtherValidationIssue (4:9)
 Field `id` of type `ID!` must not have a selection of sub-fields
