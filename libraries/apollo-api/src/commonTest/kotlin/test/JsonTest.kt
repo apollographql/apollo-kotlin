@@ -5,12 +5,17 @@ package test
 import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.IntAdapter
 import com.apollographql.apollo.api.LongAdapter
+import com.apollographql.apollo.api.catchToNull
+import com.apollographql.apollo.api.catchToResult
+import com.apollographql.apollo.api.errorAware
 import com.apollographql.apollo.api.json.MapJsonReader
 import com.apollographql.apollo.api.json.MapJsonWriter
 import com.apollographql.apollo.api.json.buildJsonString
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.api.json.readAny
+import com.apollographql.apollo.exception.JsonDataException
 import com.apollographql.apollo.exception.JsonEncodingException
 import okio.Buffer
 import kotlin.test.Test
@@ -86,6 +91,22 @@ class JsonTest {
       error("an error was expected")
     } catch (e: JsonEncodingException) {
       assertEquals("Unexpected value at path [foo]", e.message)
+    }
+  }
+
+  @Test
+  fun catchToResultThrowsOnMalformedData() {
+    val adapter = IntAdapter.errorAware().catchToResult()
+    assertFailsWith<JsonDataException> {
+      adapter.fromJson(Buffer().writeUtf8("null").jsonReader(), CustomScalarAdapters.Empty)
+    }
+  }
+
+  @Test
+  fun catchToNullThrowsOnMalformedData() {
+    val adapter = IntAdapter.errorAware().catchToNull()
+    assertFailsWith<JsonDataException> {
+      adapter.fromJson(Buffer().writeUtf8("null").jsonReader(), CustomScalarAdapters.Empty)
     }
   }
 }

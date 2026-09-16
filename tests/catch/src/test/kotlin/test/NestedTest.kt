@@ -1,5 +1,6 @@
 package test
 
+import nested.GetFFragmentedQuery
 import nested.GetFQuery
 import nested.GetFooQuery
 import kotlin.test.Test
@@ -34,6 +35,19 @@ class NestedTest {
 
     assertNull(response.data)
     assertNotNull(response.exception)
-    assertTrue(response.exception!!.message!!.contains("Expected a name but was NULL at path data.foo.f"))
+    assertTrue(response.exception!!.message!!.contains("was NULL at path data.foo.f"))
+  }
+
+  @Test
+  fun serverSendsNullWithoutErrorFragmented() {
+    val response = GetFFragmentedQuery().parseResponse("""
+      {
+        "data": { "foo": { "f": null } }
+      }
+    """.trimIndent())
+
+    assertNull(response.data)
+    assertNotNull(response.exception)
+    assertTrue(response.exception!!.message!!.contains("was NULL at path data.foo.f"))
   }
 }
