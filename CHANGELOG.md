@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+# Version 5.2.0
+
+Version 5.2.0 adds support for the new HTTP `QUERY` method and empty selection sets amongst other performance improvements and fixes.
+
+Many thanks @AvikMakwana, @gregjotau and @AlexanderGH for their contributions to this release 💙
+
+## 👷‍♂️ All changes
+
+* [NEW] language: Support empty selection sets (#7028, #7015)
+* [NEW] runtime: Add support for QUERY (#7016)
+* [NEW] runtime: Allow custom JVM HTTP engines without OkHttp - #7018
+* [NEW] execution: Add exposeServiceCapabilities (#7026)
+* [NEW] execution: Introduce `PreparedRequest` and allow to execute fragments (#7022)
+* [FIX] Fix @catch handling of malformed response data (#7027)
+* [FIX] Undeprecate CompiledFragment. (#7024)
+
 # Version 5.1.0
 
 Version 5.1.0 adds a lot of performance improvements courtesy of @AlexanderGH on top of a couple of bugfixes. Many thanks for the deep dive Alexander!  
