@@ -703,9 +703,10 @@ interface Service {
    *
    * See https://github.com/graphql/graphql-spec/pull/1227
    *
-   * Default: false
+   * Default: true
    */
-  @ApolloExperimental
+  @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
   val allowEmptySelectionSets: Property<Boolean>
 
   /**

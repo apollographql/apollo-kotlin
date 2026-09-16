@@ -250,6 +250,7 @@ object ApolloCompiler {
     return definitions
   }
 
+  @Suppress("DEPRECATION")
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
       executableFiles: List<InputFile>,
@@ -271,7 +272,7 @@ object ApolloCompiler {
      * Step 1: parse the documents
      */
     val userDefinitions = mutableListOf<GQLDefinition>()
-    val allowEmptySelectionSets = options.allowEmptySelectionSets ?: false
+    val allowEmptySelectionSets = options.allowEmptySelectionSets ?: true
 
     /**
      * Sort the input files.

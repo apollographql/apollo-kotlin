@@ -83,7 +83,8 @@ class ParserOptions private constructor(
     val allowServiceCapabilities: Boolean,
     @ApolloExperimental
     val allowFragmentArguments: Boolean,
-    @ApolloExperimental
+    @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
     val allowEmptySelectionSets: Boolean,
 ) {
   class Builder {
@@ -100,8 +101,9 @@ class ParserOptions private constructor(
     @ApolloExperimental
     var allowFragmentArguments = false
 
-    @ApolloExperimental
-    var allowEmptySelectionSets = false
+    @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
+    var allowEmptySelectionSets = true
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -132,9 +134,10 @@ class ParserOptions private constructor(
      *
      * Empty selection sets are told apart from absent ones by [GQLField.selectionSetPresent].
      *
-     * Default: false
+     * Default: true
      */
-    @ApolloExperimental
+    @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
     fun allowEmptySelectionSets(allowEmptySelectionSets: Boolean) = apply {
       this.allowEmptySelectionSets = allowEmptySelectionSets
     }

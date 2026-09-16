@@ -219,8 +219,10 @@ class IrOptions(
     /**
      * Whether to allow empty selection sets, as in `{ hero { } }`.
      *
-     * Default: false
+     * Default: true
      */
+    @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
     val allowEmptySelectionSets: Boolean?,
 
     @Deprecated("Unused, directives on directives are always allowed")

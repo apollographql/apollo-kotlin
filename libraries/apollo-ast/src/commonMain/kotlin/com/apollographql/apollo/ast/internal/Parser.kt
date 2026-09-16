@@ -2,6 +2,7 @@ package com.apollographql.apollo.ast.internal
 
 import com.apollographql.apollo.ast.*
 
+@Suppress("DEPRECATION")
 internal class Parser(
     src: String,
     options: ParserOptions,

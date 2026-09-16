@@ -121,9 +121,7 @@ apollo {
     classesForEnumsMatching.set(listOf(".*"))
     // Whether fields with different shape are disallowed to be merged in disjoint types.
     fieldsOnDisjointTypesMustMerge.set(false)
-    // Whether to allow empty selection sets, as in `{ hero { } }` (https://github.com/graphql/graphql-spec/pull/1227)
-    allowEmptySelectionSets.set(false)
-    
+
     // Whether to generate Apollo metadata. Apollo metadata is used for multi-module support.
     generateApolloMetadata.set(true)
     // list of [Regex] patterns matching for types and fields that should be generated whether they are used by queries/fragments in this module or not.
