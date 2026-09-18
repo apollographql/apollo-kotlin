@@ -5,7 +5,6 @@ import com.apollographql.apollo.ast.SourceAwareException
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.computeUsedFragmentNames
-import com.apollographql.apollo.compiler.ir.reachableFragmentNames
 import com.google.common.truth.Truth
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -179,7 +178,7 @@ class MetadataTest {
     val usedCoordinatesFile = File(buildDir, "used-coordinates.json")
     leafIr.usedCoordinates.writeTo(usedCoordinatesFile)
     val usedFragmentNamesFile = File(buildDir, "used-fragment-names.json")
-    leafIr.reachableFragmentNames().toUsedFragmentNames().writeTo(usedFragmentNamesFile)
+    computeUsedFragmentNames(listOf(leafIr)).toUsedFragmentNames().writeTo(usedFragmentNamesFile)
     val (warnings, logger) = newWarningsLogger()
 
     val exception = assertFailsWith<IllegalStateException> {
@@ -218,7 +217,7 @@ class MetadataTest {
 
     // Leaf spreads "RootUsedFragment" (defined in root), which in turn spreads "NestedFragment" (also in root).
     // Both are only reachable transitively through leaf's spread + root's own fragment-to-fragment chain.
-    val downstreamUsedFragmentNames = leafIrOperations.reachableFragmentNames().toUsedFragmentNames()
+    val downstreamUsedFragmentNames = computeUsedFragmentNames(listOf(leafIrOperations)).toUsedFragmentNames()
 
     ApolloCompiler.checkUnusedFragments(
         irOperations = rootIrOperations,
@@ -268,11 +267,7 @@ class MetadataTest {
   }
 
   @Test
-  fun `checkUnusedFragments reports a fragment only spread behind a literal constant-false skip-if as unused`() {
-    // Documented, intentional behavior: a fragment spread guarded by a *literal* compile-time-constant condition
-    // (`@skip(if: true)`) is pruned from the IR before checkUnusedFragments runs, and so is correctly reported as
-    // unused, since it can never execute. A fragment spread guarded by a *variable* condition (`@skip(if: $x)`)
-    // is unaffected: its condition is only known at runtime, so the spread is always considered used.
+  fun `checkUnusedFragments counts constant and variable guarded spreads as used`() {
     prepareSchemaForChain()
 
     val irOperations = buildIrOperationsForModule("fragment-unused-constant-skip", "root", emptyList())
@@ -285,7 +280,7 @@ class MetadataTest {
     )
 
     Truth.assertThat(warnings).containsExactly(
-        "w: src/test/metadata/fragment-unused-constant-skip/root.graphql: (8, 1): Apollo: Fragment 'ConstantSkippedFragment' is not used"
+        "w: src/test/metadata/fragment-unused-constant-skip/root.graphql: (16, 1): Apollo: Fragment 'UnreferencedFragment' is not used"
     )
   }
 
@@ -380,13 +375,7 @@ class MetadataTest {
 
   @Test
   fun `computeUsedFragmentNames does not conflate unrelated sibling fragments that share a name`() {
-    // Regression test for a confirmed false negative introduced by the fixed-point iteration itself: two
-    // sibling modules (neither depends on the other, both downstream of root) are allowed to each define their
-    // own, unrelated fragment under the same name (see "duplicate fragments are detected correctly" in
-    // MultiModulesTests.kt). siblingA spreads and locally defines "SharedName" (unrelated to root). siblingB
-    // never spreads its own "SharedName", which happens to (coincidentally) wrap root's RootUnusedFragment.
-    // Blindly seeding the accumulated name set into every module would wrongly expand siblingB's unrelated
-    // "SharedName" once siblingA's "SharedName" becomes known-used, hiding a genuinely unused root fragment.
+    // Using siblingA's SharedName must not activate siblingB's unrelated SharedName -> RootUnusedFragment.
     prepareSchemaForChain()
 
     val rootIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "root", emptyList())
@@ -460,7 +449,8 @@ class MetadataTest {
           val (warnings, logger) = newWarningsLogger()
           ApolloCompiler.checkUnusedFragments(rootIr, usedNames.toUsedFragmentNames(), irOptionsFile.toIrOptions(), logger)
           val expectedWarnings = mutableListOf(
-              "w: src/test/metadata/fragment-usage-scoped/root.graphql: (9, 1): Apollo: Fragment 'NeverUsed' is not used"
+              "w: src/test/metadata/fragment-usage-scoped/root.graphql: (9, 1): Apollo: Fragment 'NeverUsed' is not used",
+              "w: src/test/metadata/fragment-usage-scoped/root.graphql: (13, 1): Apollo: Fragment 'UnreferencedControl' is not used",
           )
           if (childAIr !in consumers) {
             expectedWarnings.add("w: src/test/metadata/fragment-usage-scoped/root.graphql: (1, 1): Apollo: Fragment 'RootA' is not used")
@@ -475,7 +465,7 @@ class MetadataTest {
   }
 
   @Test
-  fun `aggregated usage prunes constant conditions on spreads fields and inline fragments`() {
+  fun `aggregated usage includes conditional spreads fields and inline fragments`() {
     prepareSchemaForChain()
     val rootIr = buildIrOperationsForModule("fragment-usage-scoped", "root", emptyList())
     val conditionalIr = buildIrOperationsForModule("fragment-usage-scoped", "conditions", rootIr.fragmentDefinitions)
@@ -483,17 +473,19 @@ class MetadataTest {
     conditionalIr.writeTo(serialized)
     val usedNames = computeUsedFragmentNames(listOf(serialized.toIrOperations()))
 
-    Truth.assertThat(usedNames).containsExactly("VariableWrapper", "VariableInclude", "RootA")
+    Truth.assertThat(usedNames).containsExactly(
+        "VariableWrapper", "VariableInclude", "RootA", "RootB", "NeverUsed",
+        "SkippedSpread", "ExcludedSpread", "SkippedInline", "ExcludedInline", "SkippedField", "ExcludedField",
+    )
     val (warnings, logger) = newWarningsLogger()
     ApolloCompiler.checkUnusedFragments(rootIr, usedNames.toUsedFragmentNames(), irOptionsFile.toIrOptions(), logger)
     Truth.assertThat(warnings).containsExactly(
-        "w: src/test/metadata/fragment-usage-scoped/root.graphql: (5, 1): Apollo: Fragment 'RootB' is not used",
-        "w: src/test/metadata/fragment-usage-scoped/root.graphql: (9, 1): Apollo: Fragment 'NeverUsed' is not used",
+        "w: src/test/metadata/fragment-usage-scoped/root.graphql: (13, 1): Apollo: Fragment 'UnreferencedControl' is not used",
     )
   }
 
   @Test
-  fun `aggregation rejects an operation document with a missing fragment definition`() {
+  fun `aggregation propagates operation document parse failures`() {
     prepareSchemaForChain()
     val directory = "fragment-usage-scoped"
     val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
@@ -502,13 +494,38 @@ class MetadataTest {
     val childIr = buildIrOperationsForModule(directory, "child", rootIr.fragmentDefinitions + aIr.fragmentDefinitions + wrapperIr.fragmentDefinitions)
     val operation = childIr.operations.single()
     val incompleteIr = childIr.copy(
-        operations = listOf(operation.copy(sourceWithFragments = "query GetCharacter { character { ...Wrapper } }"))
+        operations = listOf(operation.copy(sourceWithFragments = "query GetCharacter {"))
     )
 
-    val exception = assertFailsWith<IllegalStateException> {
+    assertFailsWith<SourceAwareException> {
       computeUsedFragmentNames(listOf(incompleteIr))
     }
-    Truth.assertThat(exception).hasMessageThat().isEqualTo("Apollo: Fragment 'Wrapper' is missing from operation 'GetCharacter'.")
+  }
+
+  @Test
+  fun `undefined fragments fail before usage aggregation`() {
+    prepareSchemaForChain()
+    val exception = assertFailsWith<SourceAwareException> {
+      buildIrOperationsForModule("fragment-undefined", "root", emptyList())
+    }
+    Truth.assertThat(exception).hasMessageThat().contains("Cannot find fragment `MissingFragment`")
+  }
+
+  @Test
+  fun `all fragments in an operation-unreachable chain are unused`() {
+    prepareSchemaForChain()
+    val irOperations = buildIrOperationsForModule("fragment-unused-orphan-chain", "root", emptyList())
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = irOperations,
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+    Truth.assertThat(computeUsedFragmentNames(listOf(irOperations))).isEmpty()
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-orphan-chain/root.graphql: (7, 1): Apollo: Fragment 'OrphanA' is not used",
+        "w: src/test/metadata/fragment-unused-orphan-chain/root.graphql: (11, 1): Apollo: Fragment 'OrphanB' is not used",
+    )
   }
 
   @Test

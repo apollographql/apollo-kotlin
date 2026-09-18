@@ -72,6 +72,65 @@ class MultiModulesTests {
   }
 
   @Test
+  fun `multi-modules-transitive leaf IR generation never reports UnusedFragment`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // IR generation must never report UnusedFragment, even for a genuinely dead fragment.
+      // The check is deferred to codegen; see ApolloCompiler.checkUnusedFragments.
+      val result = TestUtils.executeTask(":leaf:generateServiceApolloIrOperations", dir)
+
+      Truth.assertThat(result.output).doesNotContain("is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive reports each module's own unused fragments exactly once`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // :leaf:assemble compiles root, node, and leaf, so each module's checkUnusedFragments runs once.
+      val result = TestUtils.executeTask(":leaf:assemble", dir)
+
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":leaf:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+
+      // Root's fragment, only reachable via node's wrapper, stays silent.
+      Truth.assertThat(result.output).doesNotContain("Fragment 'ViaNodeFragment' is not used")
+      // Node's wrapper fragment, only spread by leaf, stays silent.
+      Truth.assertThat(result.output).doesNotContain("Fragment 'NodeWrapsViaNodeFragment' is not used")
+
+      // NodeOnlyUnusedFragment is genuinely dead. It must be reported once, by node, its owner.
+      val nodeOnlyUnusedFragmentWarningCount = result.output.split("Fragment 'NodeOnlyUnusedFragment' is not used").size - 1
+      Truth.assertThat(nodeOnlyUnusedFragmentWarningCount).isEqualTo(1)
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive succeeds with failOnWarnings when every fragment is used`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // Remove the two dead control fragments, enable failOnWarnings on root and node, and confirm success.
+      File(dir, "root/src/main/graphql/com/library/operations.graphql").replaceInText(
+          "fragment GloballyUnusedFragment on Cat {\n  dateOfBirth\n}\n\n",
+          ""
+      )
+      File(dir, "node/src/main/graphql/com/library/operations.graphql").replaceInText(
+          "\n# Genuinely dead: never spread by node, root, or leaf. Control fixture used to confirm a truly unused,\n" +
+              "# node-owned fragment is reported exactly once when generating sources (see MultiModulesTests.kt).\n" +
+              "fragment NodeOnlyUnusedFragment on Cat {\n  class\n}\n",
+          ""
+      )
+      File(dir, "root/build.gradle.kts").replaceInText(
+          "packageNamesFromFilePaths()",
+          "packageNamesFromFilePaths()\n    failOnWarnings.set(true)"
+      )
+      File(dir, "node/build.gradle.kts").replaceInText(
+          "packageNamesFromFilePaths()",
+          "packageNamesFromFilePaths()\n    failOnWarnings.set(true)"
+      )
+
+      TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
+    }
+  }
+
+  @Test
   fun `transitive dependencies are only included once`() {
     /**
      * A diamond shaped hierarchy does not include the schema multiple times

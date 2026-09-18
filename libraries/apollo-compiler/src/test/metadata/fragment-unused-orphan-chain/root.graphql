@@ -1,0 +1,13 @@
+query GetCharacter {
+  character {
+    id
+  }
+}
+
+fragment OrphanA on Character {
+  ...OrphanB
+}
+
+fragment OrphanB on Character {
+  name
+}

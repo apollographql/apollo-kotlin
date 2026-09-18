@@ -3,9 +3,8 @@ package com.apollographql.apollo.compiler
 import kotlinx.serialization.Serializable
 
 /**
- * The set of fragment names that are known to be spread from *somewhere* in a multi-module project: either
- * directly from an operation/fragment in the current module, or from a downstream module's operations/fragments
- * (see [com.apollographql.apollo.compiler.ir.IrOperations.reachableFragmentNames]).
+ * The complete set of fragment names transitively referenced by operations in the configured downstream
+ * modules, as computed by [com.apollographql.apollo.compiler.ir.computeUsedFragmentNames].
  *
  * This mirrors [UsedCoordinates]: it is computed per-module and merged transitively across the downstream
  * dependency graph so that a fragment defined in an upstream/schema module is never reported as unused as long

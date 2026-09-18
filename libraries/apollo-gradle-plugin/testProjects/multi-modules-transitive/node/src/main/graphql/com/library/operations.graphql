@@ -10,3 +10,8 @@ query GetAnimal {
 fragment NodeWrapsViaNodeFragment on Cat {
   ...ViaNodeFragment
 }
+
+# Genuinely dead: never spread anywhere. Confirms a truly unused fragment is reported once.
+fragment NodeOnlyUnusedFragment on Cat {
+  class
+}

@@ -12,3 +12,7 @@ fragment ConstantSkippedFragment on Character {
 fragment VariableSkippedFragment on Character {
   id
 }
+
+fragment UnreferencedFragment on Character {
+  name
+}

@@ -10,3 +10,12 @@ fragment usedQueryDetails on Query {
 fragment queryDetails on Query {
     __typename
 }
+
+# Spread only behind a constant-false condition, but still counts as used regardless of severity.
+fragment constantSkippedFragment on Query {
+    __typename
+}
+
+query GetConstantSkipped {
+    ...constantSkippedFragment @skip(if: true)
+}

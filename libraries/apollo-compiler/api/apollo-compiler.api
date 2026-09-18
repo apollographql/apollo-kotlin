@@ -1726,8 +1726,6 @@ public final class com/apollographql/apollo/compiler/ir/IrOperations$Companion {
 
 public final class com/apollographql/apollo/compiler/ir/IrOperationsKt {
 	public static final fun computeUsedFragmentNames (Ljava/util/List;)Ljava/util/Set;
-	public static final fun reachableFragmentNames (Lcom/apollographql/apollo/compiler/ir/IrOperations;Ljava/util/Set;)Ljava/util/Set;
-	public static synthetic fun reachableFragmentNames$default (Lcom/apollographql/apollo/compiler/ir/IrOperations;Ljava/util/Set;ILjava/lang/Object;)Ljava/util/Set;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrProperty {

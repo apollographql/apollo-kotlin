@@ -9,3 +9,7 @@ fragment RootB on Character {
 fragment NeverUsed on Character {
   appearsIn
 }
+
+fragment UnreferencedControl on Character {
+  name
+}

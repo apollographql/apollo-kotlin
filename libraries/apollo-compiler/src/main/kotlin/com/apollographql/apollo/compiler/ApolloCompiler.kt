@@ -43,7 +43,7 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo.compiler.ir.buildIrDataBuilders
-import com.apollographql.apollo.compiler.ir.reachableFragmentNames
+import com.apollographql.apollo.compiler.ir.computeUsedFragmentNames
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toOperationOutput
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
@@ -426,16 +426,14 @@ object ApolloCompiler {
   }
 
   /**
-   * Reports [UnusedFragment] for fragments defined in [irOperations] that are not reached by [irOperations]'s own
-   * operations/fragments nor by [downstreamUsedFragmentNames], the set of fragment names known to be spread by
-   * downstream (consumer) modules in a multi-module project (see [com.apollographql.apollo.compiler.ir.reachableFragmentNames]).
+   * Reports [UnusedFragment] only for this module's definitions that are not transitively referenced by its
+   * operations or downstream operations. [downstreamUsedFragmentNames] must contain the complete usage computed
+   * by [computeUsedFragmentNames] for the configured downstream modules, including all transitive references.
    *
    * This is intentionally kept out of [buildIrOperations] because a single module cannot know on its own whether
    * a fragment it defines is used by a module that depends on it.
    *
-   * Local IR and downstream usage both exclude selections with constant-false conditions, such as
-   * `@skip(if: true)` or `@include(if: false)`. A fragment reached only through these selections is unused.
-   * Variable conditions remain potentially reachable because their values are only known at runtime.
+   * Usage is syntactic: conditional spreads count even behind `@skip(if: true)` or `@include(if: false)`.
    */
   fun checkUnusedFragments(
       irOperations: IrOperations,
@@ -443,7 +441,7 @@ object ApolloCompiler {
       options: IrOptions,
       logger: Logger?,
   ) {
-    val reachable = irOperations.reachableFragmentNames(downstreamUsedFragmentNames.asSet())
+    val reachable = computeUsedFragmentNames(listOf(irOperations)) + downstreamUsedFragmentNames.asSet()
 
     val issues = irOperations.fragmentDefinitions.filterNot { reachable.contains(it.name) }.map {
       UnusedFragment(
