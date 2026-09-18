@@ -645,9 +645,11 @@ abstract class DefaultApolloExtension(
           warnIfNotFound = project.provider { warnIfNoPluginFound },
           codegenSchemas = upstreamAndSelfCodegenSchemas,
           downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
+          downstreamUsedFragmentNames = computeUsedCoordinatesTask.flatMap { it.usedFragmentNamesOutputFile },
           irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
           upstreamMetadata = project.files(codegenMetadata.resolvable),
           codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },
+          irOptions = optionsTaskProvider.flatMap { it.irOptionsFile },
           outputDirectory = outputDir(project, service),
           operationManifest = BuildDirLayout.operationManifest(project, service)
       )

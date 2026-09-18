@@ -1,0 +1,11 @@
+fragment RootA on Character {
+  name
+}
+
+fragment RootB on Character {
+  id
+}
+
+fragment NeverUsed on Character {
+  appearsIn
+}

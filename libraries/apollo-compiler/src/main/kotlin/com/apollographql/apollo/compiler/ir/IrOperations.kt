@@ -1,8 +1,15 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.ast.GQLField
 import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLInlineFragment
+import com.apollographql.apollo.ast.GQLOperationDefinition
+import com.apollographql.apollo.ast.GQLSelection
 import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.ParserOptions
+import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.internal.BooleanExpressionSerializer
 import com.apollographql.apollo.compiler.internal.GQLFragmentDefinitionSerializer
@@ -43,6 +50,84 @@ data class IrOperations(
 
     val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 )
+
+/**
+ * Computes the set of fragment names transitively spread from this module's own operations, plus [extraRoots].
+ *
+ * [extraRoots] is used to seed the search with fragment names known to be spread by other (downstream) modules:
+ * this module's own [fragments] is used to keep expanding those names into any locally-defined fragment they in
+ * turn spread, so that e.g. a fragment only reachable through another fragment spread by a downstream module is
+ * still correctly reported as used.
+ *
+ * Fragments that are spread but not defined in this module (i.e. defined upstream) are included in the result as
+ * opaque names: this module cannot see their body, so it cannot expand them further, but the upstream module
+ * that owns them will do so using its own [fragments] when it runs this same computation for itself.
+ */
+@ApolloExperimental
+fun IrOperations.reachableFragmentNames(extraRoots: Set<String> = emptySet()): Set<String> {
+  val fragmentsByName = fragments.associateBy { it.name }
+  val reachable = mutableSetOf<String>()
+  val queue = ArrayDeque<String>()
+  queue.addAll(extraRoots)
+  operations.forEach { queue.addAll(it.selectionSets.directlySpreadFragmentNames()) }
+
+  while (queue.isNotEmpty()) {
+    val name = queue.removeFirst()
+    if (!reachable.add(name)) continue
+    val fragment = fragmentsByName[name] ?: continue
+    queue.addAll(fragment.selectionSets.directlySpreadFragmentNames())
+  }
+  return reachable
+}
+
+private fun List<IrSelectionSet>.directlySpreadFragmentNames(): List<String> {
+  return flatMap { it.selections }.filterIsInstance<IrFragment>().mapNotNull { it.name }
+}
+
+/**
+ * Computes fragment usage across modules by resolving each operation in its own scope.
+ *
+ * [IrOperationDefinition.sourceWithFragments] contains the operation and its transitive fragment definitions.
+ * Traverse each document independently before merging names: unrelated sibling modules may define different
+ * fragments with the same name. Selections with constant-false conditions are excluded, as in the IR.
+ *
+ * The merged names are safe to use when checking a common upstream module. Executable validation rejects
+ * duplicate names across local and transitive upstream definitions, so descendants cannot redefine its fragments.
+ */
+@ApolloExperimental
+fun computeUsedFragmentNames(allIrOperations: List<IrOperations>): Set<String> {
+  return allIrOperations.flatMap { it.operations }.flatMap { it.reachableFragmentNames() }.toSet()
+}
+
+private fun IrOperationDefinition.reachableFragmentNames(): Set<String> {
+  val document = sourceWithFragments.toGQLDocument(ParserOptions.Builder().allowFragmentArguments(true).build())
+  val fragmentsByName = document.definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
+  val reachable = mutableSetOf<String>()
+  val queue = ArrayDeque<GQLSelection>()
+  queue.addAll(document.definitions.filterIsInstance<GQLOperationDefinition>().single().selections)
+  while (queue.isNotEmpty()) {
+    val selection = queue.removeFirst()
+    val directives = when (selection) {
+      is GQLField -> selection.directives
+      is GQLInlineFragment -> selection.directives
+      is GQLFragmentSpread -> selection.directives
+    }
+    if (directives.toIncludeBooleanExpression() == BooleanExpression.False) continue
+    when (selection) {
+      is GQLField -> queue.addAll(selection.selections)
+      is GQLInlineFragment -> queue.addAll(selection.selections)
+      is GQLFragmentSpread -> {
+        if (reachable.add(selection.name)) {
+          val fragment = checkNotNull(fragmentsByName[selection.name]) {
+            "Apollo: Fragment '${selection.name}' is missing from operation '$name'."
+          }
+          queue.addAll(fragment.selections)
+        }
+      }
+    }
+  }
+  return reachable
+}
 
 @Serializable
 @ApolloExperimental
@@ -357,5 +442,3 @@ data class IrVariable(
 )
 
 private val json = Json { classDiscriminator = "#class" }
-
-

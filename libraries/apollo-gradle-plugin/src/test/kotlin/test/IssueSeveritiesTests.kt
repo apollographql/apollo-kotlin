@@ -20,6 +20,28 @@ class IssueSeveritiesTests {
     }
   }
 
+  private fun String.containsUsedFragmentWarning(): Boolean {
+    return lines().any {
+      it.matches(Regex(".*Fragment 'usedQueryDetails' is not used.*"))
+    }
+  }
+
+  @Test
+  fun `used fragment is never reported regardless of severity`() {
+    withTestProject("issue-severities") { dir ->
+      // 'usedQueryDetails' is spread by 'GetTypename' in the same module, so it must stay silent for every
+      // severity, including 'error' where 'queryDetails' (genuinely unused) makes the build fail.
+      assertTrue(!TestUtils.executeTask("generateDefaultApolloSources", dir).output.containsUsedFragmentWarning())
+      assertTrue(!TestUtils.executeTask("generateWarnApolloSources", dir).output.containsUsedFragmentWarning())
+      try {
+        TestUtils.executeTask("generateErrorApolloSources", dir)
+        error("An Exception was expected")
+      } catch (e: UnexpectedBuildFailure) {
+        assertTrue(!e.message!!.containsUsedFragmentWarning())
+      }
+    }
+  }
+
   @Test
   fun default() {
     withTestProject("issue-severities") { dir ->

@@ -1,0 +1,3 @@
+fragment SharedName on Character {
+  ...RootA
+}

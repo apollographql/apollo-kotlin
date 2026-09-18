@@ -1,0 +1,5 @@
+query GetAnimalThroughNode2 {
+  randomAnimal {
+    ...RegressionSharedWrapper
+  }
+}

@@ -1,11 +1,11 @@
 public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/List;Ljava/io/File;)V
+	public static final fun run (Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion {
-	public final fun run (Ljava/util/List;Ljava/io/File;)V
+	public final fun run (Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint {
@@ -95,11 +95,11 @@ public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEnt
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion {
-	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloRegisterOperationsEntryPoint {

@@ -1,11 +1,16 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.SourceAwareException
 import com.apollographql.apollo.compiler.codegen.writeTo
+import com.apollographql.apollo.compiler.ir.IrOperations
+import com.apollographql.apollo.compiler.ir.computeUsedFragmentNames
+import com.apollographql.apollo.compiler.ir.reachableFragmentNames
 import com.google.common.truth.Truth
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
@@ -104,6 +109,55 @@ class MetadataTest {
     compileRoot(directory)
   }
 
+  /**
+   * Writes the codegen schema once so that [buildIrOperationsForModule] can be called repeatedly to build a chain
+   * (or any other topology) of modules by hand, without going through the fixed root/leaf shape of [compile].
+   */
+  private fun prepareSchemaForChain() {
+    buildDir.deleteRecursively()
+    buildDir.mkdirs()
+
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    buildIrOptions().writeTo(irOptionsFile)
+
+    ApolloCompiler.buildCodegenSchema(
+        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
+        logger = null,
+        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+        foreignSchemas = emptyList(),
+        null
+    ).writeTo(codegenSchemaFile)
+  }
+
+  private fun buildIrOperationsForModule(
+      directory: String,
+      fileName: String,
+      upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
+  ): IrOperations {
+    return ApolloCompiler.buildIrOperations(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        executableFiles = setOf(File("src/test/metadata/$directory/$fileName.graphql")).toInputFiles(),
+        upstreamCodegenModels = emptyList(),
+        upstreamFragmentDefinitions = upstreamFragmentDefinitions,
+        documentTransform = null,
+        options = irOptionsFile.toIrOptions(),
+        logger = null
+    )
+  }
+
+  private fun newWarningsLogger(): Pair<MutableList<String>, ApolloCompiler.Logger> {
+    val warnings = mutableListOf<String>()
+    val logger = object : ApolloCompiler.Logger {
+      override fun debug(message: String) = Unit
+      override fun info(message: String) = Unit
+      override fun warning(message: String) {
+        warnings.add(message)
+      }
+      override fun error(message: String) = Unit
+    }
+    return warnings to logger
+  }
+
   @Test
   fun simple() {
     compile("simple")
@@ -112,6 +166,349 @@ class MetadataTest {
     assertTrue(rootSourcesDir.resolve("root/type/Character.kt").exists())
     assertTrue(rootSourcesDir.resolve("root/fragment/CharacterFragment.kt").exists())
     assertFalse(leafSourcesDir.resolve("leaf/type").exists())
+  }
+
+  @Test
+  fun `unused fragment warnings fail before multi-module sources or metadata are written`() {
+    prepareSchemaForChain()
+    val rootIr = buildIrOperationsForModule("fragment-unused", "root", emptyList())
+    val leafIr = buildIrOperationsForModule("fragment-unused", "leaf", rootIr.fragmentDefinitions)
+    rootIr.writeTo(rootIrOperationsFile)
+    buildIrOptions(failOnWarnings = true).writeTo(irOptionsFile)
+    buildCodegenOptions(packageName = rootPackageName).writeTo(rootCodegenOptionsFile)
+    val usedCoordinatesFile = File(buildDir, "used-coordinates.json")
+    leafIr.usedCoordinates.writeTo(usedCoordinatesFile)
+    val usedFragmentNamesFile = File(buildDir, "used-fragment-names.json")
+    leafIr.reachableFragmentNames().toUsedFragmentNames().writeTo(usedFragmentNamesFile)
+    val (warnings, logger) = newWarningsLogger()
+
+    val exception = assertFailsWith<IllegalStateException> {
+      EntryPoints.buildSourcesFromIr(
+          plugins = emptyList(),
+          arguments = emptyMap(),
+          logger = logger,
+          codegenSchemas = setOf(codegenSchemaFile).toInputFiles(),
+          upstreamMetadata = emptyList(),
+          irOperations = rootIrOperationsFile,
+          downstreamUsedCoordinates = usedCoordinatesFile,
+          downstreamUsedFragmentNames = usedFragmentNamesFile,
+          codegenOptions = rootCodegenOptionsFile,
+          irOptions = irOptionsFile,
+          operationManifest = null,
+          outputDirectory = rootSourcesDir,
+          metadataOutput = rootCodegenMetadata,
+      )
+    }
+
+    Truth.assertThat(exception).hasMessageThat().contains("Warnings found and 'failOnWarnings' is true")
+    Truth.assertThat(warnings).hasSize(1)
+    Truth.assertThat(warnings.single()).contains("Fragment 'GloballyUnusedFragment' is not used")
+    assertFalse(rootSourcesDir.exists())
+    assertFalse(rootCodegenMetadata.exists())
+  }
+
+  @Test
+  fun `checkUnusedFragments only reports fragments unreachable from downstream modules`() {
+    compile("fragment-unused")
+
+    val rootIrOperations = rootIrOperationsFile.toIrOperations()
+    val leafIrOperations = leafIrOperationsFile.toIrOperations()
+
+    val (warnings, logger) = newWarningsLogger()
+
+    // Leaf spreads "RootUsedFragment" (defined in root), which in turn spreads "NestedFragment" (also in root).
+    // Both are only reachable transitively through leaf's spread + root's own fragment-to-fragment chain.
+    val downstreamUsedFragmentNames = leafIrOperations.reachableFragmentNames().toUsedFragmentNames()
+
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = rootIrOperations,
+        downstreamUsedFragmentNames = downstreamUsedFragmentNames,
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly("w: null: (1, 1): Apollo: Fragment 'GloballyUnusedFragment' is not used")
+  }
+
+  @Test
+  fun `checkUnusedFragments on a single module without downstream data only reports locally unused fragments`() {
+    // No leaf/downstream module involved at all: this is the plain single-module case (e.g. a project with no
+    // 'dependsOn'/multi-module setup), where checkUnusedFragments is called with the default, empty
+    // downstreamUsedFragmentNames.
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    buildIrOptions().writeTo(irOptionsFile)
+
+    ApolloCompiler.buildCodegenSchema(
+        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
+        logger = null,
+        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+        foreignSchemas = emptyList(),
+        null
+    ).writeTo(codegenSchemaFile)
+
+    val irOperations = ApolloCompiler.buildIrOperations(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        executableFiles = setOf(File("src/test/metadata/single-module-fragment-unused/root.graphql")).toInputFiles(),
+        upstreamCodegenModels = emptyList(),
+        upstreamFragmentDefinitions = emptyList(),
+        documentTransform = null,
+        options = irOptionsFile.toIrOptions(),
+        logger = null
+    )
+
+    val (warnings, logger) = newWarningsLogger()
+
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = irOperations,
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly("w: src/test/metadata/single-module-fragment-unused/root.graphql: (11, 1): Apollo: Fragment 'UnusedFragment' is not used")
+  }
+
+  @Test
+  fun `checkUnusedFragments reports a fragment only spread behind a literal constant-false skip-if as unused`() {
+    // Documented, intentional behavior: a fragment spread guarded by a *literal* compile-time-constant condition
+    // (`@skip(if: true)`) is pruned from the IR before checkUnusedFragments runs, and so is correctly reported as
+    // unused, since it can never execute. A fragment spread guarded by a *variable* condition (`@skip(if: $x)`)
+    // is unaffected: its condition is only known at runtime, so the spread is always considered used.
+    prepareSchemaForChain()
+
+    val irOperations = buildIrOperationsForModule("fragment-unused-constant-skip", "root", emptyList())
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = irOperations,
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-constant-skip/root.graphql: (8, 1): Apollo: Fragment 'ConstantSkippedFragment' is not used"
+    )
+  }
+
+  @Test
+  fun `computeUsedFragmentNames propagates usage through an intermediate module's own fragment (3-tier chain)`() {
+    // Regression test for a confirmed false positive: a fragment defined in an intermediate module ("middle")
+    // that itself spreads an upstream ("root") fragment must be recognized as making the upstream fragment used,
+    // even though "middle" itself has no operations of its own and only "leaf" spreads "middle"'s fragment.
+    prepareSchemaForChain()
+
+    val rootIr = buildIrOperationsForModule("fragment-unused-3tier", "root", emptyList())
+    val middleIr = buildIrOperationsForModule("fragment-unused-3tier", "middle", rootIr.fragmentDefinitions)
+    val leafIr = buildIrOperationsForModule("fragment-unused-3tier", "leaf", rootIr.fragmentDefinitions + middleIr.fragmentDefinitions)
+
+    val usedFragmentNames = computeUsedFragmentNames(listOf(middleIr, leafIr))
+
+    Truth.assertThat(usedFragmentNames).containsExactly("MiddleFragment", "RootFragment")
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = rootIr,
+        downstreamUsedFragmentNames = usedFragmentNames.toUsedFragmentNames(),
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-3tier/root.graphql: (5, 1): Apollo: Fragment 'RootUnusedFragment' is not used"
+    )
+  }
+
+  @Test
+  fun `computeUsedFragmentNames propagates usage through two levels of intermediate-owned fragments (4-tier chain)`() {
+    // Same idea as the 3-tier case, but one level deeper: "leaf" only spreads "midB"'s fragment, "midB"'s
+    // fragment only spreads "midA"'s fragment, and "midA"'s fragment only spreads "root"'s fragment. All three
+    // must be discovered as used.
+    prepareSchemaForChain()
+
+    val rootIr = buildIrOperationsForModule("fragment-unused-4tier", "root", emptyList())
+    val midAIr = buildIrOperationsForModule("fragment-unused-4tier", "mida", rootIr.fragmentDefinitions)
+    val midBIr = buildIrOperationsForModule("fragment-unused-4tier", "midb", rootIr.fragmentDefinitions + midAIr.fragmentDefinitions)
+    val leafIr = buildIrOperationsForModule(
+        "fragment-unused-4tier", "leaf", rootIr.fragmentDefinitions + midAIr.fragmentDefinitions + midBIr.fragmentDefinitions
+    )
+
+    val usedFragmentNames = computeUsedFragmentNames(listOf(midAIr, midBIr, leafIr))
+
+    Truth.assertThat(usedFragmentNames).containsExactly("MidAFragment", "MidBFragment", "RootFragment")
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = rootIr,
+        downstreamUsedFragmentNames = usedFragmentNames.toUsedFragmentNames(),
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-4tier/root.graphql: (5, 1): Apollo: Fragment 'RootUnusedFragment' is not used"
+    )
+  }
+
+  @Test
+  fun `computeUsedFragmentNames merges intermediate-owned fragments from both branches of a diamond`() {
+    // "node1" and "node2" each define their own fragment spreading root's fragment; "leaf" depends on both and
+    // spreads both intermediate fragments. Root's fragment must be recognized as used via either branch.
+    prepareSchemaForChain()
+
+    val rootIr = buildIrOperationsForModule("fragment-unused-diamond", "root", emptyList())
+    val node1Ir = buildIrOperationsForModule("fragment-unused-diamond", "node1", rootIr.fragmentDefinitions)
+    val node2Ir = buildIrOperationsForModule("fragment-unused-diamond", "node2", rootIr.fragmentDefinitions)
+    val leafUpstreamFragmentDefinitions =
+      (rootIr.fragmentDefinitions + node1Ir.fragmentDefinitions + node2Ir.fragmentDefinitions).distinctBy { it.name }
+    val leafIr = buildIrOperationsForModule("fragment-unused-diamond", "leaf", leafUpstreamFragmentDefinitions)
+
+    val usedFragmentNames = computeUsedFragmentNames(listOf(node1Ir, node2Ir, leafIr))
+
+    Truth.assertThat(usedFragmentNames).containsExactly("Node1Fragment", "Node2Fragment", "RootFragment")
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = rootIr,
+        downstreamUsedFragmentNames = usedFragmentNames.toUsedFragmentNames(),
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-diamond/root.graphql: (5, 1): Apollo: Fragment 'RootUnusedFragment' is not used"
+    )
+  }
+
+  @Test
+  fun `computeUsedFragmentNames does not conflate unrelated sibling fragments that share a name`() {
+    // Regression test for a confirmed false negative introduced by the fixed-point iteration itself: two
+    // sibling modules (neither depends on the other, both downstream of root) are allowed to each define their
+    // own, unrelated fragment under the same name (see "duplicate fragments are detected correctly" in
+    // MultiModulesTests.kt). siblingA spreads and locally defines "SharedName" (unrelated to root). siblingB
+    // never spreads its own "SharedName", which happens to (coincidentally) wrap root's RootUnusedFragment.
+    // Blindly seeding the accumulated name set into every module would wrongly expand siblingB's unrelated
+    // "SharedName" once siblingA's "SharedName" becomes known-used, hiding a genuinely unused root fragment.
+    prepareSchemaForChain()
+
+    val rootIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "root", emptyList())
+    val siblingAIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "siblingA", rootIr.fragmentDefinitions)
+    val siblingBIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "siblingB", rootIr.fragmentDefinitions)
+
+    val usedFragmentNames = computeUsedFragmentNames(listOf(siblingAIr, siblingBIr))
+
+    Truth.assertThat(usedFragmentNames).containsExactly("SharedName")
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = rootIr,
+        downstreamUsedFragmentNames = usedFragmentNames.toUsedFragmentNames(),
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-unused-sibling-name-clash/root.graphql: (1, 1): Apollo: Fragment 'RootUnusedFragment' is not used"
+    )
+  }
+
+  @Test
+  fun `consumer reaches an intermediate fragment despite an unrelated sibling reusing its name`() {
+    prepareSchemaForChain()
+    val directory = "fragment-unused-sibling-name-clash"
+    val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
+    val siblingAIr = buildIrOperationsForModule(directory, "siblingA", rootIr.fragmentDefinitions)
+    val siblingBIr = buildIrOperationsForModule(directory, "siblingB", rootIr.fragmentDefinitions)
+    val childIr = buildIrOperationsForModule(directory, "child", rootIr.fragmentDefinitions + siblingBIr.fragmentDefinitions)
+
+    val usedNames = computeUsedFragmentNames(listOf(siblingAIr, siblingBIr, childIr))
+    Truth.assertThat(usedNames).containsExactly("SharedName", "RootUnusedFragment")
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(rootIr, usedNames.toUsedFragmentNames(), irOptionsFile.toIrOptions(), logger)
+    Truth.assertThat(warnings).isEmpty()
+  }
+
+  @Test
+  fun `scoped usage survives serialization and ordering across independent four-tier branches`() {
+    for (models in listOf(MODELS_OPERATION_BASED, MODELS_RESPONSE_BASED, MODELS_OPERATION_BASED_WITH_INTERFACES)) {
+      prepareSchemaForChain()
+      buildIrOptions(codegenModels = models).writeTo(irOptionsFile)
+      val directory = "fragment-usage-scoped"
+      val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
+      val aIr = buildIrOperationsForModule(directory, "a", rootIr.fragmentDefinitions)
+      val bIr = buildIrOperationsForModule(directory, "b", rootIr.fragmentDefinitions)
+      val aDefinitions = rootIr.fragmentDefinitions + aIr.fragmentDefinitions
+      val bDefinitions = rootIr.fragmentDefinitions + bIr.fragmentDefinitions
+      val wrapperAIr = buildIrOperationsForModule(directory, "wrapper", aDefinitions)
+      val wrapperBIr = buildIrOperationsForModule(directory, "wrapper", bDefinitions)
+      val childAIr = buildIrOperationsForModule(directory, "child", aDefinitions + wrapperAIr.fragmentDefinitions)
+      val childBIr = buildIrOperationsForModule(directory, "child", bDefinitions + wrapperBIr.fragmentDefinitions)
+      val intermediates = listOf(aIr, bIr, wrapperAIr, wrapperBIr)
+      val cases = listOf(
+          emptyList<IrOperations>() to emptySet<String>(),
+          listOf(childAIr) to setOf("Wrapper", "SharedName", "RootA"),
+          listOf(childBIr) to setOf("Wrapper", "SharedName", "RootB"),
+          listOf(childAIr, childBIr) to setOf("Wrapper", "SharedName", "RootA", "RootB"),
+      )
+      for ((consumers, expectedNames) in cases) {
+        val modules = (intermediates + consumers).mapIndexed { index, ir ->
+          val file = File(buildDir, "scoped-$index.json")
+          ir.writeTo(file)
+          file.toIrOperations()
+        }
+        for (orderedModules in listOf(modules, modules.reversed())) {
+          val usedNames = computeUsedFragmentNames(orderedModules)
+          Truth.assertThat(usedNames).containsExactlyElementsIn(expectedNames)
+          val (warnings, logger) = newWarningsLogger()
+          ApolloCompiler.checkUnusedFragments(rootIr, usedNames.toUsedFragmentNames(), irOptionsFile.toIrOptions(), logger)
+          val expectedWarnings = mutableListOf(
+              "w: src/test/metadata/fragment-usage-scoped/root.graphql: (9, 1): Apollo: Fragment 'NeverUsed' is not used"
+          )
+          if (childAIr !in consumers) {
+            expectedWarnings.add("w: src/test/metadata/fragment-usage-scoped/root.graphql: (1, 1): Apollo: Fragment 'RootA' is not used")
+          }
+          if (childBIr !in consumers) {
+            expectedWarnings.add("w: src/test/metadata/fragment-usage-scoped/root.graphql: (5, 1): Apollo: Fragment 'RootB' is not used")
+          }
+          Truth.assertThat(warnings).containsExactlyElementsIn(expectedWarnings)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun `aggregated usage prunes constant conditions on spreads fields and inline fragments`() {
+    prepareSchemaForChain()
+    val rootIr = buildIrOperationsForModule("fragment-usage-scoped", "root", emptyList())
+    val conditionalIr = buildIrOperationsForModule("fragment-usage-scoped", "conditions", rootIr.fragmentDefinitions)
+    val serialized = File(buildDir, "conditions.json")
+    conditionalIr.writeTo(serialized)
+    val usedNames = computeUsedFragmentNames(listOf(serialized.toIrOperations()))
+
+    Truth.assertThat(usedNames).containsExactly("VariableWrapper", "VariableInclude", "RootA")
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.checkUnusedFragments(rootIr, usedNames.toUsedFragmentNames(), irOptionsFile.toIrOptions(), logger)
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/fragment-usage-scoped/root.graphql: (5, 1): Apollo: Fragment 'RootB' is not used",
+        "w: src/test/metadata/fragment-usage-scoped/root.graphql: (9, 1): Apollo: Fragment 'NeverUsed' is not used",
+    )
+  }
+
+  @Test
+  fun `aggregation rejects an operation document with a missing fragment definition`() {
+    prepareSchemaForChain()
+    val directory = "fragment-usage-scoped"
+    val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
+    val aIr = buildIrOperationsForModule(directory, "a", rootIr.fragmentDefinitions)
+    val wrapperIr = buildIrOperationsForModule(directory, "wrapper", rootIr.fragmentDefinitions + aIr.fragmentDefinitions)
+    val childIr = buildIrOperationsForModule(directory, "child", rootIr.fragmentDefinitions + aIr.fragmentDefinitions + wrapperIr.fragmentDefinitions)
+    val operation = childIr.operations.single()
+    val incompleteIr = childIr.copy(
+        operations = listOf(operation.copy(sourceWithFragments = "query GetCharacter { character { ...Wrapper } }"))
+    )
+
+    val exception = assertFailsWith<IllegalStateException> {
+      computeUsedFragmentNames(listOf(incompleteIr))
+    }
+    Truth.assertThat(exception).hasMessageThat().isEqualTo("Apollo: Fragment 'Wrapper' is missing from operation 'GetCharacter'.")
   }
 
   @Test

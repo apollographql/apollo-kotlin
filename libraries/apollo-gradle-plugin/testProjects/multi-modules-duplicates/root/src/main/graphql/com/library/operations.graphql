@@ -1,0 +1,7 @@
+fragment UsedViaNode2 on Cat {
+  dateOfBirth
+}
+
+fragment DeadViaNode1 on Cat {
+  class
+}

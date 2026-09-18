@@ -1,5 +1,10 @@
 query GetTypename {
     __typename
+    ...usedQueryDetails
+}
+
+fragment usedQueryDetails on Query {
+    __typename
 }
 
 fragment queryDetails on Query {

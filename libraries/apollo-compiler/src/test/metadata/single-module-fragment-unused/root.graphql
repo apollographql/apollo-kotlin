@@ -1,0 +1,13 @@
+query GetCharacter {
+  character {
+    ...UsedFragment
+  }
+}
+
+fragment UsedFragment on Character {
+  name
+}
+
+fragment UnusedFragment on Character {
+  id
+}

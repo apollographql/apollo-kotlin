@@ -1,0 +1,5 @@
+# siblingB independently (coincidentally) defines its OWN fragment also named "SharedName", which wraps
+# RootUnusedFragment. siblingB's operations never spread this fragment - it's genuinely dead code within B.
+fragment SharedName on Character {
+  ...RootUnusedFragment
+}

@@ -1,0 +1,14 @@
+query GetCharacter($skipCat: Boolean!) {
+  character {
+    ...ConstantSkippedFragment @skip(if: true)
+    ...VariableSkippedFragment @skip(if: $skipCat)
+  }
+}
+
+fragment ConstantSkippedFragment on Character {
+  name
+}
+
+fragment VariableSkippedFragment on Character {
+  id
+}
