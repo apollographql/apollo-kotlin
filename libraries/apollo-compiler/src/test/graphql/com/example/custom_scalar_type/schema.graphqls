@@ -17,7 +17,11 @@ type Query {
   nullableListOfNonNullTimestamp: [Timestamp!]
   nullableListOfNullableTimestamp: [Timestamp]
   listOfString: ListOfString
+  nullableLong: Long
+  nullableFloat: Float
 }
+
+scalar Long
 
 """A character from the Star Wars universe"""
 interface Character {
@@ -76,4 +80,8 @@ scalar ListOfString
 
 scalar Timestamp
 
+scalar Float @mapTo(builtIn: Float)
+
 scalar CharacterID @mapTo(builtIn: String)
+
+extend scalar Long @mapTo(builtIn: Long)
