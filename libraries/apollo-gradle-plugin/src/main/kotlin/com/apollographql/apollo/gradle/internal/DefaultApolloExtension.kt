@@ -636,6 +636,13 @@ abstract class DefaultApolloExtension(
           taskGroup = TASK_GROUP,
           irOperations = project.files(downstreamIr.resolvable),
       )
+      // Exported fragments may have consumers outside the configured graph. Without downstream IR, their usage is
+      // unknown rather than empty, so reporting them as globally unused would be a false positive.
+      val downstreamFragmentUsageIsComplete = downstreamIr.resolvable.flatMap { it.elements }.zip(
+          service.generateApolloMetadata.orElse(false)
+      ) { downstreamIrFiles, generatesApolloMetadata ->
+        !generatesApolloMetadata || downstreamIrFiles.isNotEmpty()
+      }
       val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrTask(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
@@ -646,6 +653,7 @@ abstract class DefaultApolloExtension(
           codegenSchemas = upstreamAndSelfCodegenSchemas,
           downstreamUsedCoordinates = computeUsedCoordinatesTask.flatMap { it.outputFile },
           downstreamUsedFragmentNames = computeUsedCoordinatesTask.flatMap { it.usedFragmentNamesOutputFile },
+          downstreamFragmentUsageIsComplete = downstreamFragmentUsageIsComplete,
           irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
           upstreamMetadata = project.files(codegenMetadata.resolvable),
           codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },

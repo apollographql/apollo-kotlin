@@ -21,6 +21,7 @@ internal fun apolloGenerateSourcesFromIr(
     irOperations: GInputFile,
     downstreamUsedCoordinates: GInputFile,
     downstreamUsedFragmentNames: GInputFile,
+    downstreamFragmentUsageIsComplete: Boolean,
     upstreamMetadata: GInputFiles,
     codegenOptions: GInputFile,
     irOptions: GInputFile,
@@ -46,6 +47,7 @@ internal fun apolloGenerateSourcesFromIr(
       irOperations = irOperations,
       downstreamUsedCoordinates = downstreamUsedCoordinates,
       downstreamUsedFragmentNames = downstreamUsedFragmentNames,
+      downstreamFragmentUsageIsComplete = downstreamFragmentUsageIsComplete,
       upstreamMetadata = upstreamMetadata.toInputFiles(),
       codegenOptions = codegenOptions,
       irOptions = irOptions,
@@ -54,5 +56,4 @@ internal fun apolloGenerateSourcesFromIr(
       metadataOutput = metadataOutput,
   )
 }
-
 

@@ -46,6 +46,51 @@ class MultiModulesTests {
   }
 
   @Test
+  fun `multi-modules project does not report exported fragments when downstream usage is unknown`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      File(dir, "root/build.gradle.kts").replaceInText(
+          """
+          dependencies {
+            add("apolloServiceUsedCoordinates", project(":leaf"))
+          }
+          """.trimIndent(),
+          ""
+      )
+
+      val result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'CatFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'PlantFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'GloballyUnusedFragment' is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules project reports unused fragments from a non-exporting leaf`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      File(dir, "leaf/build.gradle.kts").replaceInText(
+          "generateApolloMetadata.set(true)",
+          "generateApolloMetadata.set(false)\n    dependsOn(project(\":root\"))"
+      )
+      File(dir, "leaf/build.gradle.kts").replaceInText(
+          """
+          dependencies {
+            add("apolloService", project(":root"))
+          }
+          """.trimIndent(),
+          ""
+      )
+      File(dir, "leaf/src/main/graphql/com/library/operations.graphql").appendText(
+          "\nfragment LeafUnusedFragment on Cat {\n  dateOfBirth\n}\n"
+      )
+
+      val result = TestUtils.executeTask(":leaf:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).contains("Fragment 'LeafUnusedFragment' is not used")
+    }
+  }
+
+  @Test
   fun `multi-modules project can use transitive dependencies`() {
     testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
       val result = TestUtils.executeTask(":leaf:assemble", dir)
@@ -112,8 +157,7 @@ class MultiModulesTests {
           ""
       )
       File(dir, "node/src/main/graphql/com/library/operations.graphql").replaceInText(
-          "\n# Genuinely dead: never spread by node, root, or leaf. Control fixture used to confirm a truly unused,\n" +
-              "# node-owned fragment is reported exactly once when generating sources (see MultiModulesTests.kt).\n" +
+          "\n# Genuinely dead: never spread anywhere. Confirms a truly unused fragment is reported once.\n" +
               "fragment NodeOnlyUnusedFragment on Cat {\n  class\n}\n",
           ""
       )

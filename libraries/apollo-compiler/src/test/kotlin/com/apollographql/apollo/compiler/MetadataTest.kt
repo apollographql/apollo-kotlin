@@ -191,6 +191,7 @@ class MetadataTest {
           irOperations = rootIrOperationsFile,
           downstreamUsedCoordinates = usedCoordinatesFile,
           downstreamUsedFragmentNames = usedFragmentNamesFile,
+          downstreamFragmentUsageIsComplete = true,
           codegenOptions = rootCodegenOptionsFile,
           irOptions = irOptionsFile,
           operationManifest = null,
