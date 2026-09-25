@@ -46,6 +46,53 @@ object EntryPoints {
       irOptionsFile: File,
       irOperationsFile: File,
   ) {
+    buildIrImpl(
+        plugins = plugins,
+        arguments = arguments,
+        logger = logger,
+        graphqlFiles = graphqlFiles,
+        codegenSchemaFiles = codegenSchemaFiles,
+        upstreamIrOperations = upstreamIrOperations,
+        irOptionsFile = irOptionsFile,
+        irOperationsFile = irOperationsFile,
+        checkUnusedFragments = true,
+    )
+  }
+
+  fun buildIrWithoutUnusedFragmentChecks(
+      plugins: List<ApolloCompilerPlugin>,
+      arguments: Map<String, Any?>,
+      logger: ApolloCompiler.Logger,
+      graphqlFiles: List<InputFile>,
+      codegenSchemaFiles: List<InputFile>,
+      upstreamIrOperations: List<InputFile>,
+      irOptionsFile: File,
+      irOperationsFile: File,
+  ) {
+    buildIrImpl(
+        plugins = plugins,
+        arguments = arguments,
+        logger = logger,
+        graphqlFiles = graphqlFiles,
+        codegenSchemaFiles = codegenSchemaFiles,
+        upstreamIrOperations = upstreamIrOperations,
+        irOptionsFile = irOptionsFile,
+        irOperationsFile = irOperationsFile,
+        checkUnusedFragments = false,
+    )
+  }
+
+  private fun buildIrImpl(
+      plugins: List<ApolloCompilerPlugin>,
+      arguments: Map<String, Any?>,
+      logger: ApolloCompiler.Logger,
+      graphqlFiles: List<InputFile>,
+      codegenSchemaFiles: List<InputFile>,
+      upstreamIrOperations: List<InputFile>,
+      irOptionsFile: File,
+      irOperationsFile: File,
+      checkUnusedFragments: Boolean,
+  ) {
     val registry = apolloCompilerRegistry(
         arguments = arguments,
         logger = logger,
@@ -53,18 +100,53 @@ object EntryPoints {
     )
 
     val upstream = upstreamIrOperations.map { it.file.toIrOperations() }
+    val buildIrOperations = if (checkUnusedFragments) {
+      ApolloCompiler::buildIrOperations
+    } else {
+      ApolloCompiler::buildIrOperationsWithoutUnusedFragmentChecks
+    }
     buildIrOperations(
-        executableFiles = graphqlFiles,
-        codegenSchema = codegenSchemaFiles.map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
-        upstreamCodegenModels = upstream.map { it.codegenModels },
-        upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
-        documentTransform = registry.executableDocumentTransform(),
-        options = irOptionsFile.toIrOptions(),
-        logger = logger,
+        codegenSchemaFiles.map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
+        graphqlFiles,
+        upstream.map { it.codegenModels },
+        upstream.flatMap { it.fragmentDefinitions },
+        irOptionsFile.toIrOptions(),
+        registry.executableDocumentTransform(),
+        logger,
     ).writeTo(irOperationsFile)
   }
 
   fun buildSourcesFromIr(
+      plugins: List<ApolloCompilerPlugin>,
+      arguments: Map<String, Any?>,
+      logger: ApolloCompiler.Logger,
+      codegenSchemas: List<InputFile>,
+      upstreamMetadata: List<InputFile>,
+      irOperations: File,
+      downstreamUsedCoordinates: File,
+      codegenOptions: File,
+      operationManifest: File?,
+      outputDirectory: File,
+      metadataOutput: File?,
+  ) {
+    buildSourcesFromIrImpl(
+        plugins = plugins,
+        arguments = arguments,
+        logger = logger,
+        codegenSchemas = codegenSchemas,
+        upstreamMetadata = upstreamMetadata,
+        irOperations = irOperations,
+        downstreamUsedCoordinates = downstreamUsedCoordinates,
+        downstreamUsedFragmentNames = null,
+        irOptions = null,
+        operationManifest = operationManifest,
+        codegenOptions = codegenOptions,
+        outputDirectory = outputDirectory,
+        metadataOutput = metadataOutput,
+    )
+  }
+
+  fun buildSourcesFromIrWithFragmentUsage(
       plugins: List<ApolloCompilerPlugin>,
       arguments: Map<String, Any?>,
       logger: ApolloCompiler.Logger,
@@ -80,6 +162,38 @@ object EntryPoints {
       outputDirectory: File,
       metadataOutput: File?,
   ) {
+    buildSourcesFromIrImpl(
+        plugins = plugins,
+        arguments = arguments,
+        logger = logger,
+        codegenSchemas = codegenSchemas,
+        upstreamMetadata = upstreamMetadata,
+        irOperations = irOperations,
+        downstreamUsedCoordinates = downstreamUsedCoordinates,
+        downstreamUsedFragmentNames = downstreamUsedFragmentNames.takeIf { downstreamFragmentUsageIsComplete },
+        irOptions = irOptions.takeIf { downstreamFragmentUsageIsComplete },
+        operationManifest = operationManifest,
+        codegenOptions = codegenOptions,
+        outputDirectory = outputDirectory,
+        metadataOutput = metadataOutput,
+    )
+  }
+
+  private fun buildSourcesFromIrImpl(
+      plugins: List<ApolloCompilerPlugin>,
+      arguments: Map<String, Any?>,
+      logger: ApolloCompiler.Logger,
+      codegenSchemas: List<InputFile>,
+      upstreamMetadata: List<InputFile>,
+      irOperations: File,
+      downstreamUsedCoordinates: File,
+      downstreamUsedFragmentNames: File?,
+      codegenOptions: File,
+      irOptions: File?,
+      operationManifest: File?,
+      outputDirectory: File,
+      metadataOutput: File?,
+  ) {
     val registry = apolloCompilerRegistry(
         arguments = arguments,
         logger = logger,
@@ -91,7 +205,7 @@ object EntryPoints {
     val upstreamCodegenMetadata = upstreamMetadata.map { it.file.toCodegenMetadata() }
     @Suppress("NAME_SHADOWING")
     val irOperations = irOperations.toIrOperations()
-    if (downstreamFragmentUsageIsComplete) {
+    if (downstreamUsedFragmentNames != null && irOptions != null) {
       ApolloCompiler.checkUnusedFragments(
           irOperations = irOperations,
           downstreamUsedFragmentNames = downstreamUsedFragmentNames.toUsedFragmentNames(),

@@ -182,7 +182,7 @@ class MetadataTest {
     val (warnings, logger) = newWarningsLogger()
 
     val exception = assertFailsWith<IllegalStateException> {
-      EntryPoints.buildSourcesFromIr(
+      EntryPoints.buildSourcesFromIrWithFragmentUsage(
           plugins = emptyList(),
           arguments = emptyMap(),
           logger = logger,
@@ -231,6 +231,33 @@ class MetadataTest {
   }
 
   @Test
+  fun `buildIrOperations preserves unused fragment reporting for existing callers`() {
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    buildIrOptions().writeTo(irOptionsFile)
+
+    ApolloCompiler.buildCodegenSchema(
+        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
+        logger = null,
+        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
+        foreignSchemas = emptyList(),
+        null
+    ).writeTo(codegenSchemaFile)
+
+    val (warnings, logger) = newWarningsLogger()
+    ApolloCompiler.buildIrOperations(
+        codegenSchema = codegenSchemaFile.toCodegenSchema(),
+        executableFiles = setOf(File("src/test/metadata/single-module-fragment-unused/root.graphql")).toInputFiles(),
+        upstreamCodegenModels = emptyList(),
+        upstreamFragmentDefinitions = emptyList(),
+        documentTransform = null,
+        options = irOptionsFile.toIrOptions(),
+        logger = logger,
+    )
+
+    Truth.assertThat(warnings).containsExactly("w: src/test/metadata/single-module-fragment-unused/root.graphql: (11, 1): Apollo: Fragment 'UnusedFragment' is not used")
+  }
+
+  @Test
   fun `checkUnusedFragments on a single module without downstream data only reports locally unused fragments`() {
     // No leaf/downstream module involved at all: this is the plain single-module case (e.g. a project with no
     // 'dependsOn'/multi-module setup), where checkUnusedFragments is called with the default, empty
@@ -246,7 +273,7 @@ class MetadataTest {
         null
     ).writeTo(codegenSchemaFile)
 
-    val irOperations = ApolloCompiler.buildIrOperations(
+    val irOperations = ApolloCompiler.buildIrOperationsWithoutUnusedFragmentChecks(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
         executableFiles = setOf(File("src/test/metadata/single-module-fragment-unused/root.graphql")).toInputFiles(),
         upstreamCodegenModels = emptyList(),

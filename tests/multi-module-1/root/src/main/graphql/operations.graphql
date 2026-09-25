@@ -5,3 +5,7 @@ query GetLong {
 fragment QueryDetails on Query {
   long
 }
+
+fragment BidirectionalOnlyFragment on Query {
+  long
+}

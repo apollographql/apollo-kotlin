@@ -17,16 +17,17 @@ import com.apollographql.apollo.gradle.internal.BuildDirLayout.outputDir
 import com.apollographql.apollo.gradle.task.ApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesFromIrTask
+import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesFromIrWithFragmentUsageTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesTask
-import com.apollographql.apollo.gradle.task.registerApolloComputeUsedCoordinatesTask
+import com.apollographql.apollo.gradle.task.registerApolloComputeUsedCoordinatesAndFragmentNamesTask
 import com.apollographql.apollo.gradle.task.registerApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCompilationUnitModelTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSourcesTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsWithoutUnusedFragmentChecksTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrWithFragmentUsageTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
 import gratatouille.wiring.capitalizeFirstLetter
@@ -618,7 +619,7 @@ abstract class DefaultApolloExtension(
         it.from(codegenSchema.resolvable)
         it.from(codegenSchemaTaskProvider.flatMap { it.codegenSchemaFile })
       }
-      val irOperationsTaskProvider = project.registerApolloGenerateIrOperationsTask(
+      val irOperationsTaskProvider = project.registerApolloGenerateIrOperationsWithoutUnusedFragmentChecksTask(
           taskName = ModelNames.generateApolloIrOperations(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo IR operations for service '${service.name}'",
@@ -631,7 +632,7 @@ abstract class DefaultApolloExtension(
           irOptionsFile = optionsTaskProvider.flatMap { it.irOptionsFile },
       )
 
-      val computeUsedCoordinatesTask = project.registerApolloComputeUsedCoordinatesTask(
+      val computeUsedCoordinatesTask = project.registerApolloComputeUsedCoordinatesAndFragmentNamesTask(
           taskName = ModelNames.computeUsedCoordinates(service),
           taskGroup = TASK_GROUP,
           irOperations = project.files(downstreamIr.resolvable),
@@ -643,7 +644,7 @@ abstract class DefaultApolloExtension(
       ) { downstreamIrFiles, generatesApolloMetadata ->
         !generatesApolloMetadata || downstreamIrFiles.isNotEmpty()
       }
-      val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrTask(
+      val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrWithFragmentUsageTask(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
@@ -1002,6 +1003,7 @@ private fun Task.outputDirectory(): DirectoryProperty {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.outputDirectory
     is ApolloGenerateSourcesFromIrTask -> this.outputDirectory
+    is ApolloGenerateSourcesFromIrWithFragmentUsageTask -> this.outputDirectory
     else -> error("Unexpected task $this")
   }
 }
@@ -1010,6 +1012,7 @@ private fun Task.operationManifest(): Provider<RegularFile> {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.operationManifest
     is ApolloGenerateSourcesFromIrTask -> this.operationManifest
+    is ApolloGenerateSourcesFromIrWithFragmentUsageTask -> this.operationManifest
     else -> error("Unexpected task $this")
   }
 }

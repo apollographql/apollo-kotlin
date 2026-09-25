@@ -1,11 +1,21 @@
-public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint {
-	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion;
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesAndFragmentNamesEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesAndFragmentNamesEntryPoint$Companion;
 	public fun <init> ()V
 	public static final fun run (Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 }
 
-public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion {
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesAndFragmentNamesEntryPoint$Companion {
 	public final fun run (Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/List;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordinatesEntryPoint$Companion {
+	public final fun run (Ljava/util/List;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint {
@@ -58,6 +68,16 @@ public final class com/apollographql/apollo/gradle/task/ApolloGenerateIrOperatio
 	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 }
 
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsWithoutUnusedFragmentChecksEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsWithoutUnusedFragmentChecksEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateIrOperationsWithoutUnusedFragmentChecksEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+}
+
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateOptionsEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateOptionsEntryPoint$Companion;
 	public fun <init> ()V
@@ -95,10 +115,20 @@ public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesEnt
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrWithFragmentUsageEntryPoint {
+	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrWithFragmentUsageEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrWithFragmentUsageEntryPoint$Companion {
 	public final fun run (Ljava/util/function/BiConsumer;Ljava/util/Map;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;ZLjava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 

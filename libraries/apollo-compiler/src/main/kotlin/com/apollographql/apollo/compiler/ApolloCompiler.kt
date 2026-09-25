@@ -252,13 +252,6 @@ object ApolloCompiler {
     return definitions
   }
 
-  /**
-   * Builds the [IrOperations] for this module.
-   *
-   * This does **not** report [UnusedFragment]: a fragment unused in this module alone might still be spread by a
-   * downstream module in a multi-module project, so this module cannot decide that on its own. Callers must call
-   * [checkUnusedFragments] afterward to get that diagnostic.
-   */
   @Suppress("DEPRECATION")
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
@@ -268,6 +261,50 @@ object ApolloCompiler {
       options: IrOptions,
       documentTransform: ExecutableDocumentTransform?,
       logger: Logger?,
+  ): IrOperations {
+    return buildIrOperationsImpl(
+        codegenSchema = codegenSchema,
+        executableFiles = executableFiles,
+        upstreamCodegenModels = upstreamCodegenModels,
+        upstreamFragmentDefinitions = upstreamFragmentDefinitions,
+        options = options,
+        documentTransform = documentTransform,
+        logger = logger,
+        reportUnusedFragments = true,
+    )
+  }
+
+  internal fun buildIrOperationsWithoutUnusedFragmentChecks(
+      codegenSchema: CodegenSchema,
+      executableFiles: List<InputFile>,
+      upstreamCodegenModels: List<String>,
+      upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
+      options: IrOptions,
+      documentTransform: ExecutableDocumentTransform?,
+      logger: Logger?,
+  ): IrOperations {
+    return buildIrOperationsImpl(
+        codegenSchema = codegenSchema,
+        executableFiles = executableFiles,
+        upstreamCodegenModels = upstreamCodegenModels,
+        upstreamFragmentDefinitions = upstreamFragmentDefinitions,
+        options = options,
+        documentTransform = documentTransform,
+        logger = logger,
+        reportUnusedFragments = false,
+    )
+  }
+
+  @Suppress("DEPRECATION")
+  private fun buildIrOperationsImpl(
+      codegenSchema: CodegenSchema,
+      executableFiles: List<InputFile>,
+      upstreamCodegenModels: List<String>,
+      upstreamFragmentDefinitions: List<GQLFragmentDefinition>,
+      options: IrOptions,
+      documentTransform: ExecutableDocumentTransform?,
+      logger: Logger?,
+      reportUnusedFragments: Boolean,
   ): IrOperations {
     val schema = codegenSchema.schema
 
@@ -363,12 +400,8 @@ object ApolloCompiler {
       allIssues.addAll(checkCapitalizedFields(userDefinitions, checkFragmentsOnly = flattenModels))
     }
 
-    /**
-     * UnusedFragment is reported later, in [checkUnusedFragments], once IR from downstream (consumer) modules is
-     * available: a fragment unused in this module alone might still be spread by a downstream module in a
-     * multi-module project, so it would be a false positive to report it here.
-     */
-    val issueGroup = allIssues.filterNot { it is UnusedFragment }.group(issueSeverities)
+    val issues = if (reportUnusedFragments) allIssues else allIssues.filterNot { it is UnusedFragment }
+    val issueGroup = issues.group(issueSeverities)
 
     issueGroup.errors.checkEmpty()
 
@@ -668,12 +701,6 @@ object ApolloCompiler {
         documentTransform = documentTransform,
         options = irOptions,
         logger = logger
-    )
-
-    checkUnusedFragments(
-        irOperations = irOperations,
-        options = irOptions,
-        logger = logger,
     )
 
     val sourceOutput = buildSchemaAndOperationsSourcesFromIr(

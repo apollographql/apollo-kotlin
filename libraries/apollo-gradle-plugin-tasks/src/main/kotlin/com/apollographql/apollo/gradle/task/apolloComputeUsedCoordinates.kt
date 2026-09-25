@@ -13,6 +13,19 @@ import gratatouille.tasks.GTask
 internal fun apolloComputeUsedCoordinates(
     irOperations: GInputFiles,
     outputFile: GOutputFile,
+) {
+  val allIrOperations = irOperations.map { it.file.toIrOperations() }
+
+  val usedCoordinates: UsedCoordinates = allIrOperations.fold(UsedCoordinates()) { acc, element ->
+    acc.mergeWith(element.usedCoordinates)
+  }
+  usedCoordinates.writeTo(outputFile)
+}
+
+@GTask
+internal fun apolloComputeUsedCoordinatesAndFragmentNames(
+    irOperations: GInputFiles,
+    outputFile: GOutputFile,
     usedFragmentNamesOutputFile: GOutputFile,
 ) {
   val allIrOperations = irOperations.map { it.file.toIrOperations() }

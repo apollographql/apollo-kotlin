@@ -20,11 +20,8 @@ internal fun apolloGenerateSourcesFromIr(
     codegenSchemas: GInputFiles,
     irOperations: GInputFile,
     downstreamUsedCoordinates: GInputFile,
-    downstreamUsedFragmentNames: GInputFile,
-    downstreamFragmentUsageIsComplete: Boolean,
     upstreamMetadata: GInputFiles,
     codegenOptions: GInputFile,
-    irOptions: GInputFile,
     // outputs
     @GManuallyWired
     operationManifest: GOutputFile,
@@ -46,6 +43,48 @@ internal fun apolloGenerateSourcesFromIr(
       codegenSchemas = codegenSchemas.toInputFiles(),
       irOperations = irOperations,
       downstreamUsedCoordinates = downstreamUsedCoordinates,
+      upstreamMetadata = upstreamMetadata.toInputFiles(),
+      codegenOptions = codegenOptions,
+      operationManifest = operationManifest,
+      outputDirectory = outputDirectory,
+      metadataOutput = metadataOutput,
+  )
+}
+
+@GTask
+internal fun apolloGenerateSourcesFromIrWithFragmentUsage(
+    logger: GLogger,
+    arguments: Map<String, GAny?>,
+    warnIfNotFound: Boolean,
+    codegenSchemas: GInputFiles,
+    irOperations: GInputFile,
+    downstreamUsedCoordinates: GInputFile,
+    downstreamUsedFragmentNames: GInputFile,
+    downstreamFragmentUsageIsComplete: Boolean,
+    upstreamMetadata: GInputFiles,
+    codegenOptions: GInputFile,
+    irOptions: GInputFile,
+    // outputs
+    @GManuallyWired
+    operationManifest: GOutputFile,
+    @GManuallyWired
+    outputDirectory: GOutputDirectory,
+    metadataOutput: GOutputFile,
+) {
+  val logger = logger.asLogger()
+  val plugins = loadCompilerPlugins(
+      arguments = arguments,
+      logger = logger,
+      classLoader = ApolloCompilerPlugin::class.java.classLoader,
+      warnIfNotFound = warnIfNotFound,
+  )
+  EntryPoints.buildSourcesFromIrWithFragmentUsage(
+      plugins = plugins,
+      arguments = arguments,
+      logger = logger,
+      codegenSchemas = codegenSchemas.toInputFiles(),
+      irOperations = irOperations,
+      downstreamUsedCoordinates = downstreamUsedCoordinates,
       downstreamUsedFragmentNames = downstreamUsedFragmentNames,
       downstreamFragmentUsageIsComplete = downstreamFragmentUsageIsComplete,
       upstreamMetadata = upstreamMetadata.toInputFiles(),
@@ -56,4 +95,3 @@ internal fun apolloGenerateSourcesFromIr(
       metadataOutput = metadataOutput,
   )
 }
-
