@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.json.JsonReader;
 import com.apollographql.apollo.api.json.JsonWriter;
 import com.example.custom_scalar_type.TestQuery;
 import java.io.IOException;
+import java.lang.Float;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -29,7 +30,7 @@ public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp", "nullableLong");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp", "nullableLong", "nullableFloat");
 
     @SuppressWarnings("unchecked")
     @Override
@@ -43,6 +44,7 @@ public class TestQuery_ResponseAdapter {
       List<Object> _nullableListOfNonNullTimestamp = null;
       List<Object> _nullableListOfNullableTimestamp = null;
       Long _nullableLong = null;
+      Float _nullableFloat = null;
 
       loop:
       while(true) {
@@ -55,6 +57,7 @@ public class TestQuery_ResponseAdapter {
           case 5: _nullableListOfNonNullTimestamp = new NullableAdapter<>(new ListAdapter<>(Adapters.AnyAdapter)).fromJson(reader, customScalarAdapters); break;
           case 6: _nullableListOfNullableTimestamp = new NullableAdapter<>(new ListAdapter<>(Adapters.NullableAnyAdapter)).fromJson(reader, customScalarAdapters); break;
           case 7: _nullableLong = Adapters.NullableLongAdapter.fromJson(reader, customScalarAdapters); break;
+          case 8: _nullableFloat = new NullableAdapter<>(Adapters.FloatAdapter).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -71,7 +74,8 @@ public class TestQuery_ResponseAdapter {
         _nonNullListOfNullableTimestamp,
         _nullableListOfNonNullTimestamp,
         _nullableListOfNullableTimestamp,
-        _nullableLong
+        _nullableLong,
+        _nullableFloat
       );
     }
 
@@ -101,6 +105,9 @@ public class TestQuery_ResponseAdapter {
 
       writer.name("nullableLong");
       Adapters.NullableLongAdapter.toJson(writer, customScalarAdapters, value.nullableLong);
+
+      writer.name("nullableFloat");
+      new NullableAdapter<>(Adapters.FloatAdapter).toJson(writer, customScalarAdapters, value.nullableFloat);
     }
   }
 

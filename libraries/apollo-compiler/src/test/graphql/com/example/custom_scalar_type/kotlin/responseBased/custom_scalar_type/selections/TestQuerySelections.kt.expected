@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.notNull
 import com.example.custom_scalar_type.type.Character
 import com.example.custom_scalar_type.type.CharacterID
 import com.example.custom_scalar_type.type.Date
+import com.example.custom_scalar_type.type.GraphQLFloat
 import com.example.custom_scalar_type.type.GraphQLString
 import com.example.custom_scalar_type.type.Long
 import com.example.custom_scalar_type.type.Timestamp
@@ -84,6 +85,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "nullableLong",
           type = Long.type
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableFloat",
+          type = GraphQLFloat.type
         ).build()
       )
 }

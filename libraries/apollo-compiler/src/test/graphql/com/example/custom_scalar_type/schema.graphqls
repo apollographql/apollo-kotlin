@@ -18,6 +18,7 @@ type Query {
   nullableListOfNullableTimestamp: [Timestamp]
   listOfString: ListOfString
   nullableLong: Long
+  nullableFloat: Float
 }
 
 scalar Long
@@ -78,6 +79,8 @@ extend scalar ID @mapTo(builtIn: Long, inline: false)
 scalar ListOfString
 
 scalar Timestamp
+
+scalar Float @mapTo(builtIn: Float)
 
 scalar CharacterID @mapTo(builtIn: String)
 

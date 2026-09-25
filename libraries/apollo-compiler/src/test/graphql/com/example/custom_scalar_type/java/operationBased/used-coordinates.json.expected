@@ -3,6 +3,7 @@
         "Character": {},
         "Timestamp": {},
         "Long": {},
+        "Float": {},
         "CharacterID": {},
         "String": {},
         "Date": {},

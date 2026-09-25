@@ -17,6 +17,7 @@ import com.example.Timestamp
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter
 import com.example.custom_scalar_type.selections.TestQuerySelections
 import com.example.custom_scalar_type.type.scalar.CharacterID
+import com.example.custom_scalar_type.type.scalar.Float
 import com.example.custom_scalar_type.type.scalar.Long
 import java.util.Date
 import kotlin.Any
@@ -59,6 +60,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val nullableListOfNonNullTimestamp: List<Timestamp>?,
     public val nullableListOfNullableTimestamp: List<Timestamp?>?,
     public val nullableLong: Long?,
+    public val nullableFloat: Float?,
   ) : Query.Data {
     public fun nonNullListOfNullableTimestampFilterNotNull(): List<Timestamp> = nonNullListOfNullableTimestamp.filterNotNull()
 
@@ -107,7 +109,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         .build()
 
     public const val OPERATION_ID: String =
-        "d84dc611bfd89c2610e876828a73c8cc888caa7e8056e020339919d484be8590"
+        "ab392dcf31fc40a50aa171d889e97a082599dddfbe4946b2674204af36031a39"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -131,11 +133,12 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   nullableListOfNonNullTimestamp
      *   nullableListOfNullableTimestamp
      *   nullableLong
+     *   nullableFloat
      * }
      * ```
      */
     public val OPERATION_DOCUMENT: String
-      get() = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } nonNullTimestamp nullableTimestamp nonNullListOfNonNullTimestamp nonNullListOfNullableTimestamp nullableListOfNonNullTimestamp nullableListOfNullableTimestamp nullableLong }"
+      get() = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } nonNullTimestamp nullableTimestamp nonNullListOfNonNullTimestamp nonNullListOfNullableTimestamp nullableListOfNonNullTimestamp nullableListOfNullableTimestamp nullableLong nullableFloat }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }
