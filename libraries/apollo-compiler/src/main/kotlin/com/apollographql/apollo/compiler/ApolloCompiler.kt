@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.ForeignSchema
 import com.apollographql.apollo.ast.GQLDefinition
 import com.apollographql.apollo.ast.GQLDocument
@@ -468,6 +469,7 @@ object ApolloCompiler {
    *
    * Usage is syntactic: conditional spreads count even behind `@skip(if: true)` or `@include(if: false)`.
    */
+  @ApolloInternal
   fun checkUnusedFragments(
       irOperations: IrOperations,
       downstreamUsedFragmentNames: UsedFragmentNames = UsedFragmentNames(),
