@@ -8,6 +8,7 @@ package com.example.custom_scalar_type.adapter
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.AnyAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.FloatAdapter
 import com.apollographql.apollo.api.LongAdapter
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.json.JsonReader
@@ -19,6 +20,8 @@ import com.apollographql.apollo.api.obj
 import com.example.Timestamp
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.scalar.CharacterID
+import com.example.custom_scalar_type.type.scalar.Float
+import com.example.custom_scalar_type.type.scalar.Long
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
@@ -28,7 +31,7 @@ import java.util.Date as UtilDate
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> =
-        listOf("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp")
+        listOf("hero", "nonNullTimestamp", "nullableTimestamp", "nonNullListOfNonNullTimestamp", "nonNullListOfNullableTimestamp", "nullableListOfNonNullTimestamp", "nullableListOfNullableTimestamp", "nullableLong", "nullableFloat")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
@@ -38,6 +41,8 @@ public object TestQuery_ResponseAdapter {
       var _nonNullListOfNullableTimestamp: List<Timestamp?>? = null
       var _nullableListOfNonNullTimestamp: List<Timestamp>? = null
       var _nullableListOfNullableTimestamp: List<Timestamp?>? = null
+      var _nullableLong: Long? = null
+      var _nullableFloat: Float? = null
 
       while (true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -48,6 +53,8 @@ public object TestQuery_ResponseAdapter {
           4 -> _nonNullListOfNullableTimestamp = LongAdapter.nullable().list().fromJson(reader, customScalarAdapters).map { it?.let { Timestamp(it) } }
           5 -> _nullableListOfNonNullTimestamp = LongAdapter.list().nullable().fromJson(reader, customScalarAdapters)?.map { Timestamp(it) }
           6 -> _nullableListOfNullableTimestamp = LongAdapter.nullable().list().nullable().fromJson(reader, customScalarAdapters)?.map { it?.let { Timestamp(it) } }
+          7 -> _nullableLong = LongAdapter.nullable().fromJson(reader, customScalarAdapters)?.let { Long(it) }
+          8 -> _nullableFloat = FloatAdapter.nullable().fromJson(reader, customScalarAdapters)?.let { Float(it) }
           else -> break
         }
       }
@@ -59,7 +66,9 @@ public object TestQuery_ResponseAdapter {
         nonNullListOfNonNullTimestamp = _nonNullListOfNonNullTimestamp ?: missingField(reader, "nonNullListOfNonNullTimestamp"),
         nonNullListOfNullableTimestamp = _nonNullListOfNullableTimestamp ?: missingField(reader, "nonNullListOfNullableTimestamp"),
         nullableListOfNonNullTimestamp = _nullableListOfNonNullTimestamp,
-        nullableListOfNullableTimestamp = _nullableListOfNullableTimestamp
+        nullableListOfNullableTimestamp = _nullableListOfNullableTimestamp,
+        nullableLong = _nullableLong,
+        nullableFloat = _nullableFloat
       )
     }
 
@@ -88,6 +97,12 @@ public object TestQuery_ResponseAdapter {
 
       writer.name("nullableListOfNullableTimestamp")
       LongAdapter.nullable().list().nullable().toJson(writer, customScalarAdapters, value.nullableListOfNullableTimestamp?.map { it?.ts })
+
+      writer.name("nullableLong")
+      LongAdapter.nullable().toJson(writer, customScalarAdapters, value.nullableLong?.value)
+
+      writer.name("nullableFloat")
+      FloatAdapter.nullable().toJson(writer, customScalarAdapters, value.nullableFloat?.value)
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {

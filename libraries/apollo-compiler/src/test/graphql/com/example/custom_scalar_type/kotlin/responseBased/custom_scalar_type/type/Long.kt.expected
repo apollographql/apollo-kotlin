@@ -7,9 +7,9 @@ package com.example.custom_scalar_type.type
 
 import com.apollographql.apollo.api.CustomScalarType
 
-public class GraphQLFloat {
+public class Long {
   public companion object {
     public val type: CustomScalarType =
-        CustomScalarType("Float", "com.example.custom_scalar_type.type.scalar.Float")
+        CustomScalarType("Long", "com.example.custom_scalar_type.type.scalar.Long")
   }
 }

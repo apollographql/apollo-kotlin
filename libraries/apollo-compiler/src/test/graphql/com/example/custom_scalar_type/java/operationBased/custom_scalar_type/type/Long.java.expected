@@ -7,6 +7,6 @@ package com.example.custom_scalar_type.type;
 
 import com.apollographql.apollo.api.CustomScalarType;
 
-public class GraphQLFloat {
-  public static CustomScalarType type = new CustomScalarType("Float", "java.lang.Float");
+public class Long {
+  public static CustomScalarType type = new CustomScalarType("Long", "java.lang.Long");
 }

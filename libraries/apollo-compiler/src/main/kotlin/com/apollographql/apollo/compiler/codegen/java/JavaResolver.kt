@@ -197,9 +197,10 @@ internal class JavaResolver(
     } else if (type.nullable) {
       val initializer = adapterInitializer(type.nullable(false), requiresBuffering)
 
-      val match = Regex("com\\.apollographql\\.apollo\\.api\\.Adapters\\.([a-zA-Z]*)Adapter").matchEntire(initializer.toString())
-      if (match != null) {
-        nullableAdapterCodeBlock(match.groupValues[1])
+      val match = Regex("com\\.apollographql\\.apollo\\.api\\.Adapters\\.([a-zA-Z]*)Adapter").matchEntire(initializer.toString())?.groupValues?.get(1)
+      if (match != null && match in setOf("String", "Int", "Double", "Boolean", "Any")) {
+        // For those we have them as fields
+        nullableAdapterCodeBlock(match)
       } else {
         CodeBlock.of("new $T<>($L)", getOptionalOrNullableAdapterClassName(), adapterInitializer(type.nullable(false), requiresBuffering))
       }
