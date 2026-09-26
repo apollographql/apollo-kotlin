@@ -24,7 +24,7 @@ repositories {
   mavenCentral()
 
   // Uncomment this one to use the Kotlin "dev" repository
-  // maven("https://redirector.kotlinlang.org/maven/dev/")
+  maven("https://redirector.kotlinlang.org/maven/dev/")
 }
 
 configure<ApolloExtension> {
