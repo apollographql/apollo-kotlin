@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLType
 import com.apollographql.apollo.ast.ParserOptions
@@ -57,7 +58,7 @@ data class IrOperations(
  * The merged names are safe to use when checking a common upstream module. Executable validation rejects
  * duplicate names across local and transitive upstream definitions, so descendants cannot redefine its fragments.
  */
-@ApolloExperimental
+@ApolloInternal
 fun computeUsedFragmentNames(allIrOperations: List<IrOperations>): Set<String> {
   val parserOptions = ParserOptions.Builder().allowFragmentArguments(true).build()
   return allIrOperations.asSequence().flatMap { it.operations }.flatMap { operation ->

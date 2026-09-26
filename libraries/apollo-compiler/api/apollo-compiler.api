@@ -502,7 +502,6 @@ public final class com/apollographql/apollo/compiler/UsedFragmentNames {
 	public fun <init> (Ljava/util/Set;)V
 	public synthetic fun <init> (Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun asSet ()Ljava/util/Set;
-	public final fun mergeWith (Lcom/apollographql/apollo/compiler/UsedFragmentNames;)Lcom/apollographql/apollo/compiler/UsedFragmentNames;
 }
 
 public final class com/apollographql/apollo/compiler/UsedFragmentNames$$serializer : kotlinx/serialization/internal/GeneratedSerializer {

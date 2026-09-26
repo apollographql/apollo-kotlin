@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloInternal
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,13 +11,11 @@ import kotlinx.serialization.Serializable
  * dependency graph so that a fragment defined in an upstream/schema module is never reported as unused as long
  * as any module downstream of it (however many `dependsOn(..., bidirectional = true)` hops away) spreads it.
  */
+@ApolloInternal
 @Serializable
 class UsedFragmentNames(private val names: Set<String> = emptySet()) {
   fun asSet(): Set<String> = names
-
-  fun mergeWith(other: UsedFragmentNames): UsedFragmentNames {
-    return UsedFragmentNames(names + other.names)
-  }
 }
 
+@ApolloInternal
 fun Set<String>.toUsedFragmentNames(): UsedFragmentNames = UsedFragmentNames(this)
