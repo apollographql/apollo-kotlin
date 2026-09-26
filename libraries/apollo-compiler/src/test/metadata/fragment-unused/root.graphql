@@ -1,0 +1,11 @@
+fragment RootUsedFragment on Character {
+  ...NestedFragment
+}
+
+fragment NestedFragment on Character {
+  name
+}
+
+fragment GloballyUnusedFragment on Character {
+  id
+}

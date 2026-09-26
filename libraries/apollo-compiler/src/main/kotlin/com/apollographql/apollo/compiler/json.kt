@@ -78,6 +78,12 @@ fun File.toUsedCoordinates(): UsedCoordinates {
   return parseFromJson()
 }
 
+fun File.toUsedFragmentNames(): UsedFragmentNames {
+  return parseFromJson()
+}
+
+fun UsedFragmentNames.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
+
 /**
  * A minimal class that is only used to read a version
  */

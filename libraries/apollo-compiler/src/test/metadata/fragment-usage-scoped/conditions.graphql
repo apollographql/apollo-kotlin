@@ -1,0 +1,54 @@
+query ConditionalUsage($skip: Boolean!, $include: Boolean!) {
+  character {
+    ...SkippedSpread @skip(if: true)
+    ...ExcludedSpread @include(if: false)
+    ... on Character @skip(if: true) {
+      ...SkippedInline
+    }
+    ... on Character @include(if: false) {
+      ...ExcludedInline
+    }
+    ...VariableWrapper @skip(if: $skip)
+    ...VariableInclude @include(if: $include)
+  }
+  skippedField: character @skip(if: true) {
+    ...SkippedField
+  }
+  excludedField: character @include(if: false) {
+    ...ExcludedField
+  }
+}
+
+fragment SkippedSpread on Character {
+  ...NeverUsed
+}
+
+fragment ExcludedSpread on Character {
+  ...NeverUsed
+}
+
+fragment SkippedInline on Character {
+  ...NeverUsed
+}
+
+fragment ExcludedInline on Character {
+  ...NeverUsed
+}
+
+fragment SkippedField on Character {
+  ...NeverUsed
+}
+
+fragment ExcludedField on Character {
+  ...NeverUsed
+}
+
+fragment VariableWrapper on Character {
+  ...RootA
+  ...RootB @skip(if: true)
+}
+
+fragment VariableInclude on Character {
+  ...RootA
+  ...RootB @include(if: false)
+}

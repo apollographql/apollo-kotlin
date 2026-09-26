@@ -3,3 +3,15 @@ query GetAnimal {
     ...CatFragment
   }
 }
+
+# Node-owned fragment that itself spreads root's ViaNodeFragment: only "leaf" spreads this one (never
+# ViaNodeFragment directly), which is exactly the shape that previously produced a false-positive
+# "ViaNodeFragment is not used" warning on root.
+fragment NodeWrapsViaNodeFragment on Cat {
+  ...ViaNodeFragment
+}
+
+# Genuinely dead: never spread anywhere. Confirms a truly unused fragment is reported once.
+fragment NodeOnlyUnusedFragment on Cat {
+  class
+}

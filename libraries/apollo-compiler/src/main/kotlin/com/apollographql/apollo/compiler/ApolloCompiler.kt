@@ -15,6 +15,7 @@ import com.apollographql.apollo.ast.MergeOptions
 import com.apollographql.apollo.ast.ParserOptions
 import com.apollographql.apollo.ast.QueryDocumentMinifier
 import com.apollographql.apollo.ast.SchemaValidationOptions
+import com.apollographql.apollo.ast.UnusedFragment
 import com.apollographql.apollo.ast.builtinForeignSchemas
 import com.apollographql.apollo.ast.checkEmpty
 import com.apollographql.apollo.ast.parseAsGQLDocument
@@ -42,6 +43,7 @@ import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo.compiler.ir.buildIrDataBuilders
+import com.apollographql.apollo.compiler.ir.computeUsedFragmentNames
 import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo.compiler.operationoutput.toOperationOutput
 import com.apollographql.apollo.compiler.pqm.toPersistedQueryManifest
@@ -250,6 +252,13 @@ object ApolloCompiler {
     return definitions
   }
 
+  /**
+   * Builds the [IrOperations] for this module.
+   *
+   * This does **not** report [UnusedFragment]: a fragment unused in this module alone might still be spread by a
+   * downstream module in a multi-module project, so this module cannot decide that on its own. Callers must call
+   * [checkUnusedFragments] afterward to get that diagnostic.
+   */
   @Suppress("DEPRECATION")
   fun buildIrOperations(
       codegenSchema: CodegenSchema,
@@ -344,15 +353,7 @@ object ApolloCompiler {
 
     val flattenModels = options.flattenModels ?: flattenModels(codegenModels)
     val decapitalizeFields = options.decapitalizeFields ?: defaultDecapitalizeFields
-    val issueSeverities = defaultIssueSeverities.let {
-      if (options.issueSeverities != null) {
-        it.toMutableMap().apply {
-          putAll(options.issueSeverities)
-        }
-      } else {
-        it
-      }
-    }
+    val issueSeverities = issueSeverities(options)
     val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
     val generateOptionalOperationVariables = options.generateOptionalOperationVariables ?: defaultGenerateOptionalOperationVariables
     val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching ?: defaultAlwaysGenerateTypesMatching
@@ -362,7 +363,12 @@ object ApolloCompiler {
       allIssues.addAll(checkCapitalizedFields(userDefinitions, checkFragmentsOnly = flattenModels))
     }
 
-    val issueGroup = allIssues.group(issueSeverities)
+    /**
+     * UnusedFragment is reported later, in [checkUnusedFragments], once IR from downstream (consumer) modules is
+     * available: a fragment unused in this module alone might still be spread by a downstream module in a
+     * multi-module project, so it would be a false positive to report it here.
+     */
+    val issueGroup = allIssues.filterNot { it is UnusedFragment }.group(issueSeverities)
 
     issueGroup.errors.checkEmpty()
 
@@ -405,6 +411,57 @@ object ApolloCompiler {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         fragmentVariableUsages = validationResult.fragmentVariableUsages
     ).build()
+  }
+
+  private fun issueSeverities(options: IrOptions): Map<String, IssueSeverity> {
+    return defaultIssueSeverities.let {
+      if (options.issueSeverities != null) {
+        it.toMutableMap().apply {
+          putAll(options.issueSeverities)
+        }
+      } else {
+        it
+      }
+    }
+  }
+
+  /**
+   * Reports [UnusedFragment] only for this module's definitions that are not transitively referenced by its
+   * operations or downstream operations. [downstreamUsedFragmentNames] must contain the complete usage computed
+   * by [computeUsedFragmentNames] for the configured downstream modules, including all transitive references.
+   *
+   * This is intentionally kept out of [buildIrOperations] because a single module cannot know on its own whether
+   * a fragment it defines is used by a module that depends on it.
+   *
+   * Usage is syntactic: conditional spreads count even behind `@skip(if: true)` or `@include(if: false)`.
+   */
+  fun checkUnusedFragments(
+      irOperations: IrOperations,
+      downstreamUsedFragmentNames: UsedFragmentNames = UsedFragmentNames(),
+      options: IrOptions,
+      logger: Logger?,
+  ) {
+    val reachable = computeUsedFragmentNames(listOf(irOperations)) + downstreamUsedFragmentNames.asSet()
+
+    val issues = irOperations.fragmentDefinitions.filterNot { reachable.contains(it.name) }.map {
+      UnusedFragment(
+          message = "Fragment '${it.name}' is not used",
+          sourceLocation = it.sourceLocation,
+      )
+    }
+
+    val issueGroup = issues.group(issueSeverities(options))
+
+    issueGroup.errors.checkEmpty()
+
+    issueGroup.warnings.forEach {
+      (logger ?: defaultLogger).warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+    }
+
+    val failOnWarnings = options.failOnWarnings ?: defaultFailOnWarnings
+    if (failOnWarnings && issueGroup.warnings.isNotEmpty()) {
+      throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
+    }
   }
 
   fun buildSchemaSources(
@@ -613,6 +670,12 @@ object ApolloCompiler {
         logger = logger
     )
 
+    checkUnusedFragments(
+        irOperations = irOperations,
+        options = irOptions,
+        logger = logger,
+    )
+
     val sourceOutput = buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
         irOperations = irOperations,
@@ -709,4 +772,3 @@ internal fun <T> T.maybeTransform(transform: Transform<T>?) = transform?.transfo
 fun interface LayoutFactory {
   fun create(codegenSchema: CodegenSchema): SchemaAndOperationsLayout?
 }
-

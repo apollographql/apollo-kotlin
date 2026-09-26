@@ -20,8 +20,11 @@ internal fun apolloGenerateSourcesFromIr(
     codegenSchemas: GInputFiles,
     irOperations: GInputFile,
     downstreamUsedCoordinates: GInputFile,
+    downstreamUsedFragmentNames: GInputFile,
+    downstreamFragmentUsageIsComplete: Boolean,
     upstreamMetadata: GInputFiles,
     codegenOptions: GInputFile,
+    irOptions: GInputFile,
     // outputs
     @GManuallyWired
     operationManifest: GOutputFile,
@@ -43,12 +46,14 @@ internal fun apolloGenerateSourcesFromIr(
       codegenSchemas = codegenSchemas.toInputFiles(),
       irOperations = irOperations,
       downstreamUsedCoordinates = downstreamUsedCoordinates,
+      downstreamUsedFragmentNames = downstreamUsedFragmentNames,
+      downstreamFragmentUsageIsComplete = downstreamFragmentUsageIsComplete,
       upstreamMetadata = upstreamMetadata.toInputFiles(),
       codegenOptions = codegenOptions,
+      irOptions = irOptions,
       operationManifest = operationManifest,
       outputDirectory = outputDirectory,
       metadataOutput = metadataOutput,
   )
 }
-
 

@@ -1,0 +1,3 @@
+fragment Node1Fragment on Character {
+  ...RootFragment
+}

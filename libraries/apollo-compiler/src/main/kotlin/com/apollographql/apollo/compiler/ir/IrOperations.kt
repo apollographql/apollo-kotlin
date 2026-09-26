@@ -3,6 +3,8 @@ package com.apollographql.apollo.compiler.ir
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.ast.GQLFragmentDefinition
 import com.apollographql.apollo.ast.GQLType
+import com.apollographql.apollo.ast.ParserOptions
+import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.compiler.UsedCoordinates
 import com.apollographql.apollo.compiler.internal.BooleanExpressionSerializer
 import com.apollographql.apollo.compiler.internal.GQLFragmentDefinitionSerializer
@@ -43,6 +45,27 @@ data class IrOperations(
 
     val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
 )
+
+/**
+ * Computes syntactic fragment usage from compiler-produced operation documents.
+ *
+ * [IrOperationDefinition.sourceWithFragments] already contains exactly the fragment definitions transitively
+ * referenced by that operation, resolved in its own scope. Collecting their names preserves usage through
+ * intermediate modules without confusing unrelated sibling definitions. Conditional spreads count as usage,
+ * including those guarded by constant `@skip` or `@include` directives.
+ *
+ * The merged names are safe to use when checking a common upstream module. Executable validation rejects
+ * duplicate names across local and transitive upstream definitions, so descendants cannot redefine its fragments.
+ */
+@ApolloExperimental
+fun computeUsedFragmentNames(allIrOperations: List<IrOperations>): Set<String> {
+  val parserOptions = ParserOptions.Builder().allowFragmentArguments(true).build()
+  return allIrOperations.asSequence().flatMap { it.operations }.flatMap { operation ->
+    operation.sourceWithFragments.toGQLDocument(parserOptions).definitions
+        .filterIsInstance<GQLFragmentDefinition>()
+        .map { it.name }
+  }.toSet()
+}
 
 @Serializable
 @ApolloExperimental
@@ -357,5 +380,3 @@ data class IrVariable(
 )
 
 private val json = Json { classDiscriminator = "#class" }
-
-
