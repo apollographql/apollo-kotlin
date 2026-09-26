@@ -2,5 +2,5 @@ query GetA {
   a {
     foo
   }
-
+  ...BidirectionalOnlyFragment
 }

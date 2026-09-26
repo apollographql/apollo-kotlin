@@ -20,6 +20,8 @@ public final class com/apollographql/apollo/compiler/ApolloCompiler {
 	public final fun buildSchemaAndOperationsSources (Ljava/util/List;Ljava/util/List;Lcom/apollographql/apollo/compiler/CodegenSchemaOptions;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/LayoutFactory;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/ExecutableDocumentTransform;Lcom/apollographql/apollo/compiler/SchemaDocumentTransform;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
 	public final fun buildSchemaAndOperationsSourcesFromIr (Lcom/apollographql/apollo/compiler/CodegenSchema;Lcom/apollographql/apollo/compiler/ir/IrOperations;Lcom/apollographql/apollo/compiler/UsedCoordinates;Ljava/util/List;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/codegen/SchemaAndOperationsLayout;Lcom/apollographql/apollo/compiler/OperationIdsGenerator;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;Ljava/io/File;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
 	public final fun buildSchemaSources (Lcom/apollographql/apollo/compiler/CodegenSchema;Lcom/apollographql/apollo/compiler/UsedCoordinates;Lcom/apollographql/apollo/compiler/CodegenOptions;Lcom/apollographql/apollo/compiler/codegen/SchemaLayout;Lcom/apollographql/apollo/compiler/Transform;Lcom/apollographql/apollo/compiler/Transform;)Lcom/apollographql/apollo/compiler/codegen/SourceOutput;
+	public final fun checkUnusedFragments (Lcom/apollographql/apollo/compiler/ir/IrOperations;Lcom/apollographql/apollo/compiler/UsedFragmentNames;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)V
+	public static synthetic fun checkUnusedFragments$default (Lcom/apollographql/apollo/compiler/ApolloCompiler;Lcom/apollographql/apollo/compiler/ir/IrOperations;Lcom/apollographql/apollo/compiler/UsedFragmentNames;Lcom/apollographql/apollo/compiler/IrOptions;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;ILjava/lang/Object;)V
 }
 
 public abstract interface class com/apollographql/apollo/compiler/ApolloCompiler$Logger {
@@ -210,8 +212,10 @@ public final class com/apollographql/apollo/compiler/EntryPoints {
 	public final fun buildCodegenSchema (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildDataBuilders (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildIrWithoutUnusedFragmentChecks (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildSources (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildSourcesFromIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildSourcesFromIrWithFragmentUsage (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;ZLjava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
@@ -253,6 +257,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun readOperationOutput (Ljava/io/File;)Ljava/util/Map;
 	public static final fun readPersistedQueryManifest (Ljava/io/File;)Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;
 	public static final fun toUsedCoordinates (Ljava/io/File;)Lcom/apollographql/apollo/compiler/UsedCoordinates;
+	public static final fun toUsedFragmentNames (Ljava/io/File;)Lcom/apollographql/apollo/compiler/UsedFragmentNames;
 	public static final fun writeCodegenMetadata (Lcom/apollographql/apollo/compiler/CodegenMetadata;Ljava/io/File;)V
 	public static final fun writeCodegenOptions (Lcom/apollographql/apollo/compiler/CodegenOptions;Ljava/io/File;)V
 	public static final fun writeCodegenSchema (Lcom/apollographql/apollo/compiler/CodegenSchema;Ljava/io/File;)V
@@ -263,6 +268,7 @@ public final class com/apollographql/apollo/compiler/FileUtils {
 	public static final fun writeOperationOutput (Ljava/util/Map;Ljava/io/File;)V
 	public static final fun writePersistedQueryManifest (Lcom/apollographql/apollo/compiler/pqm/PersistedQueryManifest;Ljava/io/File;)V
 	public static final fun writeTo (Lcom/apollographql/apollo/compiler/UsedCoordinates;Ljava/io/File;)V
+	public static final fun writeTo (Lcom/apollographql/apollo/compiler/UsedFragmentNames;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/GeneratedMethod : java/lang/Enum {
@@ -488,6 +494,32 @@ public final class com/apollographql/apollo/compiler/UsedCoordinates$Companion {
 public final class com/apollographql/apollo/compiler/UsedCoordinatesKt {
 	public static final fun toUsedCoordinates (Ljava/util/Map;)Lcom/apollographql/apollo/compiler/UsedCoordinates;
 	public static final fun toUsedCoordinates (Ljava/util/Set;)Lcom/apollographql/apollo/compiler/UsedCoordinates;
+}
+
+public final class com/apollographql/apollo/compiler/UsedFragmentNames {
+	public static final field Companion Lcom/apollographql/apollo/compiler/UsedFragmentNames$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun asSet ()Ljava/util/Set;
+}
+
+public final class com/apollographql/apollo/compiler/UsedFragmentNames$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo/compiler/UsedFragmentNames$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo/compiler/UsedFragmentNames;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo/compiler/UsedFragmentNames;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo/compiler/UsedFragmentNames$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/UsedFragmentNamesKt {
+	public static final fun toUsedFragmentNames (Ljava/util/Set;)Lcom/apollographql/apollo/compiler/UsedFragmentNames;
 }
 
 public final class com/apollographql/apollo/compiler/VersionKt {
@@ -1691,6 +1723,10 @@ public final class com/apollographql/apollo/compiler/ir/IrOperations$$serializer
 
 public final class com/apollographql/apollo/compiler/ir/IrOperations$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo/compiler/ir/IrOperationsKt {
+	public static final fun computeUsedFragmentNames (Ljava/util/List;)Ljava/util/Set;
 }
 
 public final class com/apollographql/apollo/compiler/ir/IrProperty {

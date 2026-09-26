@@ -1,0 +1,7 @@
+fragment ExternallyConsumedFragment on Animal {
+  name
+}
+
+fragment PotentiallyExternallyConsumedFragment on Animal {
+  name
+}

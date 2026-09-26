@@ -1,3 +1,9 @@
 fragment CatFragment1 on Cat {
   mustaches
 }
+
+query GetAnimalViaNode1 {
+  randomAnimal {
+    ...ViaNode1Fragment
+  }
+}

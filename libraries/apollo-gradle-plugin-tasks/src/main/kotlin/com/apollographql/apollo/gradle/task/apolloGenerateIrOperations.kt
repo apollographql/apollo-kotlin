@@ -38,3 +38,33 @@ internal fun apolloGenerateIrOperations(
       irOperationsFile = irOperationsFile,
   )
 }
+
+@GTask
+internal fun apolloGenerateIrOperationsWithoutUnusedFragmentChecks(
+    logger: GLogger,
+    arguments: Map<String, GAny?>,
+    warnIfNotFound: Boolean,
+    codegenSchemas: GInputFiles,
+    graphqlFiles: GInputFiles,
+    upstreamIrFiles: GInputFiles,
+    irOptionsFile: GInputFile,
+    irOperationsFile: GOutputFile,
+) {
+  val logger = logger.asLogger()
+  val plugins = loadCompilerPlugins(
+      arguments = arguments,
+      logger = logger,
+      classLoader = ApolloCompilerPlugin::class.java.classLoader,
+      warnIfNotFound = warnIfNotFound,
+  )
+  EntryPoints.buildIrWithoutUnusedFragmentChecks(
+      plugins = plugins,
+      arguments = arguments,
+      logger = logger,
+      graphqlFiles = graphqlFiles.toInputFiles(),
+      codegenSchemaFiles = codegenSchemas.toInputFiles(),
+      upstreamIrOperations = upstreamIrFiles.toInputFiles(),
+      irOptionsFile = irOptionsFile,
+      irOperationsFile = irOperationsFile,
+  )
+}

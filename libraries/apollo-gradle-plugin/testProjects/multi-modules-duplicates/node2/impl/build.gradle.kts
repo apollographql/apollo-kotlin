@@ -21,4 +21,5 @@ apollo {
 
 dependencies {
   add("apolloService", project(":root"))
+  add("apolloServiceUsedCoordinates", project(":node2:consumer"))
 }

@@ -1,0 +1,3 @@
+fragment Wrapper on Character {
+  ...SharedName
+}

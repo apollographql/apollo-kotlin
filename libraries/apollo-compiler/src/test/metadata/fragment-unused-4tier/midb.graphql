@@ -1,0 +1,3 @@
+fragment MidBFragment on Character {
+  ...MidAFragment
+}
