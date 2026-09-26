@@ -109,10 +109,10 @@ class MetadataTest {
   }
 
   /**
-   * Writes the codegen schema once so that [buildIrOperationsForModule] can be called repeatedly to build a chain
-   * (or any other topology) of modules by hand, without going through the fixed root/leaf shape of [compile].
+   * Writes the codegen schema once so tests can build one or more modules without going through the fixed
+   * root/leaf shape of [compile].
    */
-  private fun prepareSchemaForChain() {
+  private fun prepareCodegenSchema() {
     buildDir.deleteRecursively()
     buildDir.mkdirs()
 
@@ -169,7 +169,7 @@ class MetadataTest {
 
   @Test
   fun `unused fragment warnings fail before multi-module sources or metadata are written`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val rootIr = buildIrOperationsForModule("fragment-unused", "root", emptyList())
     val leafIr = buildIrOperationsForModule("fragment-unused", "leaf", rootIr.fragmentDefinitions)
     rootIr.writeTo(rootIrOperationsFile)
@@ -232,16 +232,7 @@ class MetadataTest {
 
   @Test
   fun `buildIrOperations preserves unused fragment reporting for existing callers`() {
-    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
-    buildIrOptions().writeTo(irOptionsFile)
-
-    ApolloCompiler.buildCodegenSchema(
-        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
-        logger = null,
-        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-        foreignSchemas = emptyList(),
-        null
-    ).writeTo(codegenSchemaFile)
+    prepareCodegenSchema()
 
     val (warnings, logger) = newWarningsLogger()
     ApolloCompiler.buildIrOperations(
@@ -259,11 +250,8 @@ class MetadataTest {
 
   @Test
   fun `buildSources reports each unused fragment once`() {
-    buildDir.deleteRecursively()
-    buildDir.mkdirs()
-    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    prepareCodegenSchema()
     buildCodegenOptions(packageName = rootPackageName).writeTo(rootCodegenOptionsFile)
-    buildIrOptions().writeTo(irOptionsFile)
 
     val (warnings, logger) = newWarningsLogger()
     EntryPoints.buildSources(
@@ -290,16 +278,7 @@ class MetadataTest {
     // No leaf/downstream module involved at all: this is the plain single-module case (e.g. a project with no
     // 'dependsOn'/multi-module setup), where checkUnusedFragments is called with the default, empty
     // downstreamUsedFragmentNames.
-    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
-    buildIrOptions().writeTo(irOptionsFile)
-
-    ApolloCompiler.buildCodegenSchema(
-        schemaFiles = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
-        logger = null,
-        codegenSchemaOptions = codegenSchemaOptionsFile.toCodegenSchemaOptions(),
-        foreignSchemas = emptyList(),
-        null
-    ).writeTo(codegenSchemaFile)
+    prepareCodegenSchema()
 
     val irOperations = ApolloCompiler.buildIrOperationsWithoutUnusedFragmentChecks(
         codegenSchema = codegenSchemaFile.toCodegenSchema(),
@@ -324,7 +303,7 @@ class MetadataTest {
 
   @Test
   fun `checkUnusedFragments counts constant and variable guarded spreads as used`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
 
     val irOperations = buildIrOperationsForModule("fragment-unused-constant-skip", "root", emptyList())
 
@@ -345,7 +324,7 @@ class MetadataTest {
     // Regression test for a confirmed false positive: a fragment defined in an intermediate module ("middle")
     // that itself spreads an upstream ("root") fragment must be recognized as making the upstream fragment used,
     // even though "middle" itself has no operations of its own and only "leaf" spreads "middle"'s fragment.
-    prepareSchemaForChain()
+    prepareCodegenSchema()
 
     val rootIr = buildIrOperationsForModule("fragment-unused-3tier", "root", emptyList())
     val middleIr = buildIrOperationsForModule("fragment-unused-3tier", "middle", rootIr.fragmentDefinitions)
@@ -373,7 +352,7 @@ class MetadataTest {
     // Same idea as the 3-tier case, but one level deeper: "leaf" only spreads "midB"'s fragment, "midB"'s
     // fragment only spreads "midA"'s fragment, and "midA"'s fragment only spreads "root"'s fragment. All three
     // must be discovered as used.
-    prepareSchemaForChain()
+    prepareCodegenSchema()
 
     val rootIr = buildIrOperationsForModule("fragment-unused-4tier", "root", emptyList())
     val midAIr = buildIrOperationsForModule("fragment-unused-4tier", "mida", rootIr.fragmentDefinitions)
@@ -403,7 +382,7 @@ class MetadataTest {
   fun `computeUsedFragmentNames merges intermediate-owned fragments from both branches of a diamond`() {
     // "node1" and "node2" each define their own fragment spreading root's fragment; "leaf" depends on both and
     // spreads both intermediate fragments. Root's fragment must be recognized as used via either branch.
-    prepareSchemaForChain()
+    prepareCodegenSchema()
 
     val rootIr = buildIrOperationsForModule("fragment-unused-diamond", "root", emptyList())
     val node1Ir = buildIrOperationsForModule("fragment-unused-diamond", "node1", rootIr.fragmentDefinitions)
@@ -432,7 +411,7 @@ class MetadataTest {
   @Test
   fun `computeUsedFragmentNames does not conflate unrelated sibling fragments that share a name`() {
     // Using siblingA's SharedName must not activate siblingB's unrelated SharedName -> RootUnusedFragment.
-    prepareSchemaForChain()
+    prepareCodegenSchema()
 
     val rootIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "root", emptyList())
     val siblingAIr = buildIrOperationsForModule("fragment-unused-sibling-name-clash", "siblingA", rootIr.fragmentDefinitions)
@@ -457,7 +436,7 @@ class MetadataTest {
 
   @Test
   fun `consumer reaches an intermediate fragment despite an unrelated sibling reusing its name`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val directory = "fragment-unused-sibling-name-clash"
     val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
     val siblingAIr = buildIrOperationsForModule(directory, "siblingA", rootIr.fragmentDefinitions)
@@ -474,7 +453,7 @@ class MetadataTest {
   @Test
   fun `scoped usage survives serialization and ordering across independent four-tier branches`() {
     for (models in listOf(MODELS_OPERATION_BASED, MODELS_RESPONSE_BASED, MODELS_OPERATION_BASED_WITH_INTERFACES)) {
-      prepareSchemaForChain()
+      prepareCodegenSchema()
       buildIrOptions(codegenModels = models).writeTo(irOptionsFile)
       val directory = "fragment-usage-scoped"
       val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
@@ -522,7 +501,7 @@ class MetadataTest {
 
   @Test
   fun `aggregated usage includes conditional spreads fields and inline fragments`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val rootIr = buildIrOperationsForModule("fragment-usage-scoped", "root", emptyList())
     val conditionalIr = buildIrOperationsForModule("fragment-usage-scoped", "conditions", rootIr.fragmentDefinitions)
     val serialized = File(buildDir, "conditions.json")
@@ -542,7 +521,7 @@ class MetadataTest {
 
   @Test
   fun `aggregation propagates operation document parse failures`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val directory = "fragment-usage-scoped"
     val rootIr = buildIrOperationsForModule(directory, "root", emptyList())
     val aIr = buildIrOperationsForModule(directory, "a", rootIr.fragmentDefinitions)
@@ -560,7 +539,7 @@ class MetadataTest {
 
   @Test
   fun `undefined fragments fail before usage aggregation`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val exception = assertFailsWith<SourceAwareException> {
       buildIrOperationsForModule("fragment-undefined", "root", emptyList())
     }
@@ -569,7 +548,7 @@ class MetadataTest {
 
   @Test
   fun `all fragments in an operation-unreachable chain are unused`() {
-    prepareSchemaForChain()
+    prepareCodegenSchema()
     val irOperations = buildIrOperationsForModule("fragment-unused-orphan-chain", "root", emptyList())
     val (warnings, logger) = newWarningsLogger()
     ApolloCompiler.checkUnusedFragments(

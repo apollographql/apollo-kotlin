@@ -137,8 +137,7 @@ object EntryPoints {
         upstreamMetadata = upstreamMetadata,
         irOperations = irOperations,
         downstreamUsedCoordinates = downstreamUsedCoordinates,
-        downstreamUsedFragmentNames = null,
-        irOptions = null,
+        unusedFragmentCheckInputs = null,
         operationManifest = operationManifest,
         codegenOptions = codegenOptions,
         outputDirectory = outputDirectory,
@@ -170,8 +169,11 @@ object EntryPoints {
         upstreamMetadata = upstreamMetadata,
         irOperations = irOperations,
         downstreamUsedCoordinates = downstreamUsedCoordinates,
-        downstreamUsedFragmentNames = downstreamUsedFragmentNames.takeIf { downstreamFragmentUsageIsComplete },
-        irOptions = irOptions.takeIf { downstreamFragmentUsageIsComplete },
+        unusedFragmentCheckInputs = if (downstreamFragmentUsageIsComplete) {
+          UnusedFragmentCheckInputs(downstreamUsedFragmentNames, irOptions)
+        } else {
+          null
+        },
         operationManifest = operationManifest,
         codegenOptions = codegenOptions,
         outputDirectory = outputDirectory,
@@ -187,9 +189,8 @@ object EntryPoints {
       upstreamMetadata: List<InputFile>,
       irOperations: File,
       downstreamUsedCoordinates: File,
-      downstreamUsedFragmentNames: File?,
+      unusedFragmentCheckInputs: UnusedFragmentCheckInputs?,
       codegenOptions: File,
-      irOptions: File?,
       operationManifest: File?,
       outputDirectory: File,
       metadataOutput: File?,
@@ -205,11 +206,11 @@ object EntryPoints {
     val upstreamCodegenMetadata = upstreamMetadata.map { it.file.toCodegenMetadata() }
     @Suppress("NAME_SHADOWING")
     val irOperations = irOperations.toIrOperations()
-    if (downstreamUsedFragmentNames != null && irOptions != null) {
+    if (unusedFragmentCheckInputs != null) {
       ApolloCompiler.checkUnusedFragments(
           irOperations = irOperations,
-          downstreamUsedFragmentNames = downstreamUsedFragmentNames.toUsedFragmentNames(),
-          options = irOptions.toIrOptions(),
+          downstreamUsedFragmentNames = unusedFragmentCheckInputs.usedFragmentNames.toUsedFragmentNames(),
+          options = unusedFragmentCheckInputs.irOptions.toIrOptions(),
           logger = logger,
       )
     }
@@ -232,6 +233,11 @@ object EntryPoints {
       registry.schemaCodeGenerator().generate(codegenSchema.schema.toGQLDocument(), outputDirectory)
     }
   }
+
+  private data class UnusedFragmentCheckInputs(
+      val usedFragmentNames: File,
+      val irOptions: File,
+  )
 
   fun buildSources(
       plugins: List<ApolloCompilerPlugin>,
