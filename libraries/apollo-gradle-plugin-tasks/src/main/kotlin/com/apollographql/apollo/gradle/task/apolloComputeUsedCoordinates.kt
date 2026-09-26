@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.task
 
 import com.apollographql.apollo.compiler.UsedCoordinates
+import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.computeUsedFragmentNames
 import com.apollographql.apollo.compiler.toIrOperations
 import com.apollographql.apollo.compiler.toUsedFragmentNames
@@ -16,10 +17,7 @@ internal fun apolloComputeUsedCoordinates(
 ) {
   val allIrOperations = irOperations.map { it.file.toIrOperations() }
 
-  val usedCoordinates: UsedCoordinates = allIrOperations.fold(UsedCoordinates()) { acc, element ->
-    acc.mergeWith(element.usedCoordinates)
-  }
-  usedCoordinates.writeTo(outputFile)
+  computeUsedCoordinates(allIrOperations).writeTo(outputFile)
 }
 
 @GTask
@@ -30,11 +28,14 @@ internal fun apolloComputeUsedCoordinatesAndFragmentNames(
 ) {
   val allIrOperations = irOperations.map { it.file.toIrOperations() }
 
-  val usedCoordinates: UsedCoordinates = allIrOperations.fold(UsedCoordinates()) { acc, element ->
-    acc.mergeWith(element.usedCoordinates)
-  }
-  usedCoordinates.writeTo(outputFile)
+  computeUsedCoordinates(allIrOperations).writeTo(outputFile)
 
   val usedFragmentNames = computeUsedFragmentNames(allIrOperations)
   usedFragmentNames.toUsedFragmentNames().writeTo(usedFragmentNamesOutputFile)
+}
+
+private fun computeUsedCoordinates(allIrOperations: List<IrOperations>): UsedCoordinates {
+  return allIrOperations.fold(UsedCoordinates()) { acc, element ->
+    acc.mergeWith(element.usedCoordinates)
+  }
 }
