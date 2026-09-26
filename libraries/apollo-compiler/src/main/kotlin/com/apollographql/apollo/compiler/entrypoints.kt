@@ -272,12 +272,6 @@ object EntryPoints {
         logger = logger,
     )
 
-    ApolloCompiler.checkUnusedFragments(
-        irOperations = irOperations,
-        options = irOptions.toIrOptions(),
-        logger = logger,
-    )
-
     @Suppress("NAME_SHADOWING")
     val codegenOptions = codegenOptions.toCodegenOptions()
     val layout = registry.layout(codegenSchema)

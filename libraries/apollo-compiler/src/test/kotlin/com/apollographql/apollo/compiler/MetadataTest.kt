@@ -258,6 +258,34 @@ class MetadataTest {
   }
 
   @Test
+  fun `buildSources reports each unused fragment once`() {
+    buildDir.deleteRecursively()
+    buildDir.mkdirs()
+    CodegenSchemaOptions().writeTo(codegenSchemaOptionsFile)
+    buildCodegenOptions(packageName = rootPackageName).writeTo(rootCodegenOptionsFile)
+    buildIrOptions().writeTo(irOptionsFile)
+
+    val (warnings, logger) = newWarningsLogger()
+    EntryPoints.buildSources(
+        plugins = emptyList(),
+        arguments = emptyMap(),
+        logger = logger,
+        schemas = setOf(File("src/test/metadata/schema.graphqls")).toInputFiles(),
+        executableDocuments = setOf(File("src/test/metadata/single-module-fragment-unused/root.graphql")).toInputFiles(),
+        codegenSchemaOptions = codegenSchemaOptionsFile,
+        codegenOptions = rootCodegenOptionsFile,
+        irOptions = irOptionsFile,
+        operationManifest = null,
+        outputDirectory = rootSourcesDir,
+        dataBuildersOutputDirectory = File(buildDir, "data-builders"),
+    )
+
+    Truth.assertThat(warnings).containsExactly(
+        "w: src/test/metadata/single-module-fragment-unused/root.graphql: (11, 1): Apollo: Fragment 'UnusedFragment' is not used"
+    )
+  }
+
+  @Test
   fun `checkUnusedFragments on a single module without downstream data only reports locally unused fragments`() {
     // No leaf/downstream module involved at all: this is the plain single-module case (e.g. a project with no
     // 'dependsOn'/multi-module setup), where checkUnusedFragments is called with the default, empty
