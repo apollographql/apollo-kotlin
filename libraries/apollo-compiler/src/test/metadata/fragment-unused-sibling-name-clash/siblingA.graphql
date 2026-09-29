@@ -1,0 +1,11 @@
+# siblingA has no dependency on siblingB. It defines and spreads its own SharedName fragment, which does
+# NOT wrap anything from root - it is completely unrelated to siblingB's same-named fragment.
+query GetCharacterA {
+  character {
+    ...SharedName
+  }
+}
+
+fragment SharedName on Character {
+  name
+}

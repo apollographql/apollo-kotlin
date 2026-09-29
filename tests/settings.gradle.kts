@@ -59,6 +59,8 @@ listOf(
     "multi-module-2/root",
     "multi-module-3/child",
     "multi-module-3/root",
+    "multi-module-fragment-usage/child",
+    "multi-module-fragment-usage/root",
     "multipart",
     "native-benchmarks",
     "no-query-document",

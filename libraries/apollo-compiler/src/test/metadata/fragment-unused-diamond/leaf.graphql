@@ -1,0 +1,6 @@
+query GetCharacter {
+  character {
+    ...Node1Fragment
+    ...Node2Fragment
+  }
+}

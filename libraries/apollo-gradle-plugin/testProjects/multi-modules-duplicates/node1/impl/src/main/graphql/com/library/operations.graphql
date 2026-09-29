@@ -3,3 +3,6 @@ fragment CatFragment on Cat {
   mustaches
 }
 
+fragment RegressionSharedWrapper on Cat {
+  ...DeadViaNode1
+}

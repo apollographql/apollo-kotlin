@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.annotations.ApolloInternal
 import com.apollographql.apollo.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo.compiler.ir.IrOperations
 import com.apollographql.apollo.compiler.ir.IrSchema
@@ -77,6 +78,14 @@ fun File.toIrSchema(): IrSchema = parseFromJson<DefaultIrSchema>()
 fun File.toUsedCoordinates(): UsedCoordinates {
   return parseFromJson()
 }
+
+@ApolloInternal
+fun File.toUsedFragmentNames(): UsedFragmentNames {
+  return parseFromJson()
+}
+
+@ApolloInternal
+fun UsedFragmentNames.writeTo(file: File) = file.writeText(prettyPrintJson.encodeToString(this))
 
 /**
  * A minimal class that is only used to read a version
