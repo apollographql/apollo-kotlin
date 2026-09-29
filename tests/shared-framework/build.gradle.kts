@@ -8,9 +8,6 @@ apolloTest(withJs = false, appleTargets = setOf("iosSimulatorArm64"))
 kotlin {
   listOf(
       macosArm64(),
-
-      @Suppress("DEPRECATION")
-      macosX64(),
   ).forEach {
     it.binaries {
       framework {
