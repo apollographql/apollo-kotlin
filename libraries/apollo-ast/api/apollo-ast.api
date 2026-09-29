@@ -1311,9 +1311,10 @@ public final class com/apollographql/apollo/ast/OtherValidationIssue : com/apoll
 
 public final class com/apollographql/apollo/ast/ParserOptions {
 	public static final field Companion Lcom/apollographql/apollo/ast/ParserOptions$Companion;
-	public synthetic fun <init> (ZZZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZZZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
+	public final fun getAllowEmptyObjectsAndInterfaces ()Z
 	public final fun getAllowEmptySelectionSets ()Z
 	public final fun getAllowFragmentArguments ()Z
 	public final fun getAllowServiceCapabilities ()Z
@@ -1324,18 +1325,21 @@ public final class com/apollographql/apollo/ast/ParserOptions$Builder {
 	public fun <init> ()V
 	public final fun allowDirectivesOnDirectives (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowEmptyDocuments (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
+	public final fun allowEmptyObjectsAndInterfaces (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowEmptySelectionSets (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowFragmentArguments (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun allowServiceCapabilities (Z)Lcom/apollographql/apollo/ast/ParserOptions$Builder;
 	public final fun build ()Lcom/apollographql/apollo/ast/ParserOptions;
 	public final fun getAllowDirectivesOnDirectives ()Z
 	public final fun getAllowEmptyDocuments ()Z
+	public final fun getAllowEmptyObjectsAndInterfaces ()Z
 	public final fun getAllowEmptySelectionSets ()Z
 	public final fun getAllowFragmentArguments ()Z
 	public final fun getAllowServiceCapabilities ()Z
 	public final fun getWithSourceLocation ()Z
 	public final fun setAllowDirectivesOnDirectives (Z)V
 	public final fun setAllowEmptyDocuments (Z)V
+	public final fun setAllowEmptyObjectsAndInterfaces (Z)V
 	public final fun setAllowEmptySelectionSets (Z)V
 	public final fun setAllowFragmentArguments (Z)V
 	public final fun setAllowServiceCapabilities (Z)V

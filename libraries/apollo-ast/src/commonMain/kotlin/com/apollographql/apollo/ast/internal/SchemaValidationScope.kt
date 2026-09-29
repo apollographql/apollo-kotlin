@@ -673,10 +673,6 @@ internal fun ValidationScope.validateSchemaDefinition(schemaDefinition: GQLSchem
 
 private fun ValidationScope.validateInterfaces() {
   typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach { i ->
-    if (i.fields.isEmpty()) {
-      registerIssue("Interfaces must specify one or more fields", i.sourceLocation)
-    }
-
     i.implementsInterfaces.forEach { implementsInterface ->
       val iface = typeDefinitions[implementsInterface] as? GQLInterfaceTypeDefinition
       if (iface == null) {
@@ -694,10 +690,6 @@ private fun ValidationScope.validateInterfaces() {
 
 private fun ValidationScope.validateObjects() {
   typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
-    if (o.fields.isEmpty()) {
-      registerIssue("Object must specify one or more fields", o.sourceLocation)
-    }
-
     o.implementsInterfaces.forEach { implementsInterface ->
       val iface = typeDefinitions[implementsInterface] as? GQLInterfaceTypeDefinition
       if (iface == null) {

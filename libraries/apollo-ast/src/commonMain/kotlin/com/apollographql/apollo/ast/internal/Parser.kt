@@ -17,6 +17,7 @@ internal class Parser(
   private val allowServiceCapabilities = options.allowServiceCapabilities
   private val allowFragmentArguments = options.allowFragmentArguments
   private val allowEmptySelectionSets = options.allowEmptySelectionSets
+  private val allowEmptyObjectsAndInterfaces = options.allowEmptyObjectsAndInterfaces
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -520,7 +521,11 @@ internal class Parser(
   }
 
   private fun parseFieldDefinitions(): List<GQLFieldDefinition> {
-    return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition).orEmpty()
+    return if (allowEmptyObjectsAndInterfaces) {
+      parseListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition)
+    } else {
+      parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition).orEmpty()
+    }
   }
 
   private fun parseObjectTypeDefinition(start: Token): GQLTypeDefinition {

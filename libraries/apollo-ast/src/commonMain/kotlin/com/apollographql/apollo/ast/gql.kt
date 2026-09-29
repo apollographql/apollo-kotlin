@@ -623,12 +623,16 @@ class GQLInterfaceTypeDefinition(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
-      write("{\n")
-      indent()
-      fields.join(writer, separator = "\n\n")
-      unindent()
-      write("\n}\n")
+      if (fields.isNotEmpty()) {
+        write(" ")
+        write("{\n")
+        indent()
+        fields.join(writer, separator = "\n\n")
+        unindent()
+        write("\n}\n")
+      } else {
+        write("\n")
+      }
     }
   }
 
@@ -687,6 +691,8 @@ class GQLObjectTypeDefinition(
         fields.join(writer, separator = "\n\n")
         unindent()
         write("\n}\n")
+      } else {
+        write("\n")
       }
     }
   }

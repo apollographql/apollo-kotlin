@@ -86,6 +86,8 @@ class ParserOptions private constructor(
     @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
     val allowEmptySelectionSets: Boolean,
+    @ApolloExperimental
+    val allowEmptyObjectsAndInterfaces: Boolean,
 ) {
   class Builder {
     var allowEmptyDocuments = true
@@ -104,6 +106,9 @@ class ParserOptions private constructor(
     @Deprecated("Empty selection sets are now allowed by default, this option will be removed in a future version")
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_1_1)
     var allowEmptySelectionSets = true
+
+    @ApolloExperimental
+    var allowEmptyObjectsAndInterfaces = false
 
     fun allowEmptyDocuments(allowEmptyDocuments: Boolean) = apply {
       this.allowEmptyDocuments = allowEmptyDocuments
@@ -142,6 +147,16 @@ class ParserOptions private constructor(
       this.allowEmptySelectionSets = allowEmptySelectionSets
     }
 
+    /**
+     * Whether to allow empty object and interface type definitions, as in `type Query {}` or `interface Node {}`.
+     *
+     * Default: false
+     */
+    @ApolloExperimental
+    fun allowEmptyObjectsAndInterfaces(allowEmptyObjectsAndInterfaces: Boolean) = apply {
+      this.allowEmptyObjectsAndInterfaces = allowEmptyObjectsAndInterfaces
+    }
+
     fun build(): ParserOptions {
       return ParserOptions(
           allowEmptyDocuments = allowEmptyDocuments,
@@ -150,6 +165,7 @@ class ParserOptions private constructor(
           allowServiceCapabilities = allowServiceCapabilities,
           allowFragmentArguments = allowFragmentArguments,
           allowEmptySelectionSets = allowEmptySelectionSets,
+          allowEmptyObjectsAndInterfaces = allowEmptyObjectsAndInterfaces,
       )
     }
   }
