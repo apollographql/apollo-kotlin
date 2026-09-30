@@ -6,3 +6,15 @@ fragment CatFragment on Cat {
 fragment PlantFragment on Plant {
   picture(size: $size)
 }
+
+fragment GloballyUnusedFragment on Cat {
+  dateOfBirth
+}
+
+# Spread only by "node"'s own NodeWrapsViaNodeFragment (see node/operations.graphql), never directly by any
+# operation: this is the regression fixture for the confirmed multi-hop-through-an-intermediate-owned-fragment
+# false positive (root <- node <- leaf, where the link from root to leaf only exists through a fragment node
+# itself defines).
+fragment ViaNodeFragment on Cat {
+  dateOfBirth
+}

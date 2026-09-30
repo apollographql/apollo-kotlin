@@ -9,3 +9,9 @@ query GetPlantAndAnimal($size: Int!) {
   }
 }
 
+query GetAnimalViaNodeFragment {
+  randomAnimal {
+    ...NodeWrapsViaNodeFragment
+  }
+}
+

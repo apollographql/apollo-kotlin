@@ -35,11 +35,142 @@ class MultiModulesTests {
   }
 
   @Test
+  fun `multi-modules project only reports globally unused fragments`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      val result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'CatFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'PlantFragment' is not used")
+      Truth.assertThat(result.output).contains("Fragment 'GloballyUnusedFragment' is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules project does not report exported fragments when downstream usage is unknown`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      File(dir, "root/build.gradle.kts").replaceInText(
+          """
+          dependencies {
+            add("apolloServiceUsedCoordinates", project(":leaf"))
+          }
+          """.trimIndent(),
+          ""
+      )
+
+      val result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'CatFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'PlantFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'GloballyUnusedFragment' is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules project reports unused fragments from a non-exporting leaf`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      File(dir, "leaf/build.gradle.kts").replaceInText(
+          "generateApolloMetadata.set(true)",
+          "generateApolloMetadata.set(false)\n    dependsOn(project(\":root\"))"
+      )
+      File(dir, "leaf/build.gradle.kts").replaceInText(
+          """
+          dependencies {
+            add("apolloService", project(":root"))
+          }
+          """.trimIndent(),
+          ""
+      )
+      File(dir, "leaf/src/main/graphql/com/library/operations.graphql").appendText(
+          "\nfragment LeafUnusedFragment on Cat {\n  dateOfBirth\n}\n"
+      )
+
+      val result = TestUtils.executeTask(":leaf:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).contains("Fragment 'LeafUnusedFragment' is not used")
+    }
+  }
+
+  @Test
   fun `multi-modules project can use transitive dependencies`() {
     testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
       val result = TestUtils.executeTask(":leaf:assemble", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:assemble")!!.outcome)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive project only reports fragments unused across the whole downstream graph`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // PlantFragment is spread only by leaf, two dependsOn hops away from root (root <- node <- leaf).
+      // CatFragment is spread by node, one hop away from root.
+      // ViaNodeFragment is spread only through node's own NodeWrapsViaNodeFragment, which leaf spreads: this is
+      // the regression case for a fragment only reachable via an intermediate module's own fragment definition.
+      // Neither should be reported by root even though root itself does not spread them.
+      val result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'CatFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'PlantFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'ViaNodeFragment' is not used")
+      Truth.assertThat(result.output).contains("Fragment 'GloballyUnusedFragment' is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive leaf IR generation never reports UnusedFragment`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // IR generation must never report UnusedFragment, even for a genuinely dead fragment.
+      // The check is deferred to codegen; see ApolloCompiler.checkUnusedFragments.
+      val result = TestUtils.executeTask(":leaf:generateServiceApolloIrOperations", dir)
+
+      Truth.assertThat(result.output).doesNotContain("is not used")
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive reports each module's own unused fragments exactly once`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // :leaf:assemble compiles root, node, and leaf, so each module's checkUnusedFragments runs once.
+      val result = TestUtils.executeTask(":leaf:assemble", dir)
+
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":leaf:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+
+      // Root's fragment, only reachable via node's wrapper, stays silent.
+      Truth.assertThat(result.output).doesNotContain("Fragment 'ViaNodeFragment' is not used")
+      // Node's wrapper fragment, only spread by leaf, stays silent.
+      Truth.assertThat(result.output).doesNotContain("Fragment 'NodeWrapsViaNodeFragment' is not used")
+
+      // NodeOnlyUnusedFragment is genuinely dead. It must be reported once, by node, its owner.
+      val nodeOnlyUnusedFragmentWarningCount = result.output.split("Fragment 'NodeOnlyUnusedFragment' is not used").size - 1
+      Truth.assertThat(nodeOnlyUnusedFragmentWarningCount).isEqualTo(1)
+    }
+  }
+
+  @Test
+  fun `multi-modules-transitive succeeds with failOnWarnings when every fragment is used`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      // Remove the two dead control fragments, enable failOnWarnings on root and node, and confirm success.
+      File(dir, "root/src/main/graphql/com/library/operations.graphql").replaceInText(
+          "fragment GloballyUnusedFragment on Cat {\n  dateOfBirth\n}\n\n",
+          ""
+      )
+      File(dir, "node/src/main/graphql/com/library/operations.graphql").replaceInText(
+          "\n# Genuinely dead: never spread anywhere. Confirms a truly unused fragment is reported once.\n" +
+              "fragment NodeOnlyUnusedFragment on Cat {\n  class\n}\n",
+          ""
+      )
+      File(dir, "root/build.gradle.kts").replaceInText(
+          "packageNamesFromFilePaths()",
+          "packageNamesFromFilePaths()\n    failOnWarnings.set(true)"
+      )
+      File(dir, "node/build.gradle.kts").replaceInText(
+          "packageNamesFromFilePaths()",
+          "packageNamesFromFilePaths()\n    failOnWarnings.set(true)"
+      )
+
+      TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
     }
   }
 
@@ -51,6 +182,21 @@ class MultiModulesTests {
     testProjectWithIsolatedProjectsWorkaround("multi-modules-diamond") { dir ->
       val result = TestUtils.executeTask(":leaf:jar", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":leaf:generateServiceApolloSources")!!.outcome)
+    }
+  }
+
+  @Test
+  fun `multi-modules-diamond project merges fragment usage from both branches`() {
+    // root <- node1 <- leaf and root <- node2 <- leaf: ViaNode1Fragment/ViaNode2Fragment are each spread only
+    // by one of the two diamond branches, and CatFragment is spread by leaf directly. PlantFragment is spread
+    // nowhere and stays genuinely unused.
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-diamond") { dir ->
+      val result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'CatFragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'ViaNode1Fragment' is not used")
+      Truth.assertThat(result.output).doesNotContain("Fragment 'ViaNode2Fragment' is not used")
+      Truth.assertThat(result.output).contains("Fragment 'PlantFragment' is not used")
     }
   }
 
@@ -103,6 +249,31 @@ class MultiModulesTests {
 
       // Because we didn't add any new type, this shouldn't change
       Truth.assertThat<Comparable<TaskOutcome>>(result.task(":root:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+    }
+  }
+
+  @Test
+  fun `duplicate fragment names stay scoped to the module that defines them`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-duplicates") { dir ->
+      var result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).doesNotContain("Fragment 'UsedViaNode2' is not used")
+      Truth.assertThat(result.output).contains("Fragment 'DeadViaNode1' is not used")
+
+      File(dir, "node2/consumer/src/main/graphql/com/library/operations.graphql").replaceInText(
+          "...RegressionSharedWrapper",
+          "...CatFragment"
+      )
+
+      result = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+
+      Truth.assertThat(result.output).contains("Fragment 'UsedViaNode2' is not used")
+      Truth.assertThat(result.output).contains("Fragment 'DeadViaNode1' is not used")
+      Truth.assertThat<Comparable<TaskOutcome>>(
+          result.task(":node1:impl:generateServiceApolloIrOperations")?.outcome
+      ).isEqualTo(TaskOutcome.UP_TO_DATE)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node1:impl:generateServiceApolloSources")?.outcome).isEqualTo(null)
+      Truth.assertThat<Comparable<TaskOutcome>>(result.task(":node1:impl:compileKotlin")?.outcome).isEqualTo(null)
     }
   }
 

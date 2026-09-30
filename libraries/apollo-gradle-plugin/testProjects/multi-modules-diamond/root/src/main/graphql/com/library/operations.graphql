@@ -6,3 +6,11 @@ fragment CatFragment on Cat {
 fragment PlantFragment on Plant {
   picture(size: $size)
 }
+
+fragment ViaNode1Fragment on Cat {
+  dateOfBirth
+}
+
+fragment ViaNode2Fragment on Cat {
+  dateOfBirth
+}

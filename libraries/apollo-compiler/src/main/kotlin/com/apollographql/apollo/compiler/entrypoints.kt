@@ -72,7 +72,10 @@ object EntryPoints {
       upstreamMetadata: List<InputFile>,
       irOperations: File,
       downstreamUsedCoordinates: File,
+      downstreamUsedFragmentNames: File,
+      downstreamFragmentUsageIsComplete: Boolean,
       codegenOptions: File,
+      irOptions: File,
       operationManifest: File?,
       outputDirectory: File,
       metadataOutput: File?,
@@ -86,9 +89,20 @@ object EntryPoints {
     val codegenSchema = codegenSchemaFile.toCodegenSchema()
 
     val upstreamCodegenMetadata = upstreamMetadata.map { it.file.toCodegenMetadata() }
+    @Suppress("NAME_SHADOWING")
+    val irOperations = irOperations.toIrOperations()
+    if (downstreamFragmentUsageIsComplete) {
+      ApolloCompiler.checkUnusedFragments(
+          irOperations = irOperations,
+          downstreamUsedFragmentNames = downstreamUsedFragmentNames.toUsedFragmentNames(),
+          options = irOptions.toIrOptions(),
+          logger = logger,
+      )
+    }
+
     buildSchemaAndOperationsSourcesFromIr(
         codegenSchema = codegenSchema,
-        irOperations = irOperations.toIrOperations(),
+        irOperations = irOperations,
         downstreamUsedCoordinates = downstreamUsedCoordinates.toUsedCoordinates(),
         upstreamCodegenMetadata = upstreamCodegenMetadata,
         codegenOptions = codegenOptions.toCodegenOptions(),
@@ -140,6 +154,12 @@ object EntryPoints {
         upstreamCodegenModels = emptyList(),
         upstreamFragmentDefinitions = emptyList(),
         documentTransform = registry.executableDocumentTransform(),
+        options = irOptions.toIrOptions(),
+        logger = logger,
+    )
+
+    ApolloCompiler.checkUnusedFragments(
+        irOperations = irOperations,
         options = irOptions.toIrOptions(),
         logger = logger,
     )

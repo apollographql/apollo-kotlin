@@ -1,0 +1,3 @@
+fragment RootUnusedFragment on Character {
+  id
+}
