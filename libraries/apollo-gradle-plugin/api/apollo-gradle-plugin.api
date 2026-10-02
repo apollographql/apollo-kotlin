@@ -34,6 +34,9 @@ public abstract interface class com/apollographql/apollo/gradle/api/ApolloExtens
 	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V
 }
 
+public abstract interface annotation class com/apollographql/apollo/gradle/api/ApolloGradleDsl : java/lang/annotation/Annotation {
+}
+
 public abstract interface class com/apollographql/apollo/gradle/api/ApolloGradleToolingModel {
 	public static final field Companion Lcom/apollographql/apollo/gradle/api/ApolloGradleToolingModel$Companion;
 	public static final field VERSION_MAJOR I
