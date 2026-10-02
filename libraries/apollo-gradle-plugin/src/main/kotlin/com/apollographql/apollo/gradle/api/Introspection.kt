@@ -14,6 +14,7 @@ import org.gradle.api.tasks.TaskProvider
  *
  * Use this to register a `download${ServiceName}ApolloSchemaFromIntrospection` task
  */
+@ApolloGradleDsl
 interface Introspection {
   /**
    * The HTTP endpoint url
@@ -42,6 +43,7 @@ interface Introspection {
   fun schemaConnection(connection: Action<SchemaConnection>)
 }
 
+@ApolloGradleDsl
 class SchemaConnection(
     /**
      * The task that produces schema

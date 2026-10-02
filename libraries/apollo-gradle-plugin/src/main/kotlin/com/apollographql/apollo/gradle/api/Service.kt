@@ -24,6 +24,7 @@ import org.gradle.api.tasks.TaskProvider
  *
  * The queries will be compiled and verified against the schema to generate the models.
  */
+@ApolloGradleDsl
 interface Service {
   val name: String
 
@@ -780,6 +781,7 @@ interface Service {
   @ApolloExperimental
   fun dependsOn(dependencyNotation: Any, bidirectional: Boolean)
 
+  @ApolloGradleDsl
   class OperationOutputConnection(
       /**
        * The task that produces operationOutput
@@ -795,6 +797,7 @@ interface Service {
       val operationOutputFile: Provider<RegularFile>,
   )
 
+  @ApolloGradleDsl
   class OperationManifestConnection(
       /**
        * The task that produces operationOutput
@@ -842,6 +845,7 @@ interface Service {
    * It is valid to call multiple connectXyz() methods to connect the generated sources to multiple
    * downstream tasks
    */
+  @ApolloGradleDsl
   interface DirectoryConnection {
     /**
      * Connects the generated sources to the given Kotlin source set.
@@ -976,6 +980,7 @@ interface Service {
    * An [OutgoingVariantsConnection] defines how outgoing variants are added to software components.
    */
   @ApolloExperimental
+  @ApolloGradleDsl
   interface OutgoingVariantsConnection {
     fun addToSoftwareComponent(name: String)
     fun addToSoftwareComponent(softwareComponent: SoftwareComponent)

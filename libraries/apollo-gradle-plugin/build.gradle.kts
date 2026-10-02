@@ -159,7 +159,7 @@ val publishMarkers = tasks.register("publishMarkers") {
   doLast {
     val src = from.get().files.single()
     val dst = into.get().asFile
-    publishFileByFile(FilesystemTransport(dst.absolutePath), src.walk().filter { it.isFile }.map { FileWithPath(it, it.relativeTo(src).path) }.toList())
+    publishFileByFile(FilesystemTransport(dst.absolutePath), src.walk().filter { it.isFile }.map { FileWithPath(it, it.relativeTo(src).invariantSeparatorsPath) }.toList())
   }
 }
 
