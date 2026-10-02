@@ -39,6 +39,9 @@ dependencies {
   testImplementation(libs.jetbrains.annotations) {
     because("Used in the Java generated code")
   }
+  testImplementation(libs.jspecify) {
+    because("Used in the Java generated code")
+  }
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

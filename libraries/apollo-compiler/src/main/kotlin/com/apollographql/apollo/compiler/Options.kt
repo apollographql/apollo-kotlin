@@ -100,6 +100,12 @@ enum class JavaNullable {
    * `javax.annotation.Nonnull` if not.
    */
   JSR_305_ANNOTATIONS,
+
+  /**
+   * Fields will be generated with JSpecify's `org.jspecify.annotations.Nullable` annotation if nullable, or
+   * `org.jspecify.annotations.NonNull` if not.
+   */
+  JSPECIFY_ANNOTATIONS,
   ;
 
   companion object {
@@ -112,6 +118,7 @@ enum class JavaNullable {
         "jetbrainsAnnotations" -> JETBRAINS_ANNOTATIONS
         "androidAnnotations" -> ANDROID_ANNOTATIONS
         "jsr305Annotations" -> JSR_305_ANNOTATIONS
+        "jspecifyAnnotations", "jspecifyOptional" -> JSPECIFY_ANNOTATIONS
         else -> null
       }
     }
