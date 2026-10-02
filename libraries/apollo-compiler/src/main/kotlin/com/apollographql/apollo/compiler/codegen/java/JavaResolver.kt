@@ -82,6 +82,7 @@ internal class JavaResolver(
     JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNullable
     JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.AndroidNullable
     JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.Jsr305Nullable
+    JavaNullable.JSPECIFY_ANNOTATIONS -> JavaClassNames.JSpecifyNullable
     else -> null
   }
 
@@ -89,6 +90,7 @@ internal class JavaResolver(
     JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNonNull
     JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.AndroidNonNull
     JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.Jsr305NonNull
+    JavaNullable.JSPECIFY_ANNOTATIONS -> JavaClassNames.JSpecifyNonNull
     else -> null
   }
 
@@ -166,11 +168,14 @@ internal class JavaResolver(
    * in generics like `List<@NotNull String>` for an example
    */
   private fun TypeName.filterTypeUseAnnotations(): TypeName {
-    // Only the JetBrains nullability annotations have a target including ElementType.TYPE_USE
+    // Only the JetBrains and JSpecify nullability annotations have a target including ElementType.TYPE_USE
     return if (annotations.isEmpty()) {
       this
     } else {
-      withoutAnnotations().annotated(annotations.filter { it.type == JavaClassNames.JetBrainsNullable || it.type == JavaClassNames.JetBrainsNonNull })
+      withoutAnnotations().annotated(annotations.filter {
+        it.type == JavaClassNames.JetBrainsNullable || it.type == JavaClassNames.JetBrainsNonNull ||
+            it.type == JavaClassNames.JSpecifyNullable || it.type == JavaClassNames.JSpecifyNonNull
+      })
     }
   }
 

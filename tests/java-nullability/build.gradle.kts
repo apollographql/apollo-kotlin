@@ -13,6 +13,7 @@ dependencies {
   implementation(libs.androidx.annotation)
   implementation(libs.jetbrains.annotations)
   implementation(libs.jsr305)
+  implementation(libs.jspecify)
 
   testImplementation(libs.junit)
 }
@@ -74,6 +75,16 @@ apollo {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("jsr305Annotations")
+    @OptIn(ApolloExperimental::class)
+    generateModelBuilders.set(true)
+  }
+
+  service("jspecifyAnnotations") {
+    packageName.set("annotations.jspecify")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    nullableFieldStyle.set("jspecifyAnnotations")
     @OptIn(ApolloExperimental::class)
     generateModelBuilders.set(true)
   }
