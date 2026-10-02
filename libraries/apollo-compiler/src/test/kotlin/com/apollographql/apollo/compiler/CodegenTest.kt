@@ -323,6 +323,7 @@ class CodegenTest {
         "java_jetbrains_annotations" -> JavaNullable.JETBRAINS_ANNOTATIONS
         "java_android_annotations" -> JavaNullable.ANDROID_ANNOTATIONS
         "java_jsr305_annotations" -> JavaNullable.JSR_305_ANNOTATIONS
+        "java_jspecify_annotations" -> JavaNullable.JSPECIFY_ANNOTATIONS
         else -> JavaNullable.NONE
       }
       val classesForEnumsMatching = when (folder.name) {
@@ -333,6 +334,7 @@ class CodegenTest {
       val generateModelBuilders = when (folder.name) {
         "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
         "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
+        "java_jspecify_annotations",
           -> true
 
         else -> false
@@ -340,7 +342,7 @@ class CodegenTest {
 
       val generatePrimitiveTypes = when (folder.name) {
         "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
-        "java_android_annotations", "java_jsr305_annotations",
+        "java_android_annotations", "java_jsr305_annotations", "java_jspecify_annotations",
           -> true
 
         else -> false
