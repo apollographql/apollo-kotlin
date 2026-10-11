@@ -107,6 +107,83 @@ class MultiModulesTests {
   }
 
   @Test
+  fun `unused fragments are reported once by their owners after downstream IR`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules-transitive") { dir ->
+      dir.resolve("leaf/build.gradle.kts").apply {
+        replaceInText("generateApolloMetadata.set(true)", "generateApolloMetadata.set(false)\n    dependsOn(project(\":node\"))")
+        replaceInText("""add("apolloService", project(":node"))""", "")
+      }
+      dir.resolve("root/src/main/graphql/com/library/operations.graphql").appendText("""
+
+        fragment RootUnused on Query { __typename }
+      """.trimIndent())
+      dir.resolve("node/src/main/graphql/com/library/operations.graphql").appendText("""
+
+        fragment NodeWrapper on Cat { ...CatFragment }
+        fragment NodeUnused on Query { __typename }
+      """.trimIndent())
+      val leafOperations = dir.resolve("leaf/src/main/graphql/com/library/operations.graphql")
+      leafOperations.replaceInText("...CatFragment", "...NodeWrapper")
+      leafOperations.appendText("""
+
+        fragment LeafUnused on Query { __typename }
+      """.trimIndent())
+
+      val irResult = TestUtils.executeTask(":leaf:generateServiceApolloIrOperations", dir)
+      Truth.assertThat(irResult.output).doesNotContain("is not used")
+
+      val tasks = arrayOf(
+          ":root:generateServiceApolloSources",
+          ":node:generateServiceApolloSources",
+          ":leaf:generateServiceApolloSources",
+          "--max-workers=1", "--console=plain", "--configuration-cache",
+      )
+      val result = TestUtils.executeGradle(dir, *tasks)
+      Truth.assertThat(result.output.lines().filter { it.contains("is not used") }).hasSize(3)
+      mapOf("root" to "RootUnused", "node" to "NodeUnused", "leaf" to "LeafUnused").forEach { (owner, fragment) ->
+        val taskPath = ":$owner:generateServiceApolloSources"
+        Assert.assertEquals(TaskOutcome.SUCCESS, result.task(taskPath)?.outcome)
+        val taskOutput = result.output.substringAfter("> Task $taskPath\n").substringBefore("> Task ")
+        Truth.assertThat(taskOutput.lines().filter { it.contains("Fragment '$fragment' is not used") }).hasSize(1)
+      }
+
+      val cached = TestUtils.executeGradle(dir, *tasks)
+      Truth.assertThat(cached.output).contains("Reusing configuration cache.")
+      listOf("root", "node", "leaf").forEach {
+        Assert.assertEquals(TaskOutcome.UP_TO_DATE, cached.task(":$it:generateServiceApolloSources")?.outcome)
+      }
+
+      leafOperations.replaceInText("...NodeWrapper", "...CatFragment")
+      val changed = TestUtils.executeGradle(dir, *tasks)
+      Assert.assertEquals(TaskOutcome.SUCCESS, changed.task(":node:generateServiceApolloSources")?.outcome)
+      Truth.assertThat(changed.output).contains("Fragment 'NodeWrapper' is not used")
+      Assert.assertEquals(TaskOutcome.UP_TO_DATE, changed.task(":root:generateServiceApolloSources")?.outcome)
+    }
+  }
+
+  @Test
+  fun `unknown consumers suppress diagnostics but registered empty consumers do not`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      val rootBuild = dir.resolve("root/build.gradle.kts")
+      rootBuild.replaceInText("""add("apolloServiceUsedCoordinates", project(":leaf"))""", "")
+      val unknown = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+      Truth.assertThat(unknown.output).doesNotContain("is not used")
+
+      rootBuild.appendText("""
+
+        dependencies {
+          add("apolloServiceUsedCoordinates", project(":leaf"))
+        }
+      """.trimIndent())
+      dir.resolve("leaf/src/main/graphql/com/library/operations.graphql").writeText("")
+      val knownEmpty = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+      Truth.assertThat(knownEmpty.output.lines().filter { it.contains("is not used") }).hasSize(2)
+      Truth.assertThat(knownEmpty.output).contains("Fragment 'CatFragment' is not used")
+      Truth.assertThat(knownEmpty.output).contains("Fragment 'PlantFragment' is not used")
+    }
+  }
+
+  @Test
   fun `custom scalars are registered if added to customScalarMappings`() {
     testProjectWithIsolatedProjectsWorkaround("multi-modules-custom-scalar") { dir ->
       TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)

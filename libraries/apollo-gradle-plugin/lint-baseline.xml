@@ -4,6 +4,28 @@
     <issue
         id="EagerGradleConfiguration"
         message="Use register instead of create"
+        errorLine1="        this@registerApolloComputeUnusedFragmentsTask.configurations.create(&quot;apolloTasks&quot;)"
+        errorLine2="                                                                     ~~~~~~">
+        <location
+            file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloComputeUnusedFragmentsTask.kt"
+            line="54"
+            column="70"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Passing Configuration to ConfigurableFileCollection.from results in eager resolution of this configuration. Instead use project.files(configuration) or configuration.incoming.artifactView {}.files to wrap the configuration making it lazy."
+        errorLine1="    it.classpath.from(configuration)"
+        errorLine2="                 ~~~~">
+        <location
+            file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloComputeUnusedFragmentsTask.kt"
+            line="61"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use register instead of create"
         errorLine1="        this@registerApolloComputeUsedCoordinatesTask.configurations.create(&quot;apolloTasks&quot;)"
         errorLine2="                                                                     ~~~~~~">
         <location
@@ -196,6 +218,28 @@
         <location
             file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrTask.kt"
             line="76"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Use register instead of create"
+        errorLine1="        this@registerApolloGenerateSourcesFromIrWithUnusedFragmentsTask.configurations.create(&quot;apolloTasks&quot;)"
+        errorLine2="                                                                                       ~~~~~~">
+        <location
+            file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrWithUnusedFragmentsTask.kt"
+            line="72"
+            column="88"/>
+    </issue>
+
+    <issue
+        id="EagerGradleConfiguration"
+        message="Passing Configuration to ConfigurableFileCollection.from results in eager resolution of this configuration. Instead use project.files(configuration) or configuration.incoming.artifactView {}.files to wrap the configuration making it lazy."
+        errorLine1="    it.classpath.from(configuration)"
+        errorLine2="                 ~~~~">
+        <location
+            file="build/gtask/gratatouilleUnzipPluginSources/outputDirectory/com/apollographql/apollo/gradle/task/ApolloGenerateSourcesFromIrWithUnusedFragmentsTask.kt"
+            line="79"
             column="18"/>
     </issue>
 
