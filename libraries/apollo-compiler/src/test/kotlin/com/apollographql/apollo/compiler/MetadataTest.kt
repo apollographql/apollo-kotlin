@@ -274,6 +274,33 @@ class MetadataTest {
   }
 
   @Test
+  fun `sibling fragment names and diamond inputs do not change owner summaries`() {
+    val rootFile = prepareFragmentTest("""
+      fragment RootLeft on Query { __typename }
+      fragment RootRight on Query { __typename }
+      fragment Unused on Query { __typename }
+    """.trimIndent())
+    val rootIr = buildDeferredIr(rootFile)
+    val leftFile = File(buildDir, "left.graphql").apply {
+      writeText("fragment Shared on Query { ...RootLeft }")
+    }
+    val rightFile = File(buildDir, "right.graphql").apply {
+      writeText("fragment Shared on Query { ...RootRight }")
+    }
+    val leftIr = buildDeferredIr(leftFile, listOf(rootIr))
+    val rightIr = buildDeferredIr(rightFile, listOf(rootIr))
+    val leafFile = File(buildDir, "leaf.graphql").apply { writeText("query Leaf { ...Shared }") }
+    val leafIr = buildDeferredIr(leafFile, listOf(rootIr, rightIr))
+    val summaryFile = File(buildDir, "unused-fragments.txt")
+
+    EntryPoints.computeUnusedFragments(rootIr, listOf(leftIr, rightIr, leafIr).toInputFiles(), true, summaryFile)
+    Truth.assertThat(summaryFile.readLines()).containsExactly("Unused")
+
+    EntryPoints.computeUnusedFragments(rootIr, listOf(leafIr, rightIr, leftIr, leafIr).toInputFiles(), true, summaryFile)
+    Truth.assertThat(summaryFile.readLines()).containsExactly("Unused")
+  }
+
+  @Test
   fun `unrelated downstream changes preserve sorted diagnostic summaries`() {
     val rootFile = prepareFragmentTest("""
       fragment Zulu on Query { __typename }
