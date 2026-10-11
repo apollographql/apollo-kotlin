@@ -1,10 +1,21 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.annotations.ApolloInternal
+import com.apollographql.apollo.ast.GQLFragmentDefinition
+import com.apollographql.apollo.ast.GQLFragmentSpread
+import com.apollographql.apollo.ast.GQLNode
+import com.apollographql.apollo.ast.ParserOptions
+import com.apollographql.apollo.ast.UnusedFragment
+import com.apollographql.apollo.ast.checkEmpty
+import com.apollographql.apollo.ast.parseAsGQLDocument
+import com.apollographql.apollo.ast.pretty
+import com.apollographql.apollo.ast.toGQLDocument
 import com.apollographql.apollo.compiler.ApolloCompiler.buildIrOperations
 import com.apollographql.apollo.compiler.ApolloCompiler.buildSchemaAndOperationsSourcesFromIr
 import com.apollographql.apollo.compiler.codegen.writeTo
 import com.apollographql.apollo.compiler.internal.DefaultApolloCompilerRegistry
+import okio.buffer
+import okio.source
 import java.io.File
 
 /**
@@ -36,6 +47,8 @@ object EntryPoints {
     ).writeTo(codegenSchemaFile)
   }
 
+  @JvmOverloads
+  @Suppress("DEPRECATION")
   fun buildIr(
       plugins: List<ApolloCompilerPlugin>,
       arguments: Map<String, Any?>,
@@ -45,6 +58,7 @@ object EntryPoints {
       upstreamIrOperations: List<InputFile>,
       irOptionsFile: File,
       irOperationsFile: File,
+      reportUnusedFragments: Boolean = true,
   ) {
     val registry = apolloCompilerRegistry(
         arguments = arguments,
@@ -53,15 +67,98 @@ object EntryPoints {
     )
 
     val upstream = upstreamIrOperations.map { it.file.toIrOperations() }
+    val options = irOptionsFile.toIrOptions().let {
+      if (reportUnusedFragments) {
+        it
+      } else {
+        // Downstream usage is unavailable until all participating modules have built their IR.
+        buildIrOptions(
+            decapitalizeFields = it.decapitalizeFields,
+            flattenModels = it.flattenModels,
+            failOnWarnings = it.failOnWarnings,
+            addTypename = it.addTypename,
+            generateOptionalOperationVariables = it.generateOptionalOperationVariables,
+            alwaysGenerateTypesMatching = it.alwaysGenerateTypesMatching,
+            codegenModels = it.codegenModels,
+            issueSeverity = it.issueSeverities.orEmpty() + ("UnusedFragment" to IssueSeverity.Ignore),
+            allowFragmentArguments = it.allowFragmentArguments,
+            allowEmptySelectionSets = it.allowEmptySelectionSets,
+        )
+      }
+    }
     buildIrOperations(
         executableFiles = graphqlFiles,
         codegenSchema = codegenSchemaFiles.map { it.file }.findCodegenSchemaFile().toCodegenSchema(),
         upstreamCodegenModels = upstream.map { it.codegenModels },
         upstreamFragmentDefinitions = upstream.flatMap { it.fragmentDefinitions },
         documentTransform = registry.executableDocumentTransform(),
-        options = irOptionsFile.toIrOptions(),
+        options = options,
         logger = logger,
     ).writeTo(irOperationsFile)
+  }
+
+  fun computeUnusedFragments(
+      irOperations: File,
+      downstreamIrOperations: List<InputFile>,
+      downstreamFragmentUsageIsComplete: Boolean,
+      outputFile: File,
+  ) {
+    if (!downstreamFragmentUsageIsComplete) {
+      // Exported fragments may have consumers outside the registered dependency graph.
+      outputFile.writeText("")
+      return
+    }
+
+    val localIr = irOperations.toIrOperations()
+    val usedNames = mutableSetOf<String>()
+    fun collectSpreads(node: GQLNode) {
+      if (node is GQLFragmentSpread) {
+        usedNames.add(node.name)
+      }
+      node.children.forEach(::collectSpreads)
+    }
+
+    val parserOptions = ParserOptions.Builder().allowFragmentArguments(true).build()
+    (listOf(localIr) + downstreamIrOperations.map { it.file.toIrOperations() }).forEach { ir ->
+      ir.fragmentDefinitions.forEach(::collectSpreads)
+      ir.operations.forEach {
+        collectSpreads(it.sourceWithFragments.toGQLDocument(parserOptions))
+      }
+    }
+
+    val unusedNames = localIr.fragmentDefinitions.map { it.name }.filterNot { it in usedNames }.sorted()
+    // Only changes to this module's diagnostics should invalidate source generation.
+    outputFile.writeText(unusedNames.joinToString("\n"))
+  }
+
+  fun checkUnusedFragments(
+      unusedFragments: File,
+      graphqlFiles: List<InputFile>,
+      irOptionsFile: File,
+      logger: ApolloCompiler.Logger,
+  ) {
+    val unusedNames = unusedFragments.readLines()
+    if (unusedNames.isEmpty()) {
+      return
+    }
+
+    val options = irOptionsFile.toIrOptions()
+    val parserOptions = ParserOptions.Builder().allowFragmentArguments(true).build()
+    val locations = graphqlFiles.flatMap {
+      it.file.source().buffer().parseAsGQLDocument(it.file.path, parserOptions).getOrThrow().definitions
+          .filterIsInstance<GQLFragmentDefinition>()
+    }.associate { it.name to it.sourceLocation }
+    val issues = unusedNames.map {
+      UnusedFragment("Fragment '$it' is not used", locations[it])
+    }.group(defaultIssueSeverities + options.issueSeverities.orEmpty())
+
+    issues.errors.checkEmpty()
+    issues.warnings.forEach {
+      logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+    }
+    if ((options.failOnWarnings ?: defaultFailOnWarnings) && issues.warnings.isNotEmpty()) {
+      error("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
+    }
   }
 
   fun buildSourcesFromIr(
