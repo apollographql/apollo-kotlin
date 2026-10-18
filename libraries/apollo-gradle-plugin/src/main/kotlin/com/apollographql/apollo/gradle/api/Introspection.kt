@@ -30,6 +30,15 @@ interface Introspection {
   val headers: MapProperty<String, String>
 
   /**
+   * The HTTP method to use for the introspection queries: "POST" or "GET".
+   *
+   * Some servers only accept GET requests, including for introspection.
+   *
+   * "POST" by default
+   */
+  val httpMethod: Property<String>
+
+  /**
    * The file where to download the schema.
    *
    * Uses the schema from the service by default

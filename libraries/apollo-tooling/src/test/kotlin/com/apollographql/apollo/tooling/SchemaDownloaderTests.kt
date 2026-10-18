@@ -6,6 +6,10 @@ import com.apollographql.apollo.testing.internal.runTest
 import com.apollographql.apollo.testing.pathToUtf8
 import com.apollographql.mockserver.MockServer
 import com.apollographql.mockserver.enqueueString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
@@ -164,6 +168,34 @@ class SchemaDownloaderTests {
     mockServer.takeRequest()
     val introspectionRequest = mockServer.takeRequest().body.utf8()
     assertEquals(introspectionRequestFailSafe, introspectionRequest)
+    assertEquals(introspectionResponseSuccess, tempFileJson.readText())
+  }
+
+  @Test
+  fun `schema is downloaded correctly using GET`() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueueString(preIntrospectionResponseSeptember2025)
+    mockServer.enqueueString(introspectionResponseSuccess)
+
+    SchemaDownloader.download(
+        endpoint = mockServer.url(),
+        graph = null,
+        key = null,
+        graphVariant = "",
+        schema = tempFileJson,
+        httpMethod = "GET",
+    )
+
+    val preIntrospectionRequest = mockServer.takeRequest()
+    assertEquals("GET", preIntrospectionRequest.method)
+    assertEquals(0, preIntrospectionRequest.body.size)
+
+    val introspectionRequest = mockServer.takeRequest()
+    assertEquals("GET", introspectionRequest.method)
+    assertEquals(0, introspectionRequest.body.size)
+    val url = "http://localhost${introspectionRequest.path}".toHttpUrl()
+    val expected = Json.parseToJsonElement(introspectionRequestSeptember2025).jsonObject
+    assertEquals(expected["operationName"]!!.jsonPrimitive.content, url.queryParameter("operationName"))
+    assertEquals(expected["query"]!!.jsonPrimitive.content, url.queryParameter("query"))
     assertEquals(introspectionResponseSuccess, tempFileJson.readText())
   }
 

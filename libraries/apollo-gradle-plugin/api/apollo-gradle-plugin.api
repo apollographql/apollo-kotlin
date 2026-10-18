@@ -108,6 +108,7 @@ public abstract interface class com/apollographql/apollo/gradle/api/CompilerPlug
 public abstract interface class com/apollographql/apollo/gradle/api/Introspection {
 	public abstract fun getEndpointUrl ()Lorg/gradle/api/provider/Property;
 	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getHttpMethod ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
 }

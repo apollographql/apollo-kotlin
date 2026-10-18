@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.http.HttpHeader
+import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.internal.readErrors
 import com.apollographql.apollo.api.json.jsonReader
 import com.apollographql.apollo.ast.GQLDocument
@@ -47,6 +48,7 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
+   * @param httpMethod the HTTP method to use for introspection: "POST" or "GET". Defaults to "POST".
    */
   fun download(
       endpoint: String?,
@@ -57,6 +59,7 @@ object SchemaDownloader {
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
+      httpMethod: String = "POST",
   ) {
     var introspectionDataJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
@@ -70,6 +73,7 @@ object SchemaDownloader {
               headers = headers,
               insecure = insecure,
               failSafe = false,
+              httpMethod = httpMethod,
           )
           introspectionSchema = try {
             introspectionDataJson.toIntrospectionSchema()
@@ -83,6 +87,7 @@ object SchemaDownloader {
               headers = headers,
               insecure = insecure,
               failSafe = true,
+              httpMethod = httpMethod,
           )
           introspectionSchema = try {
             introspectionDataJson.toIntrospectionSchema()
@@ -146,6 +151,18 @@ object SchemaDownloader {
     }
   }
 
+  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
+  fun download(
+      endpoint: String?,
+      graph: String?,
+      key: String?,
+      graphVariant: String,
+      registryUrl: String = "https://api.apollographql.com/graphql",
+      schema: File,
+      insecure: Boolean = false,
+      headers: Map<String, String> = emptyMap(),
+  ) = download(endpoint, graph, key, graphVariant, registryUrl, schema, insecure, headers, httpMethod = "POST")
+
   /**
    * Get an introspection query that is compatible with the given [features], as a JSON string.
    */
@@ -171,12 +188,25 @@ object SchemaDownloader {
       insecure: Boolean,
   ): String = downloadIntrospection(endpoint, headers, insecure, failSafe = false)
 
+  @Deprecated(level = DeprecationLevel.HIDDEN, message = "Kept for binary compatibility")
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
       failSafe: Boolean = false,
+  ): String = downloadIntrospection(endpoint, headers, insecure, failSafe, httpMethod = "POST")
+
+  /**
+   * @param httpMethod the HTTP method to use: "POST" or "GET"
+   */
+  fun downloadIntrospection(
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+      failSafe: Boolean = false,
+      httpMethod: String = "POST",
   ): String {
+    val method = httpMethod.toHttpMethod()
     var features = if (failSafe) {
       emptySet()
     } else {
@@ -184,6 +214,7 @@ object SchemaDownloader {
           endpoint = endpoint,
           headers = headers,
           insecure = insecure,
+          httpMethod = method,
       )
       preIntrospectionData.getFeatures()
     }
@@ -196,6 +227,7 @@ object SchemaDownloader {
           endpoint = endpoint,
           headers = headers,
           insecure = insecure,
+          httpMethod = method,
       )
 
       response.body?.readErrors().orEmpty().forEach {
@@ -257,6 +289,14 @@ object SchemaDownloader {
   }
 
   inline fun <reified T> Any?.cast() = this as? T
+}
+
+private fun String.toHttpMethod(): HttpMethod {
+  return when (uppercase()) {
+    "POST" -> HttpMethod.Post
+    "GET" -> HttpMethod.Get
+    else -> error("Apollo: unsupported introspection httpMethod '$this', expected 'POST' or 'GET'")
+  }
 }
 
 private fun String.readErrors(): List<Error> {
