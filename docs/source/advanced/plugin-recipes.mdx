@@ -162,7 +162,7 @@ apollo {
 
 This creates a task named `download${ServiceName}ApolloSchemaFromIntrospection`.
 
-Introspection queries are sent with `POST` by default. If your server only accepts `GET` requests, set `httpMethod`:
+The Apollo Gradle plugin sends introspection queries with `POST` by default. If the server requires `GET` requests, set `httpMethod`:
 
 ```kotlin
 introspection {
