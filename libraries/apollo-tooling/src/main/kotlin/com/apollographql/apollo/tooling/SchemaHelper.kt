@@ -2,7 +2,6 @@ package com.apollographql.apollo.tooling
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.http.ByteStringHttpBody
-import com.apollographql.apollo.api.http.HttpBody
 import com.apollographql.apollo.api.http.HttpHeader
 import com.apollographql.apollo.api.http.HttpMethod
 import com.apollographql.apollo.api.http.HttpRequest
@@ -20,6 +19,7 @@ import com.apollographql.apollo.network.okHttpClient
 import com.apollographql.apollo.tooling.GraphQLFeature.*
 import com.apollographql.apollo.tooling.graphql.PreIntrospectionQuery
 import kotlinx.coroutines.runBlocking
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
 import java.security.SecureRandom
@@ -50,16 +50,40 @@ internal object SchemaHelper {
   }
 
   private fun fetch(
-      httpBody: HttpBody,
+      operationName: String,
+      query: String,
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+      httpMethod: HttpMethod,
   ): Response {
     val defaultHeaders = listOf(HttpHeader("Accept", "application/graphql-response+json, application/json"))
-    val httpRequest = HttpRequest.Builder(HttpMethod.Post, endpoint)
-        .headers(defaultHeaders + headers.map { HttpHeader(it.key, it.value) })
-        .body(httpBody)
-        .build()
+    val allHeaders = defaultHeaders + headers.map { HttpHeader(it.key, it.value) }
+    val httpRequest = when (httpMethod) {
+      HttpMethod.Get -> {
+        val url = endpoint.toHttpUrl().newBuilder()
+            .addQueryParameter("operationName", operationName)
+            .addQueryParameter("query", query)
+            .build()
+            .toString()
+        HttpRequest.Builder(HttpMethod.Get, url)
+            .headers(allHeaders)
+            .build()
+      }
+
+      HttpMethod.Post -> {
+        val jsonBody = buildJsonString {
+          writeObject {
+            name("operationName").value(operationName)
+            name("query").value(query)
+          }
+        }
+        HttpRequest.Builder(HttpMethod.Post, endpoint)
+            .headers(allHeaders)
+            .body(ByteStringHttpBody("application/json", jsonBody))
+            .build()
+      }
+    }
     val httpEngine = DefaultHttpEngine { newOkHttpClient(insecure) }
     val httpResponse = runBlocking { httpEngine.execute(httpRequest) }
     val bodyStr = httpResponse.body?.use {
@@ -73,6 +97,7 @@ internal object SchemaHelper {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+      httpMethod: HttpMethod,
   ): PreIntrospectionQuery.Data {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(endpoint)
@@ -82,6 +107,7 @@ internal object SchemaHelper {
     val response = runBlocking {
       apolloClient.query(PreIntrospectionQuery())
           .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .httpMethod(httpMethod)
           .execute()
     }
     val data = response.data
@@ -97,14 +123,9 @@ internal object SchemaHelper {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+      httpMethod: HttpMethod,
   ): Response {
-    val jsonBody = buildJsonString {
-      writeObject {
-        name("operationName").value("IntrospectionQuery")
-        name("query").value(introspectionQuery)
-      }
-    }
-    return fetch(ByteStringHttpBody("application/json", jsonBody), endpoint, headers, insecure)
+    return fetch("IntrospectionQuery", introspectionQuery, endpoint, headers, insecure, httpMethod)
   }
 
   internal fun List<GQLDefinition>.reworkIntrospectionQuery(features: Set<GraphQLFeature>) =

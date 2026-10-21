@@ -88,11 +88,15 @@ public final class com/apollographql/apollo/tooling/RegisterOperations {
 
 public final class com/apollographql/apollo/tooling/SchemaDownloader {
 	public static final field INSTANCE Lcom/apollographql/apollo/tooling/SchemaDownloader;
-	public final fun download (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;)V
+	public final synthetic fun download (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;)V
+	public final fun download (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;Ljava/lang/String;)V
 	public static synthetic fun download$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;ILjava/lang/Object;)V
+	public static synthetic fun download$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;Ljava/lang/String;ILjava/lang/Object;)V
 	public final synthetic fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
-	public final fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;ZZ)Ljava/lang/String;
+	public final synthetic fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;ZZ)Ljava/lang/String;
+	public final fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;ZZLjava/lang/String;)Ljava/lang/String;
 	public static synthetic fun downloadIntrospection$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/util/Map;ZZILjava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun downloadIntrospection$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/util/Map;ZZLjava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 	public final fun downloadRegistry (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
 	public static synthetic fun downloadRegistry$default (Lcom/apollographql/apollo/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ZILjava/lang/Object;)Ljava/lang/String;
 	public final fun getIntrospectionQuery (Ljava/util/Set;)Ljava/lang/String;

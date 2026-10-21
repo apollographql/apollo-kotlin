@@ -21,6 +21,7 @@ internal fun apolloDownloadSchema(
     @GInternal schema: GInputFile,
     insecure: Boolean?,
     headers: Map<String, String>,
+    httpMethod: String?,
     logger: GLogger,
 ) {
   val extraHeaders = mapOf(
@@ -36,6 +37,7 @@ internal fun apolloDownloadSchema(
       schema = schema,
       insecure = insecure ?: false,
       headers = headers.toMap() + extraHeaders,
+      httpMethod = httpMethod ?: "POST",
   )
 
   logger.lifecycle("Apollo: schema downloaded to ${schema.absolutePath}")

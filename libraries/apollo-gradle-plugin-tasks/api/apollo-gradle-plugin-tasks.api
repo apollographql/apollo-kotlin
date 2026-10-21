@@ -11,11 +11,11 @@ public final class com/apollographql/apollo/gradle/task/ApolloComputeUsedCoordin
 public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint {
 	public static final field Companion Lcom/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/util/function/BiConsumer;)V
+	public static final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/lang/String;Ljava/util/function/BiConsumer;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloDownloadSchemaEntryPoint$Companion {
-	public final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/util/function/BiConsumer;)V
+	public final fun run (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/Boolean;Ljava/util/Map;Ljava/lang/String;Ljava/util/function/BiConsumer;)V
 }
 
 public final class com/apollographql/apollo/gradle/task/ApolloGenerateCodegenSchemaEntryPoint {

@@ -162,6 +162,16 @@ apollo {
 
 This creates a task named `download${ServiceName}ApolloSchemaFromIntrospection`.
 
+The Apollo Gradle plugin sends introspection queries with `POST` by default. If the server requires `GET` requests, set `httpMethod`:
+
+```kotlin
+introspection {
+  endpointUrl.set("https://your.domain/graphql/endpoint")
+  schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+  httpMethod.set("GET")
+}
+```
+
 If introspection is disabled and your team is using [GraphOS](https://studio.apollographql.com/), use the `registry {}` block
 instead:
 
