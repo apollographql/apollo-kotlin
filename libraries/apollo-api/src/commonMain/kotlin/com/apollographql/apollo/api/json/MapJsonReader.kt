@@ -197,7 +197,7 @@ constructor(
       is Double -> value.toString()
       is String -> value
       is JsonNumber -> value.value
-      else -> throw JsonDataException("Expected a String but got $value instead")
+      else -> throw JsonDataException("Expected a String but was ${peek()} at path ${getPathAsString()}")
     }.also {
       advanceIterator()
     }
