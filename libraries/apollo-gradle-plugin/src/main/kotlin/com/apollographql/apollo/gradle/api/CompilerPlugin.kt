@@ -4,6 +4,7 @@ import com.apollographql.apollo.annotations.ApolloDeprecatedSince
 
 @Deprecated("Use Service.pluginArgument() instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v5_0_0)
+@ApolloGradleDsl
 interface CompilerPlugin {
   /**
    * Adds the given argument to the [com.apollographql.apollo.compiler.ApolloCompilerPlugin].
