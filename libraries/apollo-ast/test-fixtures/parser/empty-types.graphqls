@@ -7,3 +7,5 @@ interface Node {}
 type Foo implements Node @deprecated {}
 
 input Filter {}
+
+union SearchResult

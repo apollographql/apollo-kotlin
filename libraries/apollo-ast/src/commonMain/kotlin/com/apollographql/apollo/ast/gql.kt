@@ -749,6 +749,8 @@ class GQLInputObjectTypeDefinition(
         inputFields.join(writer, separator = "\n")
         unindent()
         write("}\n")
+      } else {
+        write("\n")
       }
     }
   }
@@ -887,8 +889,10 @@ class GQLUnionTypeDefinition(
         write(" ")
         directives.join(writer)
       }
-      write(" = ")
-      memberTypes.join(writer, separator = "|")
+      if (memberTypes.isNotEmpty()) {
+        write(" = ")
+        memberTypes.join(writer, separator = "|")
+      }
       write("\n")
     }
   }
@@ -1194,6 +1198,8 @@ class GQLInputObjectTypeExtension(
         inputFields.join(writer, separator = "\n")
         unindent()
         write("}\n")
+      } else {
+        write("\n")
       }
     }
   }
@@ -1326,8 +1332,10 @@ class GQLUnionTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      write(" = ")
-      memberTypes.join(writer, separator = "|")
+      if (memberTypes.isNotEmpty()) {
+        write(" = ")
+        memberTypes.join(writer, separator = "|")
+      }
       write("\n")
     }
   }
