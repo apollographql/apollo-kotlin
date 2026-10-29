@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+# Version 4.4.4
+
+_2026-11-29_
+
+A patch version to fix Java codegen generating bad code when using custom scalars mapped to Long or Float. 
+
+## 👷‍♂️ All changes
+
+* [FIX] codegen: fix Java codegen generating bad code when using custom scalars mapped to Long or Float. (#7032)
+
 # Version 5.2.0
 
 Version 5.2.0 adds support for the new HTTP `QUERY` method and empty selection sets amongst other performance improvements and fixes.
@@ -11,7 +21,7 @@ Many thanks @AvikMakwana, @gregjotau and @AlexanderGH for their contributions to
 
 * [NEW] language: Support empty selection sets (#7028, #7015)
 * [NEW] runtime: Add support for QUERY (#7016)
-* [NEW] runtime: Allow custom JVM HTTP engines without OkHttp - #7018
+* [NEW] runtime: Allow custom JVM HTTP engines without OkHttp - (#7018)
 * [NEW] execution: Add exposeServiceCapabilities (#7026)
 * [NEW] execution: Introduce `PreparedRequest` and allow to execute fragments (#7022)
 * [FIX] Fix @catch handling of malformed response data (#7027)
