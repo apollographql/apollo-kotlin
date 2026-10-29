@@ -1,7 +1,9 @@
-# PRAGMA allowEmptyObjectsAndInterfaces
+# PRAGMA allowEmptyTypes
 
 type Query {}
 
 interface Node {}
 
 type Foo implements Node @deprecated {}
+
+input Filter {}

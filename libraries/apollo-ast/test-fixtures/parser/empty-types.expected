@@ -4,3 +4,5 @@ type Query
 interface Node
 
 type Foo implements Node @deprecated
+
+input Filter

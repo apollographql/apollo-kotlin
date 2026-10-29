@@ -1,0 +1,18 @@
+# PRAGMA allowEmptyTypes
+
+type Query {
+  issues(filter: IssueFilter = {}, nonNullFilter: IssueFilter!): [Issue!]!
+  search(by: SearchBy): String
+}
+
+input IssueFilter {}
+
+input WithEmptyField {
+  filter: IssueFilter! = {}
+}
+
+input SearchBy @oneOf {}
+
+type Issue {
+  title: String!
+}

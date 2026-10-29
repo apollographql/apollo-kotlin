@@ -1,0 +1,5 @@
+# See https://github.com/graphql/graphql-spec/pull/598#issuecomment-815439917
+# The parser is greedy: `{ alpha: beta }` is parsed as the fields of `Foo` and not as an anonymous operation.
+interface Foo
+
+{ alpha: beta }
