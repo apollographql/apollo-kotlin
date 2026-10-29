@@ -17,7 +17,7 @@ internal class Parser(
   private val allowServiceCapabilities = options.allowServiceCapabilities
   private val allowFragmentArguments = options.allowFragmentArguments
   private val allowEmptySelectionSets = options.allowEmptySelectionSets
-  private val allowEmptyObjectsAndInterfaces = options.allowEmptyObjectsAndInterfaces
+  private val allowEmptyTypes = options.allowEmptyTypes
 
   fun parseDocument(): GQLDocument {
     val start = token
@@ -104,7 +104,7 @@ internal class Parser(
     }
   }
 
-  private inline fun <reified OpenToken : Token, reified CloseToken : Token, T> parseListOrNull(
+  private inline fun <reified OpenToken : Token, reified CloseToken : Token, T> parseListOrEmpty(
       crossinline parseOne: () -> T,
   ): List<T> {
     if (!peek<OpenToken>()) {
@@ -323,7 +323,7 @@ internal class Parser(
   }
 
   private fun parseVariableDefinitions(): List<GQLVariableDefinition> {
-    return parseListOrNull<Token.LeftParenthesis, Token.RightParenthesis, GQLVariableDefinition> {
+    return parseListOrEmpty<Token.LeftParenthesis, Token.RightParenthesis, GQLVariableDefinition> {
       parseVariableDefinition()
     }
   }
@@ -521,8 +521,8 @@ internal class Parser(
   }
 
   private fun parseFieldDefinitions(): List<GQLFieldDefinition> {
-    return if (allowEmptyObjectsAndInterfaces) {
-      parseListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition)
+    return if (allowEmptyTypes) {
+      parseListOrEmpty<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition)
     } else {
       parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLFieldDefinition>(::parseFieldDefinition).orEmpty()
     }
@@ -689,7 +689,11 @@ internal class Parser(
   }
 
   private fun parseInputFieldDefinitions(): List<GQLInputValueDefinition> {
-    return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLInputValueDefinition>(::parseInputValueDefinition).orEmpty()
+    return if (allowEmptyTypes) {
+      parseListOrEmpty<Token.LeftBrace, Token.RightBrace, GQLInputValueDefinition>(::parseInputValueDefinition)
+    } else {
+      parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLInputValueDefinition>(::parseInputValueDefinition).orEmpty()
+    }
   }
 
   private fun parseEnumTypeDefinition(start: Token): GQLEnumTypeDefinition {

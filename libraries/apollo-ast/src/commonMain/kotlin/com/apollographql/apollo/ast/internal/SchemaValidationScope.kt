@@ -976,14 +976,13 @@ private fun ValidationScope.validateInputObjects() {
 
   val defaultValueTraversalState = DefaultValueTraversalState()
   inputObjects.forEach { o ->
-    if (o.inputFields.isEmpty()) {
-      registerIssue("Input object must specify one or more input fields", o.sourceLocation)
-    }
-
     validateDirectivesInConstContext(o.directives, o)
     validateInputObjectDefaultValue(o, defaultValueTraversalState)
 
     val isOneOfInputObject = o.directives.findOneOf()
+    if (isOneOfInputObject && o.inputFields.isEmpty()) {
+      registerIssue("OneOf input object '${o.name}' must specify one or more input fields", o.sourceLocation)
+    }
     o.inputFields.forEach { gqlInputValueDefinition ->
       if (isOneOfInputObject) {
         if (gqlInputValueDefinition.type is GQLNonNullType) {

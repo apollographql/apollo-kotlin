@@ -46,3 +46,7 @@ extend input Params @stuff {
 }
 
 extend scalar Json @stuff
+
+extend union Any @stuff
+
+extend input Params @stuff
