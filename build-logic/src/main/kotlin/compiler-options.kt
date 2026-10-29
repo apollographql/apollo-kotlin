@@ -19,6 +19,9 @@ fun KotlinCommonCompilerOptions.configure(
   // Suppress "Language version 1.9 is deprecated and its support will be removed in a future version of Kotlin"
   freeCompilerArgs.add("-Xsuppress-version-warnings")
 
+  // Prints internal diagnostic names alongside warnings. This is useful for identifying the DIAGNOSTIC_NAME configured for the -Xwarning-level option.
+  freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+
   optIns.forEach {
     freeCompilerArgs.add("-opt-in=$it")
   }
