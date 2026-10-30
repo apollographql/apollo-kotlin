@@ -17,8 +17,10 @@ import com.apollographql.apollo.gradle.internal.BuildDirLayout.outputDir
 import com.apollographql.apollo.gradle.task.ApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateDataBuildersSourcesTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesFromIrTask
+import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesFromIrWithUnusedFragmentsTask
 import com.apollographql.apollo.gradle.task.ApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloComputeUsedCoordinatesTask
+import com.apollographql.apollo.gradle.task.registerApolloComputeUnusedFragmentsTask
 import com.apollographql.apollo.gradle.task.registerApolloDownloadSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCodegenSchemaTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateCompilationUnitModelTask
@@ -26,7 +28,7 @@ import com.apollographql.apollo.gradle.task.registerApolloGenerateDataBuildersSo
 import com.apollographql.apollo.gradle.task.registerApolloGenerateIrOperationsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateOptionsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateProjectModelTask
-import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrTask
+import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesFromIrWithUnusedFragmentsTask
 import com.apollographql.apollo.gradle.task.registerApolloGenerateSourcesTask
 import com.apollographql.apollo.gradle.task.registerApolloRegisterOperationsTask
 import gratatouille.wiring.capitalizeFirstLetter
@@ -636,7 +638,20 @@ abstract class DefaultApolloExtension(
           taskGroup = TASK_GROUP,
           irOperations = project.files(downstreamIr.resolvable),
       )
-      val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrTask(
+      val downstreamFragmentUsageIsComplete = downstreamIr.resolvable.flatMap { it.elements }.zip(
+          service.generateApolloMetadata.orElse(false)
+      ) { downstreamFiles, exportsMetadata ->
+        !exportsMetadata || downstreamFiles.isNotEmpty()
+      }
+      val unusedFragmentsTask = project.registerApolloComputeUnusedFragmentsTask(
+          taskName = ModelNames.computeUnusedFragments(service),
+          taskGroup = TASK_GROUP,
+          taskDescription = "Find unused fragments for service '${service.name}'",
+          irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
+          downstreamIrOperations = project.files(downstreamIr.resolvable),
+          downstreamFragmentUsageIsComplete = downstreamFragmentUsageIsComplete,
+      )
+      val sourcesFromIrTaskProvider = project.registerApolloGenerateSourcesFromIrWithUnusedFragmentsTask(
           taskName = ModelNames.generateApolloSources(service),
           taskGroup = TASK_GROUP,
           taskDescription = "Generate Apollo models for service '${service.name}'",
@@ -648,6 +663,9 @@ abstract class DefaultApolloExtension(
           irOperations = irOperationsTaskProvider.flatMap { it.irOperationsFile },
           upstreamMetadata = project.files(codegenMetadata.resolvable),
           codegenOptions = optionsTaskProvider.flatMap { it.codegenOptions },
+          unusedFragments = unusedFragmentsTask.flatMap { it.outputFile },
+          graphqlFiles = service.graphqlSourceDirectorySet,
+          irOptionsFile = optionsTaskProvider.flatMap { it.irOptionsFile },
           outputDirectory = outputDir(project, service),
           operationManifest = BuildDirLayout.operationManifest(project, service)
       )
@@ -994,6 +1012,7 @@ private fun Task.outputDirectory(): DirectoryProperty {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.outputDirectory
     is ApolloGenerateSourcesFromIrTask -> this.outputDirectory
+    is ApolloGenerateSourcesFromIrWithUnusedFragmentsTask -> this.outputDirectory
     else -> error("Unexpected task $this")
   }
 }
@@ -1002,6 +1021,7 @@ private fun Task.operationManifest(): Provider<RegularFile> {
   return when (this) {
     is ApolloGenerateSourcesTask -> this.operationManifest
     is ApolloGenerateSourcesFromIrTask -> this.operationManifest
+    is ApolloGenerateSourcesFromIrWithUnusedFragmentsTask -> this.operationManifest
     else -> error("Unexpected task $this")
   }
 }

@@ -210,8 +210,12 @@ public final class com/apollographql/apollo/compiler/EntryPoints {
 	public final fun buildCodegenSchema (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildDataBuilders (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;)V
+	public final fun buildIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Z)V
+	public static synthetic fun buildIr$default (Lcom/apollographql/apollo/compiler/EntryPoints;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;ZILjava/lang/Object;)V
 	public final fun buildSources (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
 	public final fun buildSourcesFromIr (Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;Ljava/util/List;Ljava/util/List;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)V
+	public final fun checkUnusedFragments (Ljava/io/File;Ljava/util/List;Ljava/io/File;Lcom/apollographql/apollo/compiler/ApolloCompiler$Logger;)V
+	public final fun computeUnusedFragments (Ljava/io/File;Ljava/util/List;ZLjava/io/File;)V
 }
 
 public final class com/apollographql/apollo/compiler/EntrypointsKt {
