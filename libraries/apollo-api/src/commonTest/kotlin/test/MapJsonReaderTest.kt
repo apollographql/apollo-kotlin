@@ -3,8 +3,13 @@ package test
 import com.apollographql.apollo.api.json.JsonNumber
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.MapJsonReader
+import com.apollographql.apollo.api.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo.api.json.jsonReader
+import com.apollographql.apollo.exception.JsonDataException
+import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class MapJsonReaderTest {
@@ -97,5 +102,22 @@ class MapJsonReaderTest {
       assertEquals("3", nextString())
       endObject()
     }
+  }
+
+  @Test
+  fun nextStringOnNullIncludesPath() {
+    val jsonReader = Buffer().writeUtf8("""{"data": {"user": {"id": null}}}""").jsonReader()
+    jsonReader.beginObject()
+    assertEquals("data", jsonReader.nextName())
+    jsonReader.beginObject()
+    assertEquals("user", jsonReader.nextName())
+
+    val bufferedReader = jsonReader.buffer()
+    bufferedReader.beginObject()
+    assertEquals("id", bufferedReader.nextName())
+    val exception = assertFailsWith<JsonDataException> {
+      bufferedReader.nextString()
+    }
+    assertEquals("Expected a String but was NULL at path data.user.id", exception.message)
   }
 }
