@@ -706,7 +706,7 @@ abstract class DefaultApolloExtension(
        */
       val outgoingVariantsConnection = object : Service.OutgoingVariantsConnection {
         override fun addToSoftwareComponent(name: String) {
-          addToSoftwareComponent(project.components.getByName(name))
+          addToSoftwareComponent(this@DefaultApolloExtension.project.components.getByName(name))
         }
 
         override fun addToSoftwareComponent(softwareComponent: SoftwareComponent) {
