@@ -16,8 +16,6 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -74,15 +72,8 @@ fun Project.apolloLibrary(
       kotlinTarget = kotlinCompilerOptions.version.version + ".0",
       bcv = Bcv(
           false,
-      ) {
-        it as AbiValidationVariantSpec
-        @OptIn(ExperimentalAbiValidation::class)
-        it.filters {
-          it.excluded {
-            byNames.add("**.internal.**")
-          }
-        }
-      },
+          listOf("**.internal.**")
+      ),
       versionPackageName = versionPackageName,
       publishing = if (description != null) {
         Publishing(
