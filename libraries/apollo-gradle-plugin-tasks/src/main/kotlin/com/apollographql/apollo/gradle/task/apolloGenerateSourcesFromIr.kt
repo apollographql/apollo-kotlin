@@ -51,4 +51,44 @@ internal fun apolloGenerateSourcesFromIr(
   )
 }
 
+@GTask
+internal fun apolloGenerateSourcesFromIrWithUnusedFragments(
+    logger: GLogger,
+    arguments: Map<String, GAny?>,
+    warnIfNotFound: Boolean,
+    codegenSchemas: GInputFiles,
+    irOperations: GInputFile,
+    downstreamUsedCoordinates: GInputFile,
+    upstreamMetadata: GInputFiles,
+    codegenOptions: GInputFile,
+    unusedFragments: GInputFile,
+    graphqlFiles: GInputFiles,
+    irOptionsFile: GInputFile,
+    @GManuallyWired
+    operationManifest: GOutputFile,
+    @GManuallyWired
+    outputDirectory: GOutputDirectory,
+    metadataOutput: GOutputFile,
+) {
+  EntryPoints.checkUnusedFragments(
+      unusedFragments = unusedFragments,
+      graphqlFiles = graphqlFiles.toInputFiles(),
+      irOptionsFile = irOptionsFile,
+      logger = logger.asLogger(),
+  )
+  apolloGenerateSourcesFromIr(
+      logger = logger,
+      arguments = arguments,
+      warnIfNotFound = warnIfNotFound,
+      codegenSchemas = codegenSchemas,
+      irOperations = irOperations,
+      downstreamUsedCoordinates = downstreamUsedCoordinates,
+      upstreamMetadata = upstreamMetadata,
+      codegenOptions = codegenOptions,
+      operationManifest = operationManifest,
+      outputDirectory = outputDirectory,
+      metadataOutput = metadataOutput,
+  )
+}
+
 
