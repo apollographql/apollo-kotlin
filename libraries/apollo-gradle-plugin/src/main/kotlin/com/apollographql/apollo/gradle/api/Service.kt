@@ -678,6 +678,8 @@ interface Service {
    * `androidx.annotation.NonNull` if not.
    * - `jsr305Annotations`: Fields will be generated with JSR 305's `javax.annotation.Nullable` annotation if nullable, or
    * `javax.annotation.Nonnull` if not.
+   * - `jspecifyAnnotations`: Fields will be generated with JSpecify's `org.jspecify.annotations.Nullable` annotation if nullable, or
+   * `org.jspecify.annotations.NonNull` if not.
    *
    * Default: `none`
    */
