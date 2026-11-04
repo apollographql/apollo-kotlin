@@ -118,7 +118,7 @@ enum class JavaNullable {
         "jetbrainsAnnotations" -> JETBRAINS_ANNOTATIONS
         "androidAnnotations" -> ANDROID_ANNOTATIONS
         "jsr305Annotations" -> JSR_305_ANNOTATIONS
-        "jspecifyAnnotations", "jspecifyOptional" -> JSPECIFY_ANNOTATIONS
+        "jspecifyAnnotations" -> JSPECIFY_ANNOTATIONS
         else -> null
       }
     }
