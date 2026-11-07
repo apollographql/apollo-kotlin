@@ -102,8 +102,8 @@ enum class JavaNullable {
   JSR_305_ANNOTATIONS,
 
   /**
-   * Fields will be generated with JSpecify's `org.jspecify.annotations.Nullable` annotation if nullable, or
-   * `org.jspecify.annotations.NonNull` if not.
+   * Fields will be generated with JSpecify's `org.jspecify.annotations.Nullable` annotation if nullable.
+   * Generated types are annotated with `org.jspecify.annotations.NullMarked`.
    */
   JSPECIFY_ANNOTATIONS,
   ;

@@ -10,9 +10,12 @@ import com.apollographql.apollo.api.json.JsonReader;
 import com.apollographql.apollo.api.json.MapJsonWriter;
 import okio.Buffer;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +193,26 @@ public class JSpecifyAnnotationsTest {
         ),
         actualData
     );
+  }
+
+  @Test
+  public void annotationsOnGeneratedTypesAndFields() throws Exception {
+    // Top-level generated types must be annotated with @NullMarked
+    Assert.assertTrue(MyQuery.class.isAnnotationPresent(NullMarked.class));
+    Assert.assertTrue(MyInput.class.isAnnotationPresent(NullMarked.class));
+    Assert.assertTrue(FindUserInput.class.isAnnotationPresent(NullMarked.class));
+
+    // JSpecify annotations are TYPE_USE annotations placed on the type, not declaration annotations on the field
+    Field nullableIntField = MyQuery.Data.class.getField("nullableInt");
+    Assert.assertEquals(0, nullableIntField.getAnnotations().length);
+    Assert.assertTrue(nullableIntField.getAnnotatedType().isAnnotationPresent(Nullable.class));
+    Assert.assertFalse(nullableIntField.getAnnotatedType().isAnnotationPresent(NonNull.class));
+
+    // Non-nullable fields do not have @NonNull because the enclosing type is @NullMarked
+    Field nonNullableIntField = MyQuery.Data.class.getField("nonNullableInt");
+    Assert.assertEquals(0, nonNullableIntField.getAnnotations().length);
+    Assert.assertFalse(nonNullableIntField.getAnnotatedType().isAnnotationPresent(Nullable.class));
+    Assert.assertFalse(nonNullableIntField.getAnnotatedType().isAnnotationPresent(NonNull.class));
   }
 
   /**

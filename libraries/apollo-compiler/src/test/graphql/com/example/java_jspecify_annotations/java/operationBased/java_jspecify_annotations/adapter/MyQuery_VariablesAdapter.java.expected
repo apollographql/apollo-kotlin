@@ -17,7 +17,9 @@ import com.example.java_jspecify_annotations.MyQuery;
 import com.example.java_jspecify_annotations.type.MyInput;
 import com.example.java_jspecify_annotations.type.adapter.MyInput_InputAdapter;
 import java.io.IOException;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum MyQuery_VariablesAdapter {
   INSTANCE;
 

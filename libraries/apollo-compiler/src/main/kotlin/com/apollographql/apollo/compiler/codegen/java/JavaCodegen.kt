@@ -100,9 +100,17 @@ private fun buildOutput(
       .map {
         val codegenJavaFile = it.build()
 
+        val typeSpec = if (nullableFieldStyle == JavaNullable.JSPECIFY_ANNOTATIONS) {
+          codegenJavaFile.typeSpec.toBuilder()
+              .addAnnotation(JavaClassNames.JSpecifyNullMarked)
+              .build()
+        } else {
+          codegenJavaFile.typeSpec
+        }
+
         JavaFile.builder(
             codegenJavaFile.packageName,
-            codegenJavaFile.typeSpec
+            typeSpec
         ).addFileComment(
             """
                 

@@ -124,7 +124,7 @@ internal object JavaClassNames {
   val Jsr305Nullable = ClassName.get("javax.annotation", "Nullable")
   val Jsr305NonNull = ClassName.get("javax.annotation", "Nonnull")
   val JSpecifyNullable = ClassName.get("org.jspecify.annotations", "Nullable")
-  val JSpecifyNonNull = ClassName.get("org.jspecify.annotations", "NonNull")
+  val JSpecifyNullMarked = ClassName.get("org.jspecify.annotations", "NullMarked")
 
   val GuavaOptional = ClassName.get("com.google.common.base", "Optional")
 

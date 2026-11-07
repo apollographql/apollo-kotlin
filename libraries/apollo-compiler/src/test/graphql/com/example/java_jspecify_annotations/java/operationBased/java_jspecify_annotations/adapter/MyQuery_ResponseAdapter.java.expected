@@ -22,9 +22,10 @@ import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.List;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class MyQuery_ResponseAdapter {
   public enum Data implements Adapter<MyQuery.Data> {
     INSTANCE;
@@ -40,7 +41,7 @@ public class MyQuery_ResponseAdapter {
       MyQuery.NullableMyType _nullableMyType = null;
       MyQuery.NonNullableMyType _nonNullableMyType = null;
       List<@Nullable String> _nullableListOfNullableString = null;
-      List<@NonNull String> _nullableListOfNonNullableString = null;
+      List<String> _nullableListOfNonNullableString = null;
 
       loop:
       while(true) {

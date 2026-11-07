@@ -6,10 +6,12 @@
 package com.example.java_jspecify_annotations.type;
 
 import com.apollographql.apollo.api.CustomScalarType;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
  */
+@NullMarked
 public class GraphQLString {
   public static CustomScalarType type = new CustomScalarType("String", "java.lang.String");
 }

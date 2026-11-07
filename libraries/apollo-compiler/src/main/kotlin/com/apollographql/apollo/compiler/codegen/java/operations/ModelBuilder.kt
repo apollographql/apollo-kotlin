@@ -56,16 +56,16 @@ internal class ModelBuilder(
 
   fun IrModel.typeSpec(): TypeSpec {
     val fields: List<FieldSpec> = properties.map {
-      val irType = context.resolver.resolveIrType(it.info.type)
+      val (fieldType, fieldAnnotations) = context.resolver.resolveFieldTypeAndAnnotations(it.info.type)
       FieldSpec.builder(
-          irType.withoutAnnotations(),
+          fieldType,
           context.layout.javaPropertyName(it.info.responseName),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
             addAnnotation(JavaClassNames.Override)
           }
-          .addAnnotations(irType.annotations)
+          .addAnnotations(fieldAnnotations)
           .maybeAddDescription(it.info.description)
           .maybeAddDeprecation(it.info.deprecationReason)
           .build()

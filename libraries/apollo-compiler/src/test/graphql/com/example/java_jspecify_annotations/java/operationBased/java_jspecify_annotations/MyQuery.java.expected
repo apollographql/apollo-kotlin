@@ -24,9 +24,10 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.List;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class MyQuery implements Query<MyQuery.Data> {
   public static ExecutableDefinition<Data> definition = new Definition();
 
@@ -58,22 +59,17 @@ public class MyQuery implements Query<MyQuery.Data> {
 
   public static final String OPERATION_NAME = "MyQuery";
 
-  @NonNull
   public final Optional<@Nullable Integer> nullableInt;
 
   public final int nonNullableInt;
 
-  @NonNull
   public final Optional<Integer> nonNullableIntWithDefault;
 
-  @NonNull
   public final Optional<@Nullable MyInput> nullableInput;
 
-  @NonNull
   public final MyInput nonNullableInput;
 
-  @NonNull
-  public final Optional<@NonNull MyInput> nonNullableInputWithDefault;
+  public final Optional<MyInput> nonNullableInputWithDefault;
 
   private transient volatile int $hashCode;
 
@@ -81,10 +77,9 @@ public class MyQuery implements Query<MyQuery.Data> {
 
   private transient volatile String $toString;
 
-  public MyQuery(@NonNull Optional<@Nullable Integer> nullableInt, int nonNullableInt,
-      @NonNull Optional<Integer> nonNullableIntWithDefault,
-      @NonNull Optional<@Nullable MyInput> nullableInput, @NonNull MyInput nonNullableInput,
-      @NonNull Optional<@NonNull MyInput> nonNullableInputWithDefault) {
+  public MyQuery(Optional<@Nullable Integer> nullableInt, int nonNullableInt,
+      Optional<Integer> nonNullableIntWithDefault, Optional<@Nullable MyInput> nullableInput,
+      MyInput nonNullableInput, Optional<MyInput> nonNullableInputWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;
@@ -199,7 +194,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     private MyInput nonNullableInput;
 
-    private Optional<@NonNull MyInput> nonNullableInputWithDefault = Optional.absent();
+    private Optional<MyInput> nonNullableInputWithDefault = Optional.absent();
 
     Builder() {
     }
@@ -224,12 +219,12 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInput(@NonNull MyInput nonNullableInput) {
+    public Builder nonNullableInput(MyInput nonNullableInput) {
       this.nonNullableInput = nonNullableInput;
       return this;
     }
 
-    public Builder nonNullableInputWithDefault(@NonNull MyInput nonNullableInputWithDefault) {
+    public Builder nonNullableInputWithDefault(MyInput nonNullableInputWithDefault) {
       this.nonNullableInputWithDefault = Optional.present(nonNullableInputWithDefault);
       return this;
     }
@@ -257,22 +252,17 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
-    public Integer nullableInt;
+    public @Nullable Integer nullableInt;
 
     public int nonNullableInt;
 
-    @Nullable
-    public NullableMyType nullableMyType;
+    public @Nullable NullableMyType nullableMyType;
 
-    @NonNull
     public NonNullableMyType nonNullableMyType;
 
-    @Nullable
-    public List<@Nullable String> nullableListOfNullableString;
+    public @Nullable List<@Nullable String> nullableListOfNullableString;
 
-    @Nullable
-    public List<@NonNull String> nullableListOfNonNullableString;
+    public @Nullable List<String> nullableListOfNonNullableString;
 
     private transient volatile int $hashCode;
 
@@ -281,9 +271,9 @@ public class MyQuery implements Query<MyQuery.Data> {
     private transient volatile String $toString;
 
     public Data(@Nullable Integer nullableInt, int nonNullableInt,
-        @Nullable NullableMyType nullableMyType, @NonNull NonNullableMyType nonNullableMyType,
+        @Nullable NullableMyType nullableMyType, NonNullableMyType nonNullableMyType,
         @Nullable List<@Nullable String> nullableListOfNullableString,
-        @Nullable List<@NonNull String> nullableListOfNonNullableString) {
+        @Nullable List<String> nullableListOfNonNullableString) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
       this.nullableMyType = nullableMyType;
@@ -363,17 +353,17 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     @SuppressWarnings("unchecked")
     public static final class Builder {
-      private Integer nullableInt;
+      private @Nullable Integer nullableInt;
 
       private int nonNullableInt;
 
-      private NullableMyType nullableMyType;
+      private @Nullable NullableMyType nullableMyType;
 
       private NonNullableMyType nonNullableMyType;
 
-      private List<@Nullable String> nullableListOfNullableString;
+      private @Nullable List<@Nullable String> nullableListOfNullableString;
 
-      private List<@NonNull String> nullableListOfNonNullableString;
+      private @Nullable List<String> nullableListOfNonNullableString;
 
       Builder() {
       }
@@ -393,7 +383,7 @@ public class MyQuery implements Query<MyQuery.Data> {
         return this;
       }
 
-      public Builder nonNullableMyType(@NonNull NonNullableMyType nonNullableMyType) {
+      public Builder nonNullableMyType(NonNullableMyType nonNullableMyType) {
         this.nonNullableMyType = nonNullableMyType;
         return this;
       }
@@ -405,7 +395,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Builder nullableListOfNonNullableString(
-          @Nullable List<@NonNull String> nullableListOfNonNullableString) {
+          @Nullable List<String> nullableListOfNonNullableString) {
         this.nullableListOfNonNullableString = nullableListOfNonNullableString;
         return this;
       }
@@ -417,8 +407,7 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static class NullableMyType {
-    @Nullable
-    public Integer nullableInt;
+    public @Nullable Integer nullableInt;
 
     public int nonNullableInt;
 
@@ -484,7 +473,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     @SuppressWarnings("unchecked")
     public static final class Builder {
-      private Integer nullableInt;
+      private @Nullable Integer nullableInt;
 
       private int nonNullableInt;
 
@@ -508,8 +497,7 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static class NonNullableMyType {
-    @Nullable
-    public Integer nullableInt;
+    public @Nullable Integer nullableInt;
 
     public int nonNullableInt;
 
@@ -575,7 +563,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     @SuppressWarnings("unchecked")
     public static final class Builder {
-      private Integer nullableInt;
+      private @Nullable Integer nullableInt;
 
       private int nonNullableInt;
 

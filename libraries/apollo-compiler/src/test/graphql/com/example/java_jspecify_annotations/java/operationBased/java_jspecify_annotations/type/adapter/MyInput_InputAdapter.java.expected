@@ -16,7 +16,9 @@ import com.example.java_jspecify_annotations.type.MyInput;
 import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public enum MyInput_InputAdapter implements Adapter<MyInput> {
   INSTANCE;
 
