@@ -75,10 +75,8 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        val (fieldType, fieldAnnotations) = context.resolver.resolveFieldTypeAndAnnotations(it.type)
-        FieldSpec.builder(fieldType, context.layout.javaPropertyName(it.name))
+        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.javaPropertyName(it.name))
             .maybeAddDescription(it.description)
-            .addAnnotations(fieldAnnotations)
             .build()
       }
       return addMethod(BuilderBuilder.builderFactoryMethod())
