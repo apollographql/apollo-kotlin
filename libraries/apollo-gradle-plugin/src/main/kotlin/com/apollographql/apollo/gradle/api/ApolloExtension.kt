@@ -6,6 +6,7 @@ import org.gradle.api.provider.Property
 /**
  * The entry point for configuring the apollo plugin.
  */
+@ApolloGradleDsl
 interface ApolloExtension {
 
   /**
