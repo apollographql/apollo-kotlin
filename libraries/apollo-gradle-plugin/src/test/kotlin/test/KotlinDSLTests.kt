@@ -61,8 +61,7 @@ class KotlinDSLTests {
     val apolloConfiguration = """
       apollo {
         service("service1") {
-          service("service2") {
-          }
+          generateSourcesDuringGradleSync.set(true)
         }
       }
     """.trimIndent()
@@ -84,8 +83,7 @@ class KotlinDSLTests {
     val apolloConfiguration = """
       apollo {
         service("service1") {
-          this@apollo.service("service2") {
-          }
+          this@apollo.generateSourcesDuringGradleSync.set(true)
         }
       }
     """.trimIndent()
