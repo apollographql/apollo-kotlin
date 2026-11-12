@@ -259,7 +259,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     val plugin = object: CompilerPlugin {
       @Suppress("OVERRIDE_DEPRECATION")
       override fun argument(name: String, value: Any?) {
-        pluginArgument(name, value)
+        this@DefaultService.pluginArgument(name, value)
       }
     }
     block.execute(plugin)
