@@ -15,6 +15,7 @@ import com.apollographql.apollo.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 internal class InputObjectBuilder(
     val context: KotlinSchemaContext,
@@ -68,5 +69,9 @@ internal class InputObjectBuilder(
 }
 
 private fun List<NamedType>.oneOfInitializerBlock(context: KotlinSchemaContext): CodeBlock {
-  return CodeBlock.of("%M(${joinToString { context.layout.propertyName(it.graphQlName) }})\n", KotlinSymbols.assertOneOf)
+  return CodeBlock.of(
+      "%M(%L)\n",
+      KotlinSymbols.assertOneOf,
+      map { CodeBlock.of("%N", context.layout.propertyName(it.graphQlName)) }.joinToCode(),
+  )
 }

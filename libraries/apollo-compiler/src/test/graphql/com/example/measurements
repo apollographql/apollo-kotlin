@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  201511
-aggregate-kotlin-responseBased                                                                  63432
+aggregate-all                                                                                  201535
+aggregate-kotlin-responseBased                                                                  63437
 aggregate-kotlin-operationBased                                                                 41092
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                   96987
+aggregate-java-operationBased                                                                   97006
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5747
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3409
@@ -77,9 +77,9 @@ kotlin-responseBased-simple_fragment_with_inline_fragments                      
 kotlin-operationBased-root_query_fragment_with_nested_fragments                                   992
 java-operationBased-decapitalized_fields                                                          953
 kotlin-operationBased-named_fragment_delegate                                                     946
+java-operationBased-input_object_oneof                                                            939
 java-operationBased-simple_union                                                                  930
 java-operationBased-fragments_same_type_condition                                                 929
-java-operationBased-input_object_oneof                                                            920
 java-operationBased-used_arguments                                                                916
 kotlin-responseBased-mutation_create_review_semantic_naming                                       915
 kotlin-responseBased-operationbased2_ex8                                                          911
@@ -196,8 +196,8 @@ java-operationBased-antlr_tokens                                                
 kotlin-responseBased-suppressed_warnings                                                          490
 kotlin-responseBased-path_vs_flat_accessors                                                       489
 kotlin-responseBased-typename_always_first                                                        486
+kotlin-responseBased-input_object_oneof                                                           484
 kotlin-operationBased-interface_on_interface                                                      481
-kotlin-responseBased-input_object_oneof                                                           479
 kotlin-responseBased-root_query_fragment                                                          477
 kotlin-operationBased-operationbased2_ex7                                                         473
 kotlin-operationBased-fragment_with_multiple_fieldsets                                            471

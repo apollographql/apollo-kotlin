@@ -14,8 +14,9 @@ public data class FindUserInput(
   public val name: Optional<String?> = Optional.Absent,
   public val identity: Optional<FindUserBySocialNetworkInput?> = Optional.Absent,
   public val friends: Optional<FindUserByFriendInput?> = Optional.Absent,
+  public val `package`: Optional<String?> = Optional.Absent,
 ) {
   init {
-    assertOneOf(email, name, identity, friends)
+    assertOneOf(email, name, identity, friends, `package`)
   }
 }

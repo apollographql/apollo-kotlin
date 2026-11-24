@@ -49,5 +49,9 @@ public enum FindUserInput_InputAdapter implements Adapter<FindUserInput> {
       writer.name("friends");
       new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<FindUserByFriendInput>(FindUserByFriendInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.friends);
     }
+    if (value.package_ instanceof Optional.Present) {
+      writer.name("package");
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.package_);
+    }
   }
 }
