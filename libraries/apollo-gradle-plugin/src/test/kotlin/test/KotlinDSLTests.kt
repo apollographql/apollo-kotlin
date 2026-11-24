@@ -55,4 +55,41 @@ class KotlinDSLTests {
       Assert.assertTrue(dir.generatedSource("com/starwars/DroidDetails.kt").isFile)
     }
   }
+
+  @Test
+  fun `nested service block cannot access outer dsl scope implicitly`() {
+    val apolloConfiguration = """
+      apollo {
+        service("service1") {
+          generateSourcesDuringGradleSync.set(true)
+        }
+      }
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) { dir ->
+      var exception: Exception? = null
+      try {
+        TestUtils.executeGradle(dir)
+      } catch (e: UnexpectedBuildFailure) {
+        exception = e
+        Truth.assertThat(e.message).contains("implicit receiver")
+      }
+      Assert.assertNotNull(exception)
+    }
+  }
+
+  @Test
+  fun `nested service block can access outer dsl scope with explicit receiver`() {
+    val apolloConfiguration = """
+      apollo {
+        service("service1") {
+          this@apollo.generateSourcesDuringGradleSync.set(true)
+        }
+      }
+    """.trimIndent()
+
+    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) { dir ->
+      TestUtils.executeGradle(dir)
+    }
+  }
 }

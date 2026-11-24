@@ -20,7 +20,6 @@ apollo {
 
     outgoingVariantsConnection {
       addToSoftwareComponent("java")
-      generateApolloMetadata.set(true)
     }
   }
   service("service2") {
@@ -30,7 +29,6 @@ apollo {
 
     outgoingVariantsConnection {
       addToSoftwareComponent("java")
-      generateApolloMetadata.set(true)
     }
   }
 }

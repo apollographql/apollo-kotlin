@@ -9,6 +9,7 @@ import org.gradle.api.provider.Property
  *
  * Use this to register a `download${ServiceName}ApolloSchemaFromRegistry` task
  */
+@ApolloGradleDsl
 interface Registry {
   /**
    * The Apollo key

@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.api
 
 import org.gradle.api.provider.Property
 
+@ApolloGradleDsl
 interface RegisterOperationsConfig {
   val listId: Property<String>
 
