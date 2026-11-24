@@ -733,7 +733,11 @@ internal class Parser(
   }
 
   private fun parseEnumValueDefinitions(): List<GQLEnumValueDefinition> {
-    return parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLEnumValueDefinition>(::parseEnumValueDefinition).orEmpty()
+    return if (allowEmptyTypes) {
+      parseListOrEmpty<Token.LeftBrace, Token.RightBrace, GQLEnumValueDefinition>(::parseEnumValueDefinition)
+    } else {
+      parseNonEmptyListOrNull<Token.LeftBrace, Token.RightBrace, GQLEnumValueDefinition>(::parseEnumValueDefinition).orEmpty()
+    }
   }
 
   private fun parseEnumValueDefinition(): GQLEnumValueDefinition {

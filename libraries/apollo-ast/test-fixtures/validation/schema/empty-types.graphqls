@@ -1,0 +1,36 @@
+# PRAGMA allowEmptyTypes
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  issues(filter: IssueFilter = {}, nonNullFilter: IssueFilter!): [Issue!]!
+  search(by: SearchBy): String
+  searchByState(by: State): String
+  searchResult: SearchResult
+  node(id: ID!): Node
+}
+
+interface Node {}
+
+type Issue {}
+
+input IssueFilter {}
+
+input WithEmptyField {
+  # valid default value
+  filter: IssueFilter! = {}
+}
+
+union SearchResult
+
+enum State
+
+# invalid
+input SearchBy @oneOf {}
+
+# invalid
+type Mutation {}
+
