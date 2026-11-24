@@ -1,11 +1,16 @@
 # PRAGMA allowEmptyTypes
 
-type Query {}
-
+interface Node
 interface Node {}
 
-type Foo implements Node @deprecated {}
+type Foo
+type Foo {}
 
+input Filter
 input Filter {}
 
+enum Direction
+enum Direction {}
+
 union SearchResult
+

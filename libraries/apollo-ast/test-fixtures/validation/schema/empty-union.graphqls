@@ -1,5 +1,0 @@
-type Query {
-  search: SearchResult
-}
-
-union SearchResult

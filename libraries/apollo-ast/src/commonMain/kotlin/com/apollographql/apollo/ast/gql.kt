@@ -839,12 +839,16 @@ class GQLEnumTypeDefinition(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
-      write("{\n")
-      indent()
-      enumValues.join(writer, separator = "\n")
-      unindent()
-      write("}\n")
+      if (enumValues.isNotEmpty()) {
+        write(" ")
+        write("{\n")
+        indent()
+        enumValues.join(writer, separator = "\n")
+        unindent()
+        write("}\n")
+      } else {
+        write("\n")
+      }
     }
   }
 
@@ -1088,13 +1092,15 @@ class GQLEnumTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      write(" ")
       if (enumValues.isNotEmpty()) {
+        write(" ")
         write("{\n")
         indent()
         enumValues.join(writer, separator = "\n")
         unindent()
         write("}\n")
+      } else {
+        write("\n")
       }
     }
   }

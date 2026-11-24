@@ -148,7 +148,7 @@ class ParserOptions private constructor(
     }
 
     /**
-     * Whether to allow empty object, interface and input object type definitions, as in `type Query {}`, `interface Node {}` or `input Filter {}`.
+     * Whether to allow empty types (objects, interfaces, input objects, enums, unions)
      *
      * Default: false
      */
