@@ -21,6 +21,8 @@ public class FindUserInput {
 
   public final Optional<FindUserByFriendInput> friends;
 
+  public final Optional<String> package_;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
@@ -28,12 +30,14 @@ public class FindUserInput {
   private transient volatile String $toString;
 
   public FindUserInput(Optional<String> email, Optional<String> name,
-      Optional<FindUserBySocialNetworkInput> identity, Optional<FindUserByFriendInput> friends) {
+      Optional<FindUserBySocialNetworkInput> identity, Optional<FindUserByFriendInput> friends,
+      Optional<String> package_) {
     this.email = email;
     this.name = name;
     this.identity = identity;
     this.friends = friends;
-    Assertions.assertOneOf(email, name, identity, friends);
+    this.package_ = package_;
+    Assertions.assertOneOf(email, name, identity, friends, package_);
   }
 
   @Override
@@ -46,7 +50,8 @@ public class FindUserInput {
       return ((this.email == null) ? (that.email == null) : this.email.equals(that.email))
        &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        &&((this.identity == null) ? (that.identity == null) : this.identity.equals(that.identity))
-       &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+       &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
+       &&((this.package_ == null) ? (that.package_ == null) : this.package_.equals(that.package_));
     }
     return false;
   }
@@ -63,6 +68,8 @@ public class FindUserInput {
       __h ^= (identity == null) ? 0 : identity.hashCode();
       __h *= 1000003;
       __h ^= (friends == null) ? 0 : friends.hashCode();
+      __h *= 1000003;
+      __h ^= (package_ == null) ? 0 : package_.hashCode();
       $hashCode = __h;
       $hashCodeMemoized = true;
     }
@@ -76,7 +83,8 @@ public class FindUserInput {
         + "email=" + email + ", "
         + "name=" + name + ", "
         + "identity=" + identity + ", "
-        + "friends=" + friends
+        + "friends=" + friends + ", "
+        + "package_=" + package_
         + "}";
     }
     return $toString;
@@ -95,6 +103,8 @@ public class FindUserInput {
     private Optional<FindUserBySocialNetworkInput> identity = Optional.absent();
 
     private Optional<FindUserByFriendInput> friends = Optional.absent();
+
+    private Optional<String> package_ = Optional.absent();
 
     Builder() {
     }
@@ -119,8 +129,13 @@ public class FindUserInput {
       return this;
     }
 
+    public Builder package_(String package_) {
+      this.package_ = Optional.present(package_);
+      return this;
+    }
+
     public FindUserInput build() {
-      return new FindUserInput(email, name, identity, friends);
+      return new FindUserInput(email, name, identity, friends, package_);
     }
   }
 }

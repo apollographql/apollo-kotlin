@@ -41,5 +41,9 @@ public object FindUserInput_InputAdapter : Adapter<FindUserInput> {
       writer.name("friends")
       FindUserByFriendInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters, value.friends)
     }
+    if (value.`package` is Optional.Present) {
+      writer.name("package")
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.`package`)
+    }
   }
 }

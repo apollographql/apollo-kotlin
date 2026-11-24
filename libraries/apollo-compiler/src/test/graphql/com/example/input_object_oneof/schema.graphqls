@@ -3,6 +3,7 @@ input FindUserInput @oneOf {
   name: String
   identity: FindUserBySocialNetworkInput
   friends: FindUserByFriendInput
+  package: String
 }
 
 input FindUserBySocialNetworkInput @oneOf {
