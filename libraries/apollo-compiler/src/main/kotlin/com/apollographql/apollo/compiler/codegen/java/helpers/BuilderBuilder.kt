@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.codegen.java.helpers
 
+import com.apollographql.apollo.compiler.JavaNullable
 import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo.compiler.codegen.java.JavaContext
 import com.apollographql.apollo.compiler.codegen.java.L
@@ -53,7 +54,9 @@ internal class BuilderBuilder(
             ParameterSpec.builder(unwrappedFieldType, field.name)
                 .apply {
                   if (context.resolver.isOptional(unwrappedFieldType)) {
-                    addAnnotation(context.resolver.notNullAnnotationClassName ?: JavaClassNames.JetBrainsNonNull)
+                    if (context.resolver.nullableFieldStyle != JavaNullable.JSPECIFY_ANNOTATIONS) {
+                      addAnnotation(context.resolver.notNullAnnotationClassName ?: JavaClassNames.JetBrainsNonNull)
+                    }
                   } else if (!context.resolver.isOptional(field.type)) {
                     addAnnotations(field.annotations)
                   }

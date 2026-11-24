@@ -339,6 +339,7 @@ public final class com/apollographql/apollo/compiler/JavaNullable : java/lang/En
 	public static final field GUAVA_OPTIONAL Lcom/apollographql/apollo/compiler/JavaNullable;
 	public static final field JAVA_OPTIONAL Lcom/apollographql/apollo/compiler/JavaNullable;
 	public static final field JETBRAINS_ANNOTATIONS Lcom/apollographql/apollo/compiler/JavaNullable;
+	public static final field JSPECIFY_ANNOTATIONS Lcom/apollographql/apollo/compiler/JavaNullable;
 	public static final field JSR_305_ANNOTATIONS Lcom/apollographql/apollo/compiler/JavaNullable;
 	public static final field NONE Lcom/apollographql/apollo/compiler/JavaNullable;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;

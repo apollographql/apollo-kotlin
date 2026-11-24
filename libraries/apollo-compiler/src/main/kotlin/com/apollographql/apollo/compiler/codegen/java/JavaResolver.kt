@@ -41,7 +41,7 @@ import com.squareup.javapoet.TypeName
 internal class JavaResolver(
     upstreamCodegenMetadata: CodegenMetadata,
     private val generatePrimitiveTypes: Boolean,
-    private val nullableFieldStyle: JavaNullable,
+    val nullableFieldStyle: JavaNullable,
 ) {
   private val upstreamEntries = upstreamCodegenMetadata.entries.associate { it.key to it.className.toJavaPoetClassName() }
   private val upstreamScalarAdapters = upstreamCodegenMetadata.scalarAdapters
@@ -82,6 +82,7 @@ internal class JavaResolver(
     JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNullable
     JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.AndroidNullable
     JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.Jsr305Nullable
+    JavaNullable.JSPECIFY_ANNOTATIONS -> JavaClassNames.JSpecifyNullable
     else -> null
   }
 
@@ -166,11 +167,23 @@ internal class JavaResolver(
    * in generics like `List<@NotNull String>` for an example
    */
   private fun TypeName.filterTypeUseAnnotations(): TypeName {
-    // Only the JetBrains nullability annotations have a target including ElementType.TYPE_USE
+    // Only the JetBrains and JSpecify nullability annotations have a target including ElementType.TYPE_USE
     return if (annotations.isEmpty()) {
       this
     } else {
-      withoutAnnotations().annotated(annotations.filter { it.type == JavaClassNames.JetBrainsNullable || it.type == JavaClassNames.JetBrainsNonNull })
+      withoutAnnotations().annotated(annotations.filter {
+        it.type == JavaClassNames.JetBrainsNullable || it.type == JavaClassNames.JetBrainsNonNull ||
+            it.type == JavaClassNames.JSpecifyNullable
+      })
+    }
+  }
+
+  fun resolveFieldTypeAndAnnotations(type: IrType): Pair<TypeName, List<AnnotationSpec>> {
+    val irType = resolveIrType(type)
+    return if (nullableFieldStyle == JavaNullable.JSPECIFY_ANNOTATIONS) {
+      irType to emptyList()
+    } else {
+      irType.withoutAnnotations() to irType.annotations
     }
   }
 

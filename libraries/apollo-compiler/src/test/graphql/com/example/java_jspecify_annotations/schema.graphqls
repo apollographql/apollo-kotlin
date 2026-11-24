@@ -1,0 +1,19 @@
+type Query {
+  nullableInt(nullableInt: Int, nonNullableInt: Int!, nonNullableIntWithDefault: Int! = 4, nullableInput: MyInput, nonNullableInput: MyInput!, nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4}): Int
+  nonNullableInt(nullableInt: Int, nonNullableInt: Int!, nonNullableIntWithDefault: Int! = 4, nullableInput: MyInput, nonNullableInput: MyInput!, nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4}): Int!
+  nullableMyType: MyType
+  nonNullableMyType: MyType!
+  nullableListOfNullableString: [String]
+  nullableListOfNonNullableString: [String!]
+}
+
+input MyInput {
+  nullableInt: Int
+  nonNullableInt: Int!
+  nonNullableIntWithDefault: Int! = 4
+}
+
+type MyType {
+  nullableInt: Int
+  nonNullableInt: Int!
+}

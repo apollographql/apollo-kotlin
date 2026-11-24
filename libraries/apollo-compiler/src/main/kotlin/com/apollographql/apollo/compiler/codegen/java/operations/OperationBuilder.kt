@@ -270,10 +270,10 @@ internal class OperationBuilder(
 
     operation.variables
         .map {
-          val irType = context.resolver.resolveIrType(it.type)
-          FieldSpec.builder(irType.withoutAnnotations(), context.layout.javaPropertyName(it.name))
+          val (fieldType, fieldAnnotations) = context.resolver.resolveFieldTypeAndAnnotations(it.type)
+          FieldSpec.builder(fieldType, context.layout.javaPropertyName(it.name))
               .maybeAddDescription(it.description)
-              .addAnnotations(irType.annotations)
+              .addAnnotations(fieldAnnotations)
               .build()
         }
         .let {
