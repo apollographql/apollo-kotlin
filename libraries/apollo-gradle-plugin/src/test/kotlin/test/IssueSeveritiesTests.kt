@@ -4,6 +4,8 @@ import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Test
 import util.TestUtils
 import util.TestUtils.withTestProject
+import util.generatedSource
+import util.replaceInText
 import kotlin.test.assertTrue
 
 class IssueSeveritiesTests {
@@ -65,6 +67,42 @@ class IssueSeveritiesTests {
       } catch (e: UnexpectedBuildFailure) {
         assertTrue(e.message!!.contains("Unknown severity 'invalid'. Expected one of: 'ignore', 'warn', 'error'"))
       }
+    }
+
+  }
+
+  @Test
+  fun `multi-module severity and failOnWarnings apply before source writes`() {
+    testProjectWithIsolatedProjectsWorkaround("multi-modules") { dir ->
+      dir.resolve("root/src/main/graphql/com/library/operations.graphql").appendText("""
+
+        fragment queryDetails on Query { __typename }
+      """.trimIndent())
+      val buildFile = dir.resolve("root/build.gradle.kts")
+      buildFile.replaceInText("mapScalar(", "failOnWarnings.set(true)\n    mapScalar(")
+      try {
+        TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+        error("An Exception was expected")
+      } catch (e: UnexpectedBuildFailure) {
+        assertTrue(e.message!!.contains("Execution failed for task ':root:generateServiceApolloSources'"))
+        assertTrue(e.message!!.containsWarning())
+        assertTrue(e.message!!.contains("Warnings found and 'failOnWarnings' is true"))
+        assertTrue(!dir.resolve("root").generatedSource("com/library/fragment/QueryDetails.kt").exists())
+      }
+
+      buildFile.replaceInText("failOnWarnings.set(true)", """issueSeverity("UnusedFragment", "error")""")
+      try {
+        TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+        error("An Exception was expected")
+      } catch (e: UnexpectedBuildFailure) {
+        assertTrue(e.message!!.containsError())
+        assertTrue(!e.message!!.containsWarning())
+      }
+
+      buildFile.replaceInText("""issueSeverity("UnusedFragment", "error")""", """issueSeverity("UnusedFragment", "ignore")""")
+      val ignored = TestUtils.executeTask(":root:generateServiceApolloSources", dir)
+      assertTrue(!ignored.output.containsWarning() && !ignored.output.containsError())
+      assertTrue(dir.resolve("root").generatedSource("com/library/fragment/QueryDetails.kt").isFile)
     }
   }
 }

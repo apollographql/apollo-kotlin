@@ -13,6 +13,7 @@ apollo {
   service("service") {
     packageName.set("multimodule1.root")
     generateApolloMetadata.set(true)
+    failOnWarnings.set(true)
     alwaysGenerateTypesMatching.set(emptyList())
     mapScalar("Long", "kotlin.Long")
   }

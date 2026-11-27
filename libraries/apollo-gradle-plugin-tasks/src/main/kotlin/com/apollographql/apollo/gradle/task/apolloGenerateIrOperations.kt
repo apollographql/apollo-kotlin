@@ -36,5 +36,6 @@ internal fun apolloGenerateIrOperations(
       upstreamIrOperations = upstreamIrFiles.toInputFiles(),
       irOptionsFile = irOptionsFile,
       irOperationsFile = irOperationsFile,
+      reportUnusedFragments = false,
   )
 }
