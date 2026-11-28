@@ -8,16 +8,15 @@ package com.example.test_inline.adapter
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.test_inline.GetPage
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object GetPage_ResponseAdapter {
   public object Data : Adapter<GetPage.Data> {
@@ -50,6 +49,8 @@ public object GetPage_ResponseAdapter {
     private object Collection : Adapter<GetPage.Data.Collection> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
+      private val __possibleTypes0: Set<String> = setOf("ParticularCollection")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection {
         var __typename: String? = null
         var _items: List<GetPage.Data.Collection.Item>? = null
@@ -67,7 +68,7 @@ public object GetPage_ResponseAdapter {
         }
 
         var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
-        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader, customScalarAdapters)
         }
@@ -153,6 +154,8 @@ public object GetPage_ResponseAdapter {
         private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+          private val __possibleTypes0: Set<String> = setOf("ParticularItem")
+
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.OnParticularCollection.Item {
             var __typename: String? = null
 
@@ -168,7 +171,7 @@ public object GetPage_ResponseAdapter {
             }
 
             var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
-            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes0) {
               reader.rewind()
               _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader, customScalarAdapters)
             }

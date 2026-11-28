@@ -9,16 +9,15 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableIntAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.used_arguments.GetA
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object GetA_ResponseAdapter {
   public object Data : Adapter<GetA.Data> {
@@ -51,6 +50,10 @@ public object GetA_ResponseAdapter {
     private object A : Adapter<GetA.Data.A> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("B")
+
+      private val __possibleTypes1: Set<String> = setOf("C")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetA.Data.A {
         var __typename: String? = null
 
@@ -66,13 +69,13 @@ public object GetA_ResponseAdapter {
         }
 
         var _onB: GetA.Data.A.OnB? = null
-        if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onB = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetA.Data.A.OnC? = null
-        if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _onC = com.example.used_arguments.adapter.GetA_ResponseAdapter.Data.A.OnC.fromJson(reader, customScalarAdapters)
         }

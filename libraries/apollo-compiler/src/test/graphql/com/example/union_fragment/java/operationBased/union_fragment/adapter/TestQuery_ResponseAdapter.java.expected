@@ -8,10 +8,6 @@ package com.example.union_fragment.adapter;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.ListAdapter;
 import com.apollographql.apollo.api.NullableAdapter;
@@ -25,7 +21,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
@@ -65,6 +63,8 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("Starship"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Search fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
@@ -81,13 +81,13 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnStarship _onStarship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Starship _starship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, customScalarAdapters);
       }

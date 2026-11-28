@@ -6,6 +6,8 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo.api.Adapter
+import com.apollographql.apollo.api.BTerm
+import com.apollographql.apollo.api.BooleanExpression
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
 import com.apollographql.apollo.api.and
@@ -53,6 +55,8 @@ public object SpreadSingleWithDefer_ResponseAdapter {
     private object Hero : Adapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __condition0: BooleanExpression<BTerm> = and(possibleTypes("Droid"),label())
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
@@ -69,7 +73,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+        if (__condition0.evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
           reader.rewind()
           _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader, customScalarAdapters)
         }

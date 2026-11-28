@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.codegen.Identifier.reader
 import com.apollographql.apollo.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo.compiler.codegen.java.JavaContext
+import com.apollographql.apollo.compiler.codegen.java.helpers.HoistedConditions
 import com.apollographql.apollo.compiler.codegen.java.helpers.readFromResponseCodeBlock
 import com.apollographql.apollo.compiler.codegen.java.helpers.responseNamesFieldSpec
 import com.apollographql.apollo.compiler.codegen.java.helpers.suppressAnnotation
@@ -52,6 +53,8 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
+    val hoistedConditions = HoistedConditions()
+    val readFromResponseMethodSpec = readFromResponseMethodSpec(hoistedConditions)
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
             ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.id))
@@ -65,14 +68,15 @@ internal class MonomorphicFieldResponseAdapterBuilder(
             addField(responseNames)
           }
         }
+        .addFields(hoistedConditions.fieldSpecs())
         .addEnumConstant("INSTANCE")
-        .addMethod(readFromResponseMethodSpec())
+        .addMethod(readFromResponseMethodSpec)
         .addMethod(writeToResponseMethodSpec())
         .addTypes(nestedAdapterBuilders.flatMap { it.build() })
         .build()
   }
 
-  private fun readFromResponseMethodSpec(): MethodSpec {
+  private fun readFromResponseMethodSpec(hoistedConditions: HoistedConditions): MethodSpec {
     return MethodSpec.methodBuilder(fromJson)
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(suppressAnnotation("unchecked"))
@@ -81,7 +85,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
         .addParameter(JavaClassNames.JsonReader, reader)
         .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
         .addAnnotation(JavaClassNames.Override)
-        .addCode(readFromResponseCodeBlock(model, context, false))
+        .addCode(readFromResponseCodeBlock(model, context, false, hoistedConditions))
         .build()
   }
 

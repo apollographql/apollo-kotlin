@@ -9,16 +9,15 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.DoubleAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.interface_on_interface.GetHuman
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object GetHuman_ResponseAdapter {
   public object Data : Adapter<GetHuman.Data> {
@@ -97,6 +96,8 @@ public object GetHuman_ResponseAdapter {
     private object Node : Adapter<GetHuman.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Human")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetHuman.Data.Node {
         var __typename: String? = null
 
@@ -112,7 +113,7 @@ public object GetHuman_ResponseAdapter {
         }
 
         var _onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader, customScalarAdapters)
         }

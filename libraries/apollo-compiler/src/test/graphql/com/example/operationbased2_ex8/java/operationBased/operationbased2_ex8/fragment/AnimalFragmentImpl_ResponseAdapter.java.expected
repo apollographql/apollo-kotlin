@@ -8,10 +8,6 @@ package com.example.operationbased2_ex8.fragment;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.json.JsonReader;
@@ -22,7 +18,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AnimalFragmentImpl_ResponseAdapter {
   public enum AnimalFragment implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
@@ -71,6 +69,10 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("Lion"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("Cat"));
+
     @SuppressWarnings("unchecked")
     @Override
     public com.example.operationbased2_ex8.fragment.AnimalFragment.Parent fromJson(
@@ -89,13 +91,13 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion _onLion = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat _onCat = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }

@@ -9,15 +9,14 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -50,6 +49,8 @@ public object TestQuery_ResponseAdapter {
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Impl1")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1 {
         var __typename: String? = null
 
@@ -68,7 +69,7 @@ public object TestQuery_ResponseAdapter {
         val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader, customScalarAdapters)
 
         var _onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
-        if (possibleTypes("Impl1").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader, customScalarAdapters)
         }
@@ -125,6 +126,8 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+          private val __possibleTypes0: Set<String> = setOf("Impl2")
+
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
 
@@ -143,7 +146,7 @@ public object TestQuery_ResponseAdapter {
             val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes0) {
               reader.rewind()
               _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }
@@ -258,6 +261,8 @@ public object TestQuery_ResponseAdapter {
         private object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+          private val __possibleTypes0: Set<String> = setOf("Impl2")
+
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
 
@@ -276,7 +281,7 @@ public object TestQuery_ResponseAdapter {
             val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader, customScalarAdapters)
 
             var _onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
-            if (possibleTypes("Impl2").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes0) {
               reader.rewind()
               _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader, customScalarAdapters)
             }

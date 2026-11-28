@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.codegen.kotlin.operations.util
 import com.apollographql.apollo.compiler.codegen.Identifier
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo.compiler.codegen.kotlin.helpers.HoistedConditions
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.addSuppressions
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.from
 import com.apollographql.apollo.compiler.codegen.kotlin.helpers.readFromResponseCodeBlock
@@ -70,6 +71,8 @@ internal class ImplementationAdapterBuilder(
   }
 
   override fun build(): List<TypeSpec> {
+    val hoistedConditions = HoistedConditions()
+    val readFromResponseFunSpec = readFromResponseFunSpec(hoistedConditions)
     return TypeSpec.objectBuilder(adapterName)
         .apply {
           val responseNames = responseNamesPropertySpec(model)
@@ -77,7 +80,8 @@ internal class ImplementationAdapterBuilder(
             addProperty(responseNames)
           }
         }
-        .addFunction(readFromResponseFunSpec())
+        .addProperties(hoistedConditions.propertySpecs())
+        .addFunction(readFromResponseFunSpec)
         .addFunction(writeToResponseFunSpec())
         .addTypes(nestedAdapterBuilders.flatMap { it.build() })
         .apply {
@@ -97,7 +101,7 @@ internal class ImplementationAdapterBuilder(
 
   }
 
-  private fun readFromResponseFunSpec(): FunSpec {
+  private fun readFromResponseFunSpec(hoistedConditions: HoistedConditions): FunSpec {
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
@@ -120,7 +124,7 @@ internal class ImplementationAdapterBuilder(
             addModifiers(KModifier.OVERRIDE)
           }
         }
-        .addCode(readFromResponseCodeBlock(model, context, addTypenameArgument))
+        .addCode(readFromResponseCodeBlock(model, context, addTypenameArgument, hoistedConditions))
         .build()
   }
 

@@ -10,18 +10,17 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableAnyAdapter
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.target_name.TestQuery
 import com.example.target_name.type.RenamedEnum
 import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -135,6 +134,8 @@ public object TestQuery_ResponseAdapter {
     private object Union : Adapter<TestQuery.Data.Union> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("ReservedObject")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Union {
         var __typename: String? = null
 
@@ -150,7 +151,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onReservedObject: TestQuery.Data.Union.OnReservedObject? = null
-        if (possibleTypes("ReservedObject").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.fromJson(reader, customScalarAdapters)
         }

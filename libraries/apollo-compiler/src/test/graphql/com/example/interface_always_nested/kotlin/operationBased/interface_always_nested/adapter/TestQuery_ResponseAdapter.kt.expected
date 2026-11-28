@@ -9,15 +9,14 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.interface_always_nested.TestQuery
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -50,6 +49,8 @@ public object TestQuery_ResponseAdapter {
     private object Root : Adapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("ABC", "AC")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root {
         var __typename: String? = null
 
@@ -65,7 +66,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader, customScalarAdapters)
         }
@@ -92,6 +93,8 @@ public object TestQuery_ResponseAdapter {
       private object OnA : Adapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
+        private val __possibleTypes0: Set<String> = setOf("ABC", "BC")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
@@ -109,7 +112,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__typename in __possibleTypes0) {
             reader.rewind()
             _onB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader, customScalarAdapters)
           }

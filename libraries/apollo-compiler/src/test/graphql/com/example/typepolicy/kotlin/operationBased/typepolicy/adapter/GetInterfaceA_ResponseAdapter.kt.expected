@@ -9,15 +9,14 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.typepolicy.GetInterfaceA
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object GetInterfaceA_ResponseAdapter {
   public object Data : Adapter<GetInterfaceA.Data> {
@@ -50,6 +49,10 @@ public object GetInterfaceA_ResponseAdapter {
     private object InterfaceA : Adapter<GetInterfaceA.Data.InterfaceA> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("B")
+
+      private val __possibleTypes1: Set<String> = setOf("C")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetInterfaceA.Data.InterfaceA {
         var __typename: String? = null
 
@@ -68,13 +71,13 @@ public object GetInterfaceA_ResponseAdapter {
         val _onInterfaceA = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnInterfaceA.fromJson(reader, customScalarAdapters)
 
         var _onB: GetInterfaceA.Data.InterfaceA.OnB? = null
-        if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onB = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetInterfaceA.Data.InterfaceA.OnC? = null
-        if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _onC = com.example.typepolicy.adapter.GetInterfaceA_ResponseAdapter.Data.InterfaceA.OnC.fromJson(reader, customScalarAdapters)
         }

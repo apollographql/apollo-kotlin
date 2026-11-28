@@ -9,17 +9,16 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.IntAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.operationbased2_ex7.TestOperation
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
@@ -85,6 +84,10 @@ public object TestOperation_ResponseAdapter {
       private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
+        private val __possibleTypes0: Set<String> = setOf("Lion", "Cat", "Panther")
+
+        private val __possibleTypes1: Set<String> = setOf("Cat", "Turtle")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
@@ -102,13 +105,13 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onWarmBlooded: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded? = null
-          if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__typename in __possibleTypes0) {
             reader.rewind()
             _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader, customScalarAdapters)
           }
 
           var _onPet: TestOperation.Data.Animal.OnAnimal.OnPet? = null
-          if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__typename in __possibleTypes1) {
             reader.rewind()
             _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader, customScalarAdapters)
           }

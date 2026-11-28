@@ -43,6 +43,8 @@ internal object ClassNames {
   val CustomScalarType = ResolverClassName(apolloApiPackageName, "CustomScalarType")
   val True = ResolverClassName(apolloApiPackageName, "BooleanExpression", "True")
   val False = ResolverClassName(apolloApiPackageName, "BooleanExpression", "False")
+  val BooleanExpression = ResolverClassName(apolloApiPackageName, "BooleanExpression")
+  val BTerm = ResolverClassName(apolloApiPackageName, "BTerm")
   val CompiledArgument = ResolverClassName(apolloApiPackageName, "CompiledArgument", "Builder")
   val CompiledArgumentDefinition = ResolverClassName(apolloApiPackageName, "CompiledArgumentDefinition")
   val CompiledArgumentDefinitionBuilder = ResolverClassName(apolloApiPackageName, "CompiledArgumentDefinition", "Builder")
