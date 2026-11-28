@@ -8,10 +8,6 @@ package com.example.operationbased2_ex7.adapter;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.NullableAdapter;
 import com.apollographql.apollo.api.ObjectAdapter;
@@ -24,7 +20,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TestOperation_ResponseAdapter {
   public enum Data implements Adapter<TestOperation.Data> {
@@ -104,6 +102,10 @@ public class TestOperation_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("Lion", "Cat", "Panther"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("Cat", "Turtle"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestOperation.OnAnimal fromJson(JsonReader reader,
@@ -122,13 +124,13 @@ public class TestOperation_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWarmBlooded _onWarmBlooded = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion","Cat","Panther")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestOperation.OnPet _onPet = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat","Turtle")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.fromJson(reader, customScalarAdapters);
       }

@@ -9,19 +9,18 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.adapter.Episode_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -54,6 +53,10 @@ public object TestQuery_ResponseAdapter {
     private object Search : Adapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Droid", "Human")
+
+      private val __possibleTypes1: Set<String> = setOf("Starship")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search {
         var __typename: String? = null
 
@@ -69,13 +72,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader, customScalarAdapters)
         }
 
         var _onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader, customScalarAdapters)
         }
@@ -146,6 +149,10 @@ public object TestQuery_ResponseAdapter {
         private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+          private val __possibleTypes0: Set<String> = setOf("Human")
+
+          private val __possibleTypes1: Set<String> = setOf("Droid")
+
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
 
@@ -164,13 +171,13 @@ public object TestQuery_ResponseAdapter {
             val _onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.fromJson(reader, customScalarAdapters)
 
             var _onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes0) {
               reader.rewind()
               _onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.fromJson(reader, customScalarAdapters)
             }
 
             var _onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
-            if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes1) {
               reader.rewind()
               _onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.fromJson(reader, customScalarAdapters)
             }

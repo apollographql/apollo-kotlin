@@ -8,10 +8,6 @@ package com.example.fieldset_with_multiple_super.adapter;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.NullableAdapter;
 import com.apollographql.apollo.api.ObjectAdapter;
@@ -23,7 +19,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
@@ -63,6 +61,10 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("ABC", "AC"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("ABC", "BC"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestQuery.C fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
@@ -79,13 +81,13 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnA _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnB1 _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -118,6 +120,8 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldA1");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("ABC", "BC"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
@@ -136,7 +140,7 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnB _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -200,6 +204,8 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldB2");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("ABC", "AC"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestQuery.OnB1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
@@ -218,7 +224,7 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnA1 _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, customScalarAdapters);
       }

@@ -9,16 +9,15 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.typepolicy.GetUnionA
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object GetUnionA_ResponseAdapter {
   public object Data : Adapter<GetUnionA.Data> {
@@ -51,6 +50,12 @@ public object GetUnionA_ResponseAdapter {
     private object UnionA : Adapter<GetUnionA.Data.UnionA> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("A")
+
+      private val __possibleTypes1: Set<String> = setOf("B")
+
+      private val __possibleTypes2: Set<String> = setOf("C")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetUnionA.Data.UnionA {
         var __typename: String? = null
 
@@ -69,19 +74,19 @@ public object GetUnionA_ResponseAdapter {
         val _onUnionA = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.Data.UnionA.OnUnionA.fromJson(reader, customScalarAdapters)
 
         var _onA: GetUnionA.Data.UnionA.OnA? = null
-        if (possibleTypes("A").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onA = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.Data.UnionA.OnA.fromJson(reader, customScalarAdapters)
         }
 
         var _onB: GetUnionA.Data.UnionA.OnB? = null
-        if (possibleTypes("B").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _onB = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.Data.UnionA.OnB.fromJson(reader, customScalarAdapters)
         }
 
         var _onC: GetUnionA.Data.UnionA.OnC? = null
-        if (possibleTypes("C").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes2) {
           reader.rewind()
           _onC = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.Data.UnionA.OnC.fromJson(reader, customScalarAdapters)
         }

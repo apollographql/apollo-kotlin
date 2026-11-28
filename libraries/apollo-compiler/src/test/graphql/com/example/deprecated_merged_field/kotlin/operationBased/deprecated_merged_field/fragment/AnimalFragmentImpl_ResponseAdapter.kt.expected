@@ -8,18 +8,21 @@ package com.example.deprecated_merged_field.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.missingField
-import com.apollographql.apollo.api.possibleTypes
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object AnimalFragment : Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    private val __possibleTypes0: Set<String> = setOf("Cat")
+
+    private val __possibleTypes1: Set<String> = setOf("Dog")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
@@ -36,13 +39,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
-      if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__typename in __possibleTypes0) {
         reader.rewind()
         _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader, customScalarAdapters)
       }
 
       var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
-      if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__typename in __possibleTypes1) {
         reader.rewind()
         _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader, customScalarAdapters)
       }

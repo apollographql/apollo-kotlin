@@ -53,30 +53,27 @@ fun label(label: String? = null): BooleanExpression<BLabel> = BooleanExpression.
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> =
   BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
-internal fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
-  return when (this) {
-    BooleanExpression.True -> true
-    BooleanExpression.False -> false
-    is BooleanExpression.Not -> !operand.evaluate(block)
-    is BooleanExpression.Or -> operands.any { it.evaluate(block) }
-    is BooleanExpression.And -> operands.all { it.evaluate(block) }
-    is BooleanExpression.Element -> block(value)
-  }
-}
-
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>?,
     typename: String?,
     deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>?,
     path: List<Any>?,
 ): Boolean {
-  // Remove "data" from the path
-  val croppedPath = path?.drop(1)
-  return evaluate {
-    when (it) {
-      is BVariable -> !(variables?.contains(it.name) ?: false)
-      is BLabel -> shouldParseFragment(deferredFragmentIdentifiers, croppedPath!!, it.label)
-      is BPossibleTypes -> it.possibleTypes.contains(typename)
+  /**
+   * This is called from generated adapters on every parse. Recurse directly instead of going through a capturing
+   * lambda so that evaluating a condition does not allocate.
+   */
+  return when (this) {
+    BooleanExpression.True -> true
+    BooleanExpression.False -> false
+    is BooleanExpression.Not -> !operand.evaluate(variables, typename, deferredFragmentIdentifiers, path)
+    is BooleanExpression.Or -> operands.any { it.evaluate(variables, typename, deferredFragmentIdentifiers, path) }
+    is BooleanExpression.And -> operands.all { it.evaluate(variables, typename, deferredFragmentIdentifiers, path) }
+    is BooleanExpression.Element -> when (val term = value) {
+      is BVariable -> !(variables?.contains(term.name) ?: false)
+      // Remove "data" from the path
+      is BLabel -> shouldParseFragment(deferredFragmentIdentifiers, path!!.drop(1), term.label)
+      is BPossibleTypes -> term.possibleTypes.contains(typename)
     }
   }
 }

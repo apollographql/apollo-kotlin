@@ -11,7 +11,9 @@ import com.apollographql.apollo.compiler.ir.BTerm
 import com.apollographql.apollo.compiler.ir.BVariable
 import com.apollographql.apollo.compiler.ir.BooleanExpression
 import com.squareup.javapoet.CodeBlock
+import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.ParameterizedTypeName
+import javax.lang.model.element.Modifier
 
 internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
   return when (this) {
@@ -71,4 +73,44 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
       CodeBlock.of("new $T($L)", ParameterizedTypeName.get(JavaClassNames.BooleanExpressionElement, JavaClassNames.BTerm), params)
     }
   }
+}
+
+/**
+ * Collects the conditions used by an adapter's `fromJson` so that they can be hoisted to static fields of the
+ * adapter and built only once instead of on every call.
+ *
+ * - A condition that is only a type condition becomes a `Set<String>` that is checked with `set.contains(__typename)`.
+ * - Any other condition becomes a `BooleanExpression<BTerm>` that is passed to `evaluate()`.
+ *
+ * Identical conditions are deduplicated within an adapter.
+ */
+internal class HoistedConditions {
+  private val possibleTypes = mutableMapOf<Set<String>, FieldSpec>()
+  private val expressions = mutableMapOf<BooleanExpression<BTerm>, FieldSpec>()
+
+  /**
+   * Returns the name of a `Set<String>` field containing [types]
+   */
+  fun possibleTypes(types: Set<String>): String {
+    return possibleTypes.getOrPut(types) {
+      FieldSpec.builder(ParameterizedTypeName.get(JavaClassNames.Set, JavaClassNames.String), "__possibleTypes${possibleTypes.size}")
+          .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+          .initializer("new $T<>($L)", JavaClassNames.HashSet, types.map { CodeBlock.of(S, it) }.toListInitializerCodeblock())
+          .build()
+    }.name
+  }
+
+  /**
+   * Returns the name of a `BooleanExpression<BTerm>` field containing [expression]
+   */
+  fun expression(expression: BooleanExpression<BTerm>): String {
+    return expressions.getOrPut(expression) {
+      FieldSpec.builder(ParameterizedTypeName.get(JavaClassNames.BooleanExpression, JavaClassNames.BTerm), "__condition${expressions.size}")
+          .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+          .initializer(expression.codeBlock())
+          .build()
+    }.name
+  }
+
+  fun fieldSpecs(): List<FieldSpec> = possibleTypes.values + expressions.values
 }

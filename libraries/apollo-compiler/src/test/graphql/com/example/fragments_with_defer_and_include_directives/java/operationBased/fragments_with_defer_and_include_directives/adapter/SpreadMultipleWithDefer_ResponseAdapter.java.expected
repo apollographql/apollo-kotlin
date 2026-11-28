@@ -65,6 +65,8 @@ public class SpreadMultipleWithDefer_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    private static final BooleanExpression<BTerm> __condition0 = new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("a_first")),new BooleanExpression.Element<BTerm>(new BLabel("a_second"))));
+
     @SuppressWarnings("unchecked")
     @Override
     public SpreadMultipleWithDefer.Hero fromJson(JsonReader reader,
@@ -82,7 +84,7 @@ public class SpreadMultipleWithDefer_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("a_first")),new BooleanExpression.Element<BTerm>(new BLabel("a_second")))), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
+      if (BooleanExpressions.evaluate(__condition0, customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, __path)) {
         reader.rewind();
         _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }

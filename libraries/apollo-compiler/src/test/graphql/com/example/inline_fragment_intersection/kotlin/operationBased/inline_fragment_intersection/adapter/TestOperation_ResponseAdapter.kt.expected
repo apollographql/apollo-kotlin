@@ -11,13 +11,11 @@ import com.apollographql.apollo.api.NullableBooleanAdapter
 import com.apollographql.apollo.api.NullableDoubleAdapter
 import com.apollographql.apollo.api.NullableStringAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.inline_fragment_intersection.TestOperation
 import com.example.inline_fragment_intersection.type.Race
 import com.example.inline_fragment_intersection.type.adapter.Race_ResponseAdapter
@@ -25,6 +23,7 @@ import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
@@ -57,6 +56,10 @@ public object TestOperation_ResponseAdapter {
     private object Random : Adapter<TestOperation.Data.Random> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Human", "Wookie")
+
+      private val __possibleTypes1: Set<String> = setOf("Wookie")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random {
         var __typename: String? = null
 
@@ -72,13 +75,13 @@ public object TestOperation_ResponseAdapter {
         }
 
         var _onBeing: TestOperation.Data.Random.OnBeing? = null
-        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader, customScalarAdapters)
         }
 
         var _onWookie: TestOperation.Data.Random.OnWookie? = null
-        if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader, customScalarAdapters)
         }
@@ -110,6 +113,8 @@ public object TestOperation_ResponseAdapter {
       private object OnBeing : Adapter<TestOperation.Data.Random.OnBeing> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
+        private val __possibleTypes0: Set<String> = setOf("Human")
+
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
           var _name: String? = null
@@ -129,7 +134,7 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+          if (__typename in __possibleTypes0) {
             reader.rewind()
             _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader, customScalarAdapters)
           }
@@ -164,6 +169,8 @@ public object TestOperation_ResponseAdapter {
         private object Friend : Adapter<TestOperation.Data.Random.OnBeing.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
+          private val __possibleTypes0: Set<String> = setOf("Wookie")
+
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
             var _name: String? = null
@@ -181,7 +188,7 @@ public object TestOperation_ResponseAdapter {
             }
 
             var _onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
-            if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+            if (__typename in __possibleTypes0) {
               reader.rewind()
               _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader, customScalarAdapters)
             }
@@ -274,6 +281,8 @@ public object TestOperation_ResponseAdapter {
           private object Friend : Adapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous")
 
+            private val __possibleTypes0: Set<String> = setOf("Wookie")
+
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
               var _isFamous: Boolean? = null
@@ -291,7 +300,7 @@ public object TestOperation_ResponseAdapter {
               }
 
               var _onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
-              if (possibleTypes("Wookie").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+              if (__typename in __possibleTypes0) {
                 reader.rewind()
                 _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader, customScalarAdapters)
               }

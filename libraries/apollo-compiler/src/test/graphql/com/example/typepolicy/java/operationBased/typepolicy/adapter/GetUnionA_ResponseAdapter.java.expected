@@ -8,10 +8,6 @@ package com.example.typepolicy.adapter;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.NullableAdapter;
 import com.apollographql.apollo.api.ObjectAdapter;
@@ -23,7 +19,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GetUnionA_ResponseAdapter {
   public enum Data implements Adapter<GetUnionA.Data> {
@@ -63,6 +61,12 @@ public class GetUnionA_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("A"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("B"));
+
+    private static final Set<String> __possibleTypes2 = new HashSet<>(Arrays.asList("C"));
+
     @SuppressWarnings("unchecked")
     @Override
     public GetUnionA.UnionA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
@@ -82,19 +86,19 @@ public class GetUnionA_ResponseAdapter {
       GetUnionA.OnUnionA _onUnionA = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.OnUnionA.INSTANCE.fromJson(reader, customScalarAdapters);
 
       GetUnionA.OnA _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("A")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onA = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       GetUnionA.OnB _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("B")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _onB = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       GetUnionA.OnC _onC = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("C")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes2.contains(__typename)) {
         reader.rewind();
         _onC = com.example.typepolicy.adapter.GetUnionA_ResponseAdapter.OnC.INSTANCE.fromJson(reader, customScalarAdapters);
       }

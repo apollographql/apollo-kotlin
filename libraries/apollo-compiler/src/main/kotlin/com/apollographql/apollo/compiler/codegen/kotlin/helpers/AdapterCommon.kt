@@ -16,6 +16,7 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo.compiler.codegen.variableName
 import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.BLabel
+import com.apollographql.apollo.compiler.ir.BPossibleTypes
 import com.apollographql.apollo.compiler.ir.BooleanExpression
 import com.apollographql.apollo.compiler.ir.IrCatchTo
 import com.apollographql.apollo.compiler.ir.IrModel
@@ -33,11 +34,14 @@ import com.squareup.kotlinpoet.joinToCode
  * @param useTypenameFromArgument
  * - for responseBased codegen that can't rewind, this is set to true so that the
  * implementation adapter can use it and __typename becomes initialized
+ * @param hoistedConditions collects the conditions of synthetic properties. The caller must add
+ * [HoistedConditions.propertySpecs] to the adapter object.
  */
 internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: KotlinContext,
     useTypenameFromArgument: Boolean,
+    hoistedConditions: HoistedConditions,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
@@ -137,7 +141,18 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if (%L.%M($customScalarAdapters.falseVariables, $typenameLiteral, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))", property.condition.codeBlock(), evaluate)
+            val possibleTypes = (property.condition as? BooleanExpression.Element)?.value as? BPossibleTypes
+            if (possibleTypes != null) {
+              // Most common case: a plain type condition. Check __typename against a hoisted Set.
+              // __typename is non-null here: it is either read from the reader or checked above.
+              beginControlFlow("if ($__typename in %N)", hoistedConditions.possibleTypes(possibleTypes.possibleTypes))
+            } else {
+              beginControlFlow(
+                  "if (%N.%M($customScalarAdapters.falseVariables, $typenameLiteral, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))",
+                  hoistedConditions.expression(property.condition),
+                  evaluate
+              )
+            }
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)

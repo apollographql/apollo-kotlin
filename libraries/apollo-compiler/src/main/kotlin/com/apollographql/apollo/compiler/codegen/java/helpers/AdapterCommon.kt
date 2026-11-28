@@ -23,6 +23,7 @@ import com.apollographql.apollo.compiler.codegen.java.joinToCode
 import com.apollographql.apollo.compiler.codegen.variableName
 import com.apollographql.apollo.compiler.internal.applyIf
 import com.apollographql.apollo.compiler.ir.BLabel
+import com.apollographql.apollo.compiler.ir.BPossibleTypes
 import com.apollographql.apollo.compiler.ir.BooleanExpression
 import com.apollographql.apollo.compiler.ir.IrModel
 import com.apollographql.apollo.compiler.ir.IrModelType
@@ -62,6 +63,7 @@ internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: JavaContext,
     hasTypenameArgument: Boolean,
+    hoistedConditions: HoistedConditions,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
@@ -160,11 +162,17 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow(
-                "if ($T.$evaluate($L, $customScalarAdapters.falseVariables, $__typename, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))",
-                JavaClassNames.BooleanExpressions,
-                property.condition.codeBlock(),
-            )
+            val possibleTypes = (property.condition as? BooleanExpression.Element)?.value as? BPossibleTypes
+            if (possibleTypes != null) {
+              // Most common case: a plain type condition. Check __typename against a hoisted Set.
+              beginControlFlow("if ($L.contains($__typename))", hoistedConditions.possibleTypes(possibleTypes.possibleTypes))
+            } else {
+              beginControlFlow(
+                  "if ($T.$evaluate($L, $customScalarAdapters.falseVariables, $__typename, $customScalarAdapters.deferredFragmentIdentifiers, $pathLiteral))",
+                  JavaClassNames.BooleanExpressions,
+                  hoistedConditions.expression(property.condition),
+              )
+            }
             add("$reader.rewind();\n")
           } else {
             checkedProperties.add(property.info.responseName)

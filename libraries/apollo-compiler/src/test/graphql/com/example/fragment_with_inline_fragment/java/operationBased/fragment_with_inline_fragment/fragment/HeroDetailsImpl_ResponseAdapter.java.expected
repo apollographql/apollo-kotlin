@@ -8,10 +8,6 @@ package com.example.fragment_with_inline_fragment.fragment;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.ListAdapter;
 import com.apollographql.apollo.api.NullableAdapter;
@@ -24,13 +20,19 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HeroDetailsImpl_ResponseAdapter {
   public enum HeroDetails implements Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friendsConnection");
+
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("Droid"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("Human"));
 
     @SuppressWarnings("unchecked")
     @Override
@@ -52,13 +54,13 @@ public class HeroDetailsImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid _onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }

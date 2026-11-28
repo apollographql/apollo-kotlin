@@ -64,6 +64,12 @@ public class TestQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
 
+    private static final BooleanExpression<BTerm> __condition0 = new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails")))));
+
+    private static final BooleanExpression<BTerm> __condition1 = new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails")));
+
+    private static final BooleanExpression<BTerm> __condition2 = new BooleanExpression.Element<BTerm>(new BVariable("withDetails"));
+
     @SuppressWarnings("unchecked")
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
@@ -82,19 +88,19 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails"))))), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(__condition0, customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
         _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnDroid _onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(__condition1, customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
         _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnCharacter _onCharacter = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (BooleanExpressions.evaluate(__condition2, customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
         reader.rewind();
         _onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
       }

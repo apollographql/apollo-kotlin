@@ -8,10 +8,6 @@ package com.example.data_builders.adapter;
 import com.apollographql.apollo.api.Adapter;
 import com.apollographql.apollo.api.Adapters;
 import com.apollographql.apollo.api.Assertions;
-import com.apollographql.apollo.api.BPossibleTypes;
-import com.apollographql.apollo.api.BTerm;
-import com.apollographql.apollo.api.BooleanExpression;
-import com.apollographql.apollo.api.BooleanExpressions;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.ObjectAdapter;
 import com.apollographql.apollo.api.json.JsonReader;
@@ -24,7 +20,9 @@ import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CharacterQuery_ResponseAdapter {
   public enum Data implements Adapter<CharacterQuery.Data> {
@@ -66,6 +64,10 @@ public class CharacterQuery_ResponseAdapter {
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id", "name");
 
+    private static final Set<String> __possibleTypes0 = new HashSet<>(Arrays.asList("Human"));
+
+    private static final Set<String> __possibleTypes1 = new HashSet<>(Arrays.asList("Droid"));
+
     @SuppressWarnings("unchecked")
     @Override
     public CharacterQuery.Character fromJson(JsonReader reader,
@@ -86,13 +88,13 @@ public class CharacterQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanFragment _humanFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes0.contains(__typename)) {
         reader.rewind();
         _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       DroidFragment _droidFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__possibleTypes1.contains(__typename)) {
         reader.rewind();
         _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }

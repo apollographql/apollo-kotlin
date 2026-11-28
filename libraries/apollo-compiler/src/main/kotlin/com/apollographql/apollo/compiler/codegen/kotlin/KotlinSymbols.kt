@@ -49,6 +49,8 @@ internal object KotlinSymbols {
   val CustomScalarType = ClassNames.CustomScalarType.toKotlinPoetClassName()
   val True = ClassNames.True.toKotlinPoetClassName()
   val False = ClassNames.False.toKotlinPoetClassName()
+  val BooleanExpression = ClassNames.BooleanExpression.toKotlinPoetClassName()
+  val BTerm = ClassNames.BTerm.toKotlinPoetClassName()
   val CompiledArgument = ClassNames.CompiledArgument.toKotlinPoetClassName()
   val CompiledArgumentDefinition = ClassNames.CompiledArgumentDefinition.toKotlinPoetClassName()
   val CompiledArgumentDefinitionBuilder = ClassNames.CompiledArgumentDefinitionBuilder.toKotlinPoetClassName()

@@ -9,21 +9,24 @@ import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.NullableIntAdapter
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.list
 import com.apollographql.apollo.api.missingField
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails : Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
+
+    private val __possibleTypes0: Set<String> = setOf("Droid")
+
+    private val __possibleTypes1: Set<String> = setOf("Human")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.fragment_with_inline_fragment.fragment.HeroDetails {
       var __typename: String? = null
@@ -44,13 +47,13 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _onDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__typename in __possibleTypes0) {
         reader.rewind()
         _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.fromJson(reader, customScalarAdapters)
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+      if (__typename in __possibleTypes1) {
         reader.rewind()
         _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader, customScalarAdapters)
       }

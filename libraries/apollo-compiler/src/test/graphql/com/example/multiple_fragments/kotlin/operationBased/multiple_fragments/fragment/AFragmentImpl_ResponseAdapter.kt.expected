@@ -8,14 +8,13 @@ package com.example.multiple_fragments.fragment
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object AFragmentImpl_ResponseAdapter {
   public object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
@@ -48,6 +47,8 @@ public object AFragmentImpl_ResponseAdapter {
     private object Node : Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("ANode")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
@@ -63,13 +64,13 @@ public object AFragmentImpl_ResponseAdapter {
         }
 
         var _fragment1: Fragment1? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader, customScalarAdapters)
         }
 
         var _fragment2: Fragment2? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader, customScalarAdapters)
         }

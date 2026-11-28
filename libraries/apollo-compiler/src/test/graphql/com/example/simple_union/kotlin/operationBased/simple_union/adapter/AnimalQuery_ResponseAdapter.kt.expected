@@ -8,12 +8,10 @@ package com.example.simple_union.adapter
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.simple_union.AnimalQuery
 import com.example.simple_union.fragment.CatFragment
 import com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter
@@ -21,6 +19,7 @@ import com.example.simple_union.fragment.DogFragment
 import com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object AnimalQuery_ResponseAdapter {
   public object Data : Adapter<AnimalQuery.Data> {
@@ -53,6 +52,10 @@ public object AnimalQuery_ResponseAdapter {
     private object Animal : Adapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Cat")
+
+      private val __possibleTypes1: Set<String> = setOf("Dog")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): AnimalQuery.Data.Animal {
         var __typename: String? = null
 
@@ -68,13 +71,13 @@ public object AnimalQuery_ResponseAdapter {
         }
 
         var _catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader, customScalarAdapters)
         }
 
         var _dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes1) {
           reader.rewind()
           _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader, customScalarAdapters)
         }

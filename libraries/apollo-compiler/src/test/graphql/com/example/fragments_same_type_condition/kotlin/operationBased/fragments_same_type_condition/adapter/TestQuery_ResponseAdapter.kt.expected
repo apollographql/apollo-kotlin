@@ -8,12 +8,10 @@ package com.example.fragments_same_type_condition.adapter
 import com.apollographql.apollo.api.Adapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.StringAdapter
-import com.apollographql.apollo.api.evaluate
 import com.apollographql.apollo.api.json.JsonReader
 import com.apollographql.apollo.api.json.JsonWriter
 import com.apollographql.apollo.api.nullable
 import com.apollographql.apollo.api.obj
-import com.apollographql.apollo.api.possibleTypes
 import com.example.fragments_same_type_condition.TestQuery
 import com.example.fragments_same_type_condition.fragment.DroidDetails1
 import com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter
@@ -21,6 +19,7 @@ import com.example.fragments_same_type_condition.fragment.DroidDetails2
 import com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Set
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -53,6 +52,8 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
+      private val __possibleTypes0: Set<String> = setOf("Droid")
+
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero {
         var __typename: String? = null
 
@@ -68,13 +69,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _droidDetails1: DroidDetails1? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _droidDetails1 = com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.fromJson(reader, customScalarAdapters)
         }
 
         var _droidDetails2: DroidDetails2? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.falseVariables, __typename, customScalarAdapters.deferredFragmentIdentifiers, null)) {
+        if (__typename in __possibleTypes0) {
           reader.rewind()
           _droidDetails2 = com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.fromJson(reader, customScalarAdapters)
         }
